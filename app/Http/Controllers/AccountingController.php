@@ -3,14 +3,19 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Facades\Redirect;
 use App;
 use Auth;
 use App\Cashlogs;
 use App\Order;
-use App\Payment;
 
+/**
+ * This class is used to handle Accounting Details
+ *
+ * @category App\Http\Controllers;
+ *
+ * @return null
+ */
 class AccountingController extends Controller
 {
     /**
@@ -18,12 +23,12 @@ class AccountingController extends Controller
      *
      * @return void
      */
-    public function __construct() 
+    public function __construct()
     {
         // uses auth middleware
         $this->middleware('auth');
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -52,7 +57,7 @@ class AccountingController extends Controller
      */
     public function store(Request $request)
     {
-        // validation rules 
+        // validation rules
         $this->validate($request, [
             'date' => 'required',
             'operation' => 'required',
@@ -70,10 +75,10 @@ class AccountingController extends Controller
         } else if($request->operation == '2') {
             $voucherData->cash_in = $request->amount;
         }
-        
+
         $voucherData->details = $request->details;
-        
-       
+
+
         // save data in user table
         if ($voucherData->save()) {
             // set flash message when user created successfully.
@@ -83,7 +88,7 @@ class AccountingController extends Controller
             return redirect('/accounting/create');
         }
     }
-    
+
     /**
      * Store a newly created resource in storage.
      *
@@ -93,7 +98,7 @@ class AccountingController extends Controller
     public function listCashLogs()
     {
         $cashLogs = Cashlogs::with('agent')->get();
-        
+
         return view('account.cash_logs', [
             'cashLogs' => $cashLogs
         ]);
@@ -108,37 +113,13 @@ class AccountingController extends Controller
     public function show($id)
     {
         // find the user details by user id
-        if (!($order = Order::with('orderDetail', 'categories', 'categoryType', 'orderDetail.product')->find(base64_decode($id)))) 
+        if (!($order = Order::with('orderDetail', 'categories', 'categoryType', 'orderDetail.product')->find(base64_decode($id))))
         {
             App::abort(404, 'Page not found.');
         }
-        //echo '<pre>';print_r($order);die;
         return view('account.order_details', [
             'order' => $order
         ]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
     }
 
     /**
@@ -156,10 +137,10 @@ class AccountingController extends Controller
         \Session::flash('flash_message', 'Order deleted successfully.');
         return Redirect::back();
     }
-    
+
     /**
      * List today's orders from orders tables.
-     * 
+     *
      * @param null
      * @return \Illuminate\Http\Response
      */
@@ -169,15 +150,15 @@ class AccountingController extends Controller
                 ->whereDate('created_at', '=', date('Y-m-d'))
                 ->orderBy('id', 'DESC')
                 ->get();
-        
+
         return view('account.sales_report', [
             'sales' => $sales
         ]);
     }
-    
+
     /**
      * List weekly orders from orders tables.
-     * 
+     *
      * @param null
      * @return \Illuminate\Http\Response
      */
@@ -189,15 +170,15 @@ class AccountingController extends Controller
                 ->whereBetween( \DB::raw('date(created_at)'), [$fromDate, $tillDate] )
                 ->orderBy('id', 'DESC')
                 ->get();
-        
+
         return view('account.sales_report', [
             'sales' => $sales
         ]);
     }
-    
+
     /**
      * List monthly orders from orders tables.
-     * 
+     *
      * @param null
      * @return \Illuminate\Http\Response
      */
@@ -207,15 +188,15 @@ class AccountingController extends Controller
             ->whereRaw('MONTH(created_at) = MONTH(NOW())')
                 ->whereRaw('Year(created_at) = YEAR(NOW())')
                     ->orderBy('id', 'DESC')->get();
-        
+
         return view('account.sales_report', [
             'sales' => $sales
         ]);
     }
-    
+
     /**
      * List monthly orders from orders tables.
-     * 
+     *
      * @param null
      * @return \Illuminate\Http\Response
      */
@@ -225,11 +206,10 @@ class AccountingController extends Controller
                 ->whereYear('created_at', '=', date('Y'))
                 ->orderBy('id', 'DESC')
                 ->get();
-        //echo "<pre>";print_r($sales);die;
         return view('account.sales_report', [
             'sales' => $sales
         ]);
     }
-    
-    
+
+
 }

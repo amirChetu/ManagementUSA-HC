@@ -1,16 +1,22 @@
 <?php
- 
+
 namespace App\Http\Controllers;
 
 use App\Cart;
-use App\CartItem;
-use App\Http\Requests;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use DB;
- 
+
+/**
+ * This class is used for Cart functionality
+ *
+ * @category App\Http\Controllers;
+ *
+ * @return null
+ */
+
 class CartController extends Controller
 {
     /**
@@ -22,7 +28,7 @@ class CartController extends Controller
     {
         $this->middleware('auth');
     }
-    
+
     /**
      * Add the item in cart
      *
@@ -49,7 +55,7 @@ class CartController extends Controller
 
         $where = ['category_id' => $categoryId, 'category_type_id' => $categoryType, 'patient_id' => $patientId];
         $cart = Cart::where($where)->first();
-
+        // SAVE INTO THE CART
         if (!$cart) {
             $cart = new Cart();
             $cart->user_id = Auth::user()->id;
@@ -86,7 +92,7 @@ class CartController extends Controller
 
         return view('cart.cart',['category_list' => $cart['category_list'], 'category_detail_list' => $cart['category_detail_list'], 'original_package_price' => $cart['original_package_price'], 'discouonted_package_price' => $cart['discouonted_package_price'], 'package_discount' => $cart['package_discount'], 'total_cart_price' => $cart['total_cart_price']]);
     }
-	
+
     /**
      * Remove an item from cart
      *
@@ -99,7 +105,7 @@ class CartController extends Controller
 		\Session::flash('flash_message', 'Package deleted successfully');
         return redirect()->back();
     }
-	
+
     /**
      * Empty entire cart for a patient
      *
@@ -111,13 +117,13 @@ class CartController extends Controller
 		\Session::flash('flash_message', 'Package deleted successfully');
         return redirect()->back();
     }
- 
+
     /**
      * Count the total cart item for the patient
      *
      * @return ajax response
      */
-    
+
     public function countCartItem(Request $request){
         $cart = Cart::where('patient_id', $request->id)->get()->count();
         echo $cart;die;

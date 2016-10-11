@@ -2,28 +2,33 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests;
-use App\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Config\Repository;
-use App\Role;
 use App\User;
-use App\UserDetail;
-use App\State;
-use View;
 use App;
 use DB;
 use App\Categories;
-use Exception;
+
+/**
+ * This class is used Categoies details
+ *
+ * @category App\Http\Controllers;
+ *
+ * @return null
+ */
 
 class CategoriesController extends Controller
 {
 	protected $success = false;
 	protected $patient_role = 6;
 
+    /**
+     * Create a Category  controller instance.
+     *
+     * @return void
+     */
     public function __construct() {
         $this->middleware('auth');
     }
@@ -92,23 +97,23 @@ class CategoriesController extends Controller
         try{
             $id = base64_decode($id);
 
-            $patients = User::getAllPatientsIdAndName(config("constants.PATIENT_ROLE_ID"));	
+            $patients = User::getAllPatientsIdAndName(config("constants.PATIENT_ROLE_ID"));
 
             $category = Categories::where('id', $id)->get()->first();
             if(empty($category)){
                 \Session::flash('error_message', 'Category Not found.');
                 return Redirect::back();
             }
-			
-            $category_details = App\Packages::getCategoryDetailsById($id);	
+
+            $category_details = App\Packages::getCategoryDetailsById($id);
             if (empty($category_details['category_info'])) {
                 \Session::flash('error_message', 'This package is empty.');
                 return Redirect::back();
             }
 
             return view('categories.categoryDetails', ['category' => $category, 'details' => $category_details['category_info'], 'products' => $category_details['products'], 'patients' => $patients]);
-			
-        } catch (\Exception $e) {		
+
+        } catch (\Exception $e) {
             App::abort(404, $e->getMessage());
         }
     }
@@ -122,7 +127,7 @@ class CategoriesController extends Controller
      */
     public function saveCategories(Request $request) {
         $data = Input::all();
-        
+
 		$messages = [
             'mimes' => 'Please upload a valid excel file'
         ];
@@ -134,7 +139,6 @@ class CategoriesController extends Controller
             return Redirect::to('/categories/addcategories')->withInput()->withErrors($validator->errors());
         }
 
-        $rejectedList = [];
         \Excel::load($data['categoryFile']->getPathname(), function($reader) {
             // Getting all results
             $categoryList = $reader->select(array('sku', 'name', 'unit_of_measurement', 'price', 'p_count', 'spl_price', 'package', 'category_id'))->get()->toArray();
@@ -146,7 +150,6 @@ class CategoriesController extends Controller
             // check if any column is missing in any row if found then the row is rejected
             foreach ($categoryList as $i => $n) {
                 if (!isset($n['sku']) || !isset($n['name']) || !isset($n['price']) || !isset($n['p_count']) || !isset($n['spl_price']) || !isset($n['package']) || !isset($n['category_id']) || empty($n['sku']) || empty($n['name']) || empty($n['price']) || empty($n['p_count']) || empty($n['spl_price']) || empty($n['package']) || empty($n['category_id'])) {
-                    $rejectedList[] = $categoryList[$i];
                     unset($categoryList[$i]);
                 } else {
                     $pro = ['sku' => $n['sku'], 'name' => $n['name'], 'price' => $n['price']];
@@ -157,7 +160,7 @@ class CategoriesController extends Controller
 
                     $product[] = $pro;
                     $proUpdated = App\Products::firstOrNew(array('sku' => $n['sku']));
-                    $proUpdated->fill($pro)->save();    
+                    $proUpdated->fill($pro)->save();
                     $packRows = ['product_id' => $proUpdated->getKey(), 'category_id' => $n['category_id'], 'product_count' => $n['p_count'], 'product_price' => $n['spl_price'], 'category_type' => $category_types[ucfirst($n['package'])]];
                     $packageRows[] = $packRows;
                     $proUpdated = App\Packages::firstOrNew(array('product_id' => $proUpdated->getKey(), 'category_id' => $n['category_id'], 'category_type' => $category_types[ucfirst($n['package'])]));
@@ -169,13 +172,11 @@ class CategoriesController extends Controller
                 $this->success = true;
             }
         });
-		
         if ($this->success) {
             \Session::flash('success_message', 'Category saved successfully.');
         } else {
             \Session::flash('error_message', 'Category SAVE FAILED. Please try again witha valid excel file.');
         }
-		
         return redirect()->back();
     }
 
