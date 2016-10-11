@@ -29,6 +29,6 @@ class TrimixDosesFeedback extends Model
     */
     public function trimixDose() 
     {
-        return $this->belongsTo('App\TrimixDoses', 'trimix_dose_id');
+        return $this->belongsTo('App\TrimixDose', 'trimix_dose_id');
     }
 }

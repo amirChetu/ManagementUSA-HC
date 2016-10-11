@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Redirect;
 use App\User;
 use App;
 use DB;
-use App\Categories;
+use App\Category;
+
 
 /**
  * This class is used Categoies details
@@ -18,8 +19,7 @@ use App\Categories;
  *
  * @return null
  */
-
-class CategoriesController extends Controller
+class CategoryController extends Controller
 {
 	protected $success = false;
 	protected $patient_role = 6;
@@ -74,7 +74,7 @@ class CategoriesController extends Controller
             'duration_months' => 'required'
         ]);
 
-        $category = new Categories();
+        $category = new Category();
         $category->cat_name = $request->cat_name;
         $category->duration_months = $request->duration_months;
 
@@ -99,12 +99,11 @@ class CategoriesController extends Controller
 
             $patients = User::getAllPatientsIdAndName(config("constants.PATIENT_ROLE_ID"));
 
-            $category = Categories::where('id', $id)->get()->first();
+            $category = Category::where('id', $id)->get()->first();
             if(empty($category)){
                 \Session::flash('error_message', 'Category Not found.');
                 return Redirect::back();
             }
-
             $category_details = App\Packages::getCategoryDetailsById($id);
             if (empty($category_details['category_info'])) {
                 \Session::flash('error_message', 'This package is empty.');
@@ -159,11 +158,12 @@ class CategoriesController extends Controller
                     }
 
                     $product[] = $pro;
-                    $proUpdated = App\Products::firstOrNew(array('sku' => $n['sku']));
-                    $proUpdated->fill($pro)->save();
+                    $proUpdated = App\Product::firstOrNew(array('sku' => $n['sku']));
+                    $proUpdated->fill($pro)->save();    
+
                     $packRows = ['product_id' => $proUpdated->getKey(), 'category_id' => $n['category_id'], 'product_count' => $n['p_count'], 'product_price' => $n['spl_price'], 'category_type' => $category_types[ucfirst($n['package'])]];
                     $packageRows[] = $packRows;
-                    $proUpdated = App\Packages::firstOrNew(array('product_id' => $proUpdated->getKey(), 'category_id' => $n['category_id'], 'category_type' => $category_types[ucfirst($n['package'])]));
+                    $proUpdated = App\Package::firstOrNew(array('product_id' => $proUpdated->getKey(), 'category_id' => $n['category_id'], 'category_type' => $category_types[ucfirst($n['package'])]));
                     $proUpdated->fill($packRows)->save();
                 }
             }

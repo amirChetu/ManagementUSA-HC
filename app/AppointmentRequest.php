@@ -44,7 +44,7 @@ class AppointmentRequest extends Model
 	}
 	
 	public function appointmentReasons(){
-		return $this->hasMany('App\AppointmentReasons', 'request_id');
+		return $this->hasMany('App\AppointmentReason', 'request_id');
 	}
 	
 	protected static function boot() {
@@ -61,6 +61,6 @@ class AppointmentRequest extends Model
 		});
 	}	
         public function locations(){
-		return $this->belongsTo('App\Locations', 'location_id');
+		return $this->belongsTo('App\Location', 'location_id');
 	}
 }

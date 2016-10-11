@@ -7,7 +7,7 @@ use App\Http\Controllers\PaymentController;
 use Illuminate\Http\Request;
 use App\User;
 use App\State;
-use App\Categories;
+use App\Category;
 use App\Cart;
 use App\Payment;
 use App\Emi;

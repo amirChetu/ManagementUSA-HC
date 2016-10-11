@@ -2,6 +2,7 @@
 
 use DB;
 
+
 /**
  * Class is used to test the weblead functionality
  *
@@ -9,7 +10,7 @@ use DB;
  *
  * @return void
  */
-class WebLeadsController extends Controller {
+class WebLeadController extends Controller {
 
     /**
      * Create a new controller instance.

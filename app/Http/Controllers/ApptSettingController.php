@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Patient;
 use App\Appointment;
+use App\AdamsQuestionary;
 use App\User;
 use App\WebLead;
 use App\AppointmentRequest;
@@ -15,6 +16,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\DB;
 use App;
 use Auth;
+use App\Location;
 use App\ApiData;
 
 /**
@@ -190,7 +192,7 @@ class ApptSettingController extends Controller {
             $appointment_requests->followup_status = 0;
             $appointment_requests->save();
 
-            $reason = new App\AppointmentReasons;
+            $reason = new App\AppointmentReason;
             $reason->patient_id = $id;
             $reason->reason_id = $formData['reason_id'];
             $reason->request_id = $appointment_requests->id;
@@ -252,7 +254,8 @@ class ApptSettingController extends Controller {
             $appointment_requests->followup_status = 0;
             $appointment_requests->noSetStatus = 1;
             $appointment_requests->save();
-            $reason = new App\AppointmentReasons;
+
+            $reason = new App\AppointmentReason;
             $reason->patient_id = $id;
             $reason->reason_id = $formData['reason_id'];
             $reason->request_id = $appointment_requests->id;
@@ -356,7 +359,7 @@ class ApptSettingController extends Controller {
         }
         // save the appointment reason
         $appointment_requests->save();
-        $reason = new App\AppointmentReasons;
+        $reason = new App\AppointmentReason;
         $reason->patient_id = $id;
         $reason->reason_id = $formData['reason_id'];
         $reason->request_id = $appointment_requests->id;
@@ -525,7 +528,7 @@ class ApptSettingController extends Controller {
         $appointment_requests->location_id = $exist_request['location_id'];
         $appointment_requests->save();
         if(isset($formData['reason_id'])){
-        $reason = new App\AppointmentReasons;
+        $reason = new App\AppointmentReason;
         $reason->patient_id = $id;
         $reason->reason_id = $formData['reason_id'];
         $reason->request_id = $appointment_requests->id;

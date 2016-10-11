@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Packages extends Model
+class Package extends Model
 {
 	use SoftDeletes;
 	
@@ -30,7 +30,7 @@ class Packages extends Model
 		$pck_type = '';
 		$total_price = 0;	
 			
-		$category_details = Packages::where('packages.category_id', $id)
+		$category_details = Package::where('packages.category_id', $id)
 			->leftJoin('products', 'packages.product_id', '=', 'products.id')
 			->leftJoin('category_types', 'packages.category_type', '=', 'category_types.id')
 			->select('packages.product_count as p_count', 'packages.product_price as spl_price', 'products.*', 'category_types.name as package_type', 'products.count as inventory_count'
@@ -77,7 +77,7 @@ class Packages extends Model
 	}
 	
     public function categories() {  
-        return $this->belongsTo('App\Categories', 'category_id');
+        return $this->belongsTo('App\Category', 'category_id');
     }
 
 	public function Product() {

@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use App;
 use Auth;
-use App\Cashlogs;
+use App\Cashlog;
 use App\Order;
 
 /**
@@ -66,7 +66,7 @@ class AccountingController extends Controller
         ]);
 
         // create new object for User
-        $voucherData = new Cashlogs;
+        $voucherData = new Cashlog;
         $voucherData->user_id = Auth::user()->id;
         $voucherData->date = date('Y-m-d', strtotime($request->date));
         if($request->operation == '1')
@@ -97,8 +97,8 @@ class AccountingController extends Controller
      */
     public function listCashLogs()
     {
-        $cashLogs = Cashlogs::with('agent')->get();
-
+        $cashLogs = Cashlog::with('agent')->get();
+        
         return view('account.cash_logs', [
             'cashLogs' => $cashLogs
         ]);

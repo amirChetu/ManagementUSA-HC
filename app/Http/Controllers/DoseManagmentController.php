@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Redirect;
 use DB;
 use Auth;
 use App\User;
-use App\TrimixDoses;
+use App\TrimixDose;
 use App\TrimixDosesFeedback;
 
 /**
@@ -80,7 +80,7 @@ class DoseManagmentController extends Controller {
             'medicationB2' => 'required'
         ]);
         // create TrimixDoses object
-        $trimixData = new TrimixDoses;
+        $trimixData = new TrimixDose;
         $trimixData->patient_id = $request->patient_id;
         $trimixData->agent_id = Auth::user()->id;
         $trimixData->dose_type = $request->dose_type;
