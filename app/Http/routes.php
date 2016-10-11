@@ -906,6 +906,24 @@ Route::group(['middleware' => 'web'], function () {
     ]);
     
     /*
+     * Show the API setting form
+     */
+    Route::get('/api/setting', [
+       'uses' => 'clientapiController@setting',
+        'as' => 'api.setting',
+        //'middleware' => ['acl.doseManagement_read']
+    ]);
+    
+    /*
+     * Save the API setting form
+     */
+    Route::post('/api/saveSetting', [
+       'uses' => 'clientapiController@saveSetting',
+        'as' => 'api.setting',
+        //'middleware' => ['acl.doseManagement_read']
+    ]);
+    
+    /*
     * Show the invoice after make payment
     */
     Route::get('/sale/paymentDocuments/{orderid}', [
