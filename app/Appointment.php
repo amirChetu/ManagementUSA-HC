@@ -43,7 +43,7 @@ class Appointment extends Model {
 	}
 	
 	public function labReports(){
-		return $this->hasMany('App\LabReports', 'appointments_id');
+		return $this->hasMany('App\LabReport', 'appointments_id');
 	}
     /**
      * Get the user that set the appointment.

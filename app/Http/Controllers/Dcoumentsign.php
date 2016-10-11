@@ -22,8 +22,6 @@ class Dcoumentsign extends Controller
 		$envelope = \Docusign::getEnvelope($envelopeId);
 		$envelopeId = $envelope['envelopeId'];
 		$envRecipients = \Docusign::getEnvelopeRecipients($envelopeId, true);
-
-echo '<pre>'; print_r($envRecipients); die;		
 		
 $users = \Docusign::createRecipientView($envelopeId, array(
     'userName' => 'amir hanga',

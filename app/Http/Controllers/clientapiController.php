@@ -6,7 +6,7 @@ use App\ApiSetting;
 use App\Http\Traits\CommonTrait;
 use Illuminate\Http\Request;
 
-class ClientapiController extends Controller
+class ClientApiController extends Controller
 {
     use CommonTrait;
    /**

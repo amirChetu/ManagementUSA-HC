@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class ProductCategories extends Model
+class ProductCategory extends Model
 {
 	use SoftDeletes;
 	
@@ -13,14 +13,14 @@ class ProductCategories extends Model
      
       public function products() {
      
-          return $this->belongsToMany('App\products', 'product_id');
+          return $this->belongsToMany('App\product', 'product_id');
     }
     public function categories() {
         
-        return $this->belongsTo('App\categories', 'category_id');
+        return $this->belongsTo('App\category', 'category_id');
     }
      public function categoryTypes() {
      
-          return $this->belongsTo('App\category_types', 'id');
+          return $this->belongsTo('App\category_type', 'id');
     }
 }

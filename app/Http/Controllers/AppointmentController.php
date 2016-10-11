@@ -7,7 +7,7 @@ use App\Patient;
 use App\Appointment;
 use App\FollowupReschedule;
 use App\AppointmentRequest;
-use App\AdamsQuestionaires;
+use App\AdamsQuestionary;
 use App\Doctor;
 use App\User;
 use App\FollowUp;
@@ -761,9 +761,9 @@ class AppointmentController extends Controller {
 
         if (isset($formData['disease_id']) && !empty($formData['disease_id'])) {
             $data = json_decode($formData['disease_id']);
-            $deletedCount = App\AppointmentReasons::where('patient_id', $id)->forceDelete();
+            $deletedCount = App\AppointmentReason::where('patient_id', $id)->forceDelete();
             foreach ($data as $row) {
-                $reason = new App\AppointmentReasons;
+                $reason = new App\AppointmentReason;
                 $reason->patient_id = $id;
                 $reason->reason_id = $row;
                 $reason->save();
@@ -773,7 +773,7 @@ class AppointmentController extends Controller {
         $appt = App\Appointment::orderBy('id', 'DESC')->firstOrCreate(['patient_id' => $id]);
         $appt->save();
 
-        $adamsQ = App\AdamsQuestionaires::firstOrCreate(['patient_id' => $id]);
+        $adamsQ = App\AdamsQuestionary::firstOrCreate(['patient_id' => $id]);
         $adamsQ->patient_id = $id;
         $adamsQ->libido_rate = $formData['libido_rate'];
         $adamsQ->energy_rate = $formData['energy_rate'];
@@ -787,7 +787,7 @@ class AppointmentController extends Controller {
         $adamsQ->lost_height_rate = $formData['lost_height_rate'];
         $adamsQ->save();
 
-        $medHistory = App\MedicalHistories::firstOrCreate(['patient_id' => $id]);
+        $medHistory = App\MedicalHistory::firstOrCreate(['patient_id' => $id]);
         $medHistory->cardiovascular = $formData['cardiovascular'];
         $medHistory->hypertension = $formData['hypertension'];
         $medHistory->enocrine_disorder = $formData['enocrine_disorder'];
@@ -834,7 +834,7 @@ class AppointmentController extends Controller {
         $medHistory->medication = $formData['medication'];
         $medHistory->save();
 
-        $erectileD = App\ErectileDysfunctions::firstOrCreate(['patient_id' => $id]);
+        $erectileD = App\ErectileDysfunction::firstOrCreate(['patient_id' => $id]);
         $erectileD->sex_status = $formData['sex_status'];
         $erectileD->sex_often = $formData['sex_often'];
         $erectileD->sex_with = $formData['sex_with'];
@@ -926,7 +926,7 @@ class AppointmentController extends Controller {
         $testosterone->unexplained_weight = isset($formData['unexplained_weight']) ? 1 : '';
         $testosterone->save();
 
-        $vitamins = App\Vitamins::firstOrCreate(['patient_id' => $id]);
+        $vitamins = App\Vitamin::firstOrCreate(['patient_id' => $id]);
         $vitamins->needle_afraid = isset($formData['needle_afraid']) ? $formData['needle_afraid'] : '';
         $vitamins->afraid_limit = $formData['afraid_limit'];
         $vitamins->injectable_type = $formData['injectable_type'];
@@ -938,7 +938,7 @@ class AppointmentController extends Controller {
         $vitamins->vitamin_drip = $formData['vitamin_drip'];
         $vitamins->save();
 
-        $cosmetics = App\Cosmetics::firstOrCreate(['patient_id' => $id]);
+        $cosmetics = App\Cosmetic::firstOrCreate(['patient_id' => $id]);
         $cosmetics->facial_surgeries = $formData['facial_surgeries'];
         $cosmetics->facial_kind = $formData['facial_kind'];
         $cosmetics->face_wash = $formData['face_wash'];
@@ -1042,7 +1042,7 @@ class AppointmentController extends Controller {
                     $file->move($destinationPath, $files[$i]['file']);
                 }
             }
-            $labReports = App\LabReports::insert($files);
+            $labReports = App\LabReport::insert($files);
         }
         
         if(isset($request->patient_status)){

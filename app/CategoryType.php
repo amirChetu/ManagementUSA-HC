@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class CategoryTypes extends Model
+class CategoryType extends Model
 {
 	use SoftDeletes;
     //

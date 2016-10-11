@@ -19,6 +19,6 @@ class Product extends Model
     ];
 	
     public function packages() {  
-        return $this->hasMany('App\Packages', 'product_id');
+        return $this->hasMany('App\Package', 'product_id');
     }	
 }

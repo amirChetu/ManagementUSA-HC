@@ -344,7 +344,7 @@ function cardYear()
 function getLocations()
 {
      session(['key' => 'value']);
-     $locations = App\Locations::get();
+     $locations = App\Location::get();
      return $locations;
 }
 

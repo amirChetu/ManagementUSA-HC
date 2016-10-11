@@ -3,19 +3,33 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AppointmentReason extends Model
 {
+	use SoftDeletes;
+	
     protected $table = 'appointment_reasons';
-     protected $fillable = [
+    protected $fillable = [
 		'id',
 		'patient_id',
-		'request_id',
 		'reason_id',
 		'created_at',
-		'updated_at',
-		'deleted_at'
+		'updated_at'
     ];
+	
+    public function user() {
+        return $this->belongsTo('App\User', 'patient_id');
+    }
+
+	public function appointment(){
+		return belongsTo('App/Appointment', 'request_id');
+	}
+	
+	public function appointmentRequest(){
+		return $this->belongsTo('App/AppointmentRequest', 'request_id');
+	}	
+
      /**
      * hasOne Relationship Method for accessing the Appointment Reason
      *
@@ -24,9 +38,5 @@ class AppointmentReason extends Model
     public function reasonCode()
     {
         return $this->belongsTo('App\ReasonCode', 'reason_id')->select(array('id', 'reason'));
-    }
-	
-    public function appointmentRequest(){
-         return $this->belongsTo('App\AppointmentRequest', 'request_id')->select(array('id', 'reason'));
-    }
+    }	
 }

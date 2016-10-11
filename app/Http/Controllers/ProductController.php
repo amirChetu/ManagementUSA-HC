@@ -14,7 +14,7 @@ use Session;
 use App;
 use Auth;
 
-class ProductsController extends Controller {
+class ProductController extends Controller {
 
     protected $success = false;
     

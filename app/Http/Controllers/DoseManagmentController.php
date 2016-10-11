@@ -16,7 +16,7 @@ use Auth;
 use Exception;
 use App\User;
 use App\Patient;
-use App\TrimixDoses;
+use App\TrimixDose;
 use App\TrimixDosesFeedback;
 
 class DoseManagmentController extends Controller
@@ -86,7 +86,7 @@ class DoseManagmentController extends Controller
         
        //echo "<pre>";print_r($request->all());die;
         // create TrimixDoses object
-        $trimixData = new TrimixDoses;
+        $trimixData = new TrimixDose;
         $trimixData->patient_id = $request->patient_id;
         $trimixData->agent_id = Auth::user()->id;
         $trimixData->dose_type = $request->dose_type;

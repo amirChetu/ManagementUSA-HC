@@ -7,7 +7,7 @@ use App\Http\Controllers\PaymentController;
 use Illuminate\Http\Request;
 use App\User;
 use App\State;
-use App\Categories;
+use App\Category;
 use App\Cart;
 use App\Payment;
 use App\Emi;
@@ -40,7 +40,7 @@ class SaleController extends Controller
                                 $join->on('users.id', '=', 'patient_details.user_id')
                                      ->where('patient_details.never_treat_status', '=', 0);
                             })->get(['users.id', 'first_name', 'last_name']);
-        $categories = Categories::select('cat_name', 'id')->get()->toArray();
+        $categories = Category::select('cat_name', 'id')->get()->toArray();
 		$lCategories = array_slice($categories, 0, sizeof($categories)/2);
 		$rCategories = array_slice($categories, sizeof($categories)/2);
     

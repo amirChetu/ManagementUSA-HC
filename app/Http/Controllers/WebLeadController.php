@@ -3,7 +3,7 @@ use Input;
 use App\Item;
 use DB;
 use Excel;
-class WebLeadsController extends Controller
+class WebLeadController extends Controller
 {
 	   public function __construct() {
         $this->middleware('auth');
