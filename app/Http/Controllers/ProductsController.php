@@ -8,16 +8,20 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Config\Repository;
-use App\User;
 use Session;
 use App;
-use Auth;
 
+/**
+ * Class is used to handle all the action related to Inventory Management
+ *
+ * @category App\Http\Controllers;
+ *
+ * @return void
+ */
 class ProductsController extends Controller {
 
     protected $success = false;
-    
+
     /**
      * Create a new controller instance.
      *
@@ -27,6 +31,11 @@ class ProductsController extends Controller {
         $this->middleware('auth');
     }
 
+    /**
+     * Save the product details
+     *
+     * @return \Illuminate\Http\Response
+     */
     public function saveProducts(Request $request) {
         $data = Input::all();
         $messages = [
@@ -63,56 +72,73 @@ class ProductsController extends Controller {
         return redirect()->back();
     }
 
-    public function updateProduct(){
-            $data = Input::all();
+    /**
+     * Update Product details
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function updateProduct() {
+        $data = Input::all();
 
-            $product = App\Product::where(['sku' => $data['sku']])->first();
-            if(!isset($product) || empty($product)){
-                    return ['response' => false, 'msg' => 'Product with given sku value not found'];
-            }
-            $product->name = $data['pName'];
-            $product->unit_of_measurement = $data['pMeasurement'];
-            $product->price = $data['price'];
-            $product->count = $data['count'];
-            $product->save();
+        $product = App\Product::where(['sku' => $data['sku']])->first();
+        if (!isset($product) || empty($product)) {
+            return ['response' => false, 'msg' => 'Product with given sku value not found'];
+        }
+        $product->name = $data['pName'];
+        $product->unit_of_measurement = $data['pMeasurement'];
+        $product->price = $data['price'];
+        $product->count = $data['count'];
+        $product->save();
 
-            return ['response' => true, 'msg' => 'Product updated successfully'];
+        return ['response' => true, 'msg' => 'Product updated successfully'];
     }
-	
+
+    /**
+     * Add new Product details
+     * @param  \Illuminate\Http\Request  $request
+     * @return view
+     */
     public function addproducts() {
         return view('products.add_products');
     }
-    
-    public function generateInvoice(Request $request) {
-            $user_id = $request['id'];
-            return view('products.invoice',['id' => $user_id]);
-    }
-    
-    public function paymentForm(Request $request){
-        return view('products.payment');     
 
-    }
-	
     /**
-    * showInventory: shows product inventory details
-    * Parameters accepted: none
-    * Return : Prodduct inventory details page
-    */
-    public function showInventory(){
+     * generate Invoice design
+     * @param  \Illuminate\Http\Request  $request
+     * @return view
+     */
+    public function generateInvoice(Request $request) {
+        $user_id = $request['id'];
+        return view('products.invoice', ['id' => $user_id]);
+    }
+
+    /**
+     * design for payment details
+     * @param  \Illuminate\Http\Request  $request
+     * @return view
+     */
+    public function paymentForm(Request $request) {
+        return view('products.payment');
+    }
+
+    /**
+     * showInventory: shows product inventory details
+     * Parameters accepted: none
+     * Return : Prodduct inventory details page
+     */
+    public function showInventory() {
         $products = DB::table('products')->orderBy('name', 'asc')->get();
-        //echo "<pre>";print_r($products);die;
         return view('products.products', [
             'products' => $products
         ]);
     }
-    
+
     /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
-    {
+    public function create() {
         return view('products.inventory_imports');
     }
 
@@ -122,33 +148,29 @@ class ProductsController extends Controller {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         $data = Input::all();
         $messages = [
             'mimes' => 'Please upload a valid excel file'
         ];
 
         $validator = Validator::make($data, [
-            'inventory_file' => 'required|mimes:xls,xlsx|between:0,1024' // file size must be from 0 kb to 1 mb
-        ], $messages);
+                    'inventory_file' => 'required|mimes:xls,xlsx|between:0,1024' // file size must be from 0 kb to 1 mb
+                        ], $messages);
 
         if ($validator->fails()) {
             return Redirect::to('/product/create')->withInput()->withErrors($validator->errors());
         }
-
-        $rejectedList = [];
         \Excel::load($data['inventory_file']->getPathname(), function($reader) {
             // Getting all results
             $inventoryList = $reader->select(array('sku', 'quantity'))->get()->toArray();
 
             $list = [];
             $inventory = [];
-            
+
             // check if any column is missing in any row if found then the row is rejected
             foreach ($inventoryList as $i => $n) {
-                if (!isset($n['sku']) || !isset($n['quantity']) || empty($n['sku']) || empty($n['quantity']) ) {
-                    $rejectedList[] = $inventoryList[$i];
+                if (!isset($n['sku']) || !isset($n['quantity']) || empty($n['sku']) || empty($n['quantity'])) {
                     unset($inventoryList[$i]);
                 } else {
                     $pro = ['sku' => $n['sku'], 'count' => $n['quantity']];
@@ -170,4 +192,5 @@ class ProductsController extends Controller {
         }
         return redirect()->back();
     }
+
 }

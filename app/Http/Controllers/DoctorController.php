@@ -2,29 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Input;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Config\Repository;
 use App\Doctor;
 use App\User;
-use App\Role;
 use App\State;
-use View;
 use App;
 
 /**
  * Class is used to handle all the action related to doctor module
- * 
+ *
  * @category App\Http\Controllers;
- * 
+ *
  * @return void
  */
 class DoctorController extends Controller {
 
-    // define role properties for doctor. 
+    // define role properties for doctor.
     protected $role = 5;
 
     /**
@@ -38,27 +32,27 @@ class DoctorController extends Controller {
     }
 
     /**
-     * Fetech all doctor data to show on index page in listing 
+     * Fetech all doctor data to show on index page in listing
      *
      * @params void
-     * 
+     *
      * @return \resource\views\doctor\index.blade.php
      */
     public function index() {
         // get the doctors list to show on index page
         $doctors = User::with('doctorDetail', 'DoctorDetail.doctorStateName')
-            ->where('role', $this->role)
-            ->orderBy('id', 'DESC')
-            ->get();
+                ->where('role', $this->role)
+                ->orderBy('id', 'DESC')
+                ->get();
 
         return view('doctor.index', ['doctors' => $doctors]);
     }
 
     /**
-     * Call layout for the add new doctor 
+     * Call layout for the add new doctor
      *
      * @params void
-     * 
+     *
      * @return \resource\views\doctor\add_doctor.blade.php
      */
     public function addDoctor() {
@@ -69,10 +63,10 @@ class DoctorController extends Controller {
     }
 
     /**
-     * Create new doctor and save data in user table and doctor_details table 
+     * Create new doctor and save data in user table and doctor_details table
      *
      * @params $request
-     *  
+     *
      * @return \Illuminate\Http\Response
      */
     public function create(Request $request) {
@@ -130,8 +124,8 @@ class DoctorController extends Controller {
     /**
      * Get the layout for eadit doctor details
      *
-     * @params $id 
-     * 
+     * @params $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function edit($id) {
@@ -148,7 +142,7 @@ class DoctorController extends Controller {
     }
 
     /**
-     * Update the doctor details 
+     * Update the doctor details
      *
      * @return \Illuminate\Http\Response
      */
@@ -216,10 +210,8 @@ class DoctorController extends Controller {
      */
     public function view($id = null) {
         if (!($doctor = User::with(
-            'doctorDetail',
-            'UserDetail.userStateName',
-            'roleName'
-        )->find(base64_decode($id)))) {
+                        'doctorDetail', 'UserDetail.userStateName', 'roleName'
+                )->find(base64_decode($id)))) {
             App::abort(404, 'Page not found.');
         }
 

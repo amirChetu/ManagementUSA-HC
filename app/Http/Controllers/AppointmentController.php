@@ -7,8 +7,6 @@ use App\Patient;
 use App\Appointment;
 use App\FollowupReschedule;
 use App\AppointmentRequest;
-use App\AdamsQuestionaires;
-use App\Doctor;
 use App\User;
 use App\FollowUp;
 use App\State;
@@ -18,13 +16,16 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Config\Repository;
 use Illuminate\Support\Facades\Session;
 use App;
 use Auth;
 
 /*
- * AppointmentController for all the request handle regarding the Appointment moodule in the system 
+ * This class is used for all the request handle regarding the Appointment moodule
+ *
+ * @category App\Http\Controllers;
+ *
+ * @return null
  */
 
 class AppointmentController extends Controller {
@@ -34,6 +35,11 @@ class AppointmentController extends Controller {
     public $success = true;
     public $error = false;
 
+    /**
+     * Create a appointment controller instance.
+     *
+     * @return void
+     */
     public function __construct(Request $request) {
         if (($request->segment(2) != 'patientMedical' || $request->segment(4) != 'hash') && $request->segment(2) != 'savePatientMedicalRecord' && !isset($request->hash)) {
             $this->middleware('auth');
@@ -58,9 +64,9 @@ class AppointmentController extends Controller {
 
     /*
      * function to find the doctor detail by dcotor id
-     *      
+     *
      * @param $doctor_id
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
 
@@ -82,9 +88,9 @@ class AppointmentController extends Controller {
 
     /*
      * function to create a new appointment with patient & doctor id
-     *      
-     *  @param Illuminate\Http\Request 
-     * 
+     *
+     *  @param Illuminate\Http\Request
+     *
      * @return \Illuminate\Http\Response
      */
 
@@ -108,12 +114,11 @@ class AppointmentController extends Controller {
 
     /*
      * function to create a new appointment
-     *      
-     *  @param Illuminate\Http\Request 
-     * 
+     *
+     *  @param Illuminate\Http\Request
+     *
      * @return \resource\view\appointment\newappointment.blade.php or \resource\view\appointment\viewappointment.blade.php
      */
-
     public function addappointment(Request $request) {
         $data = Input::all();
         $date = $data['appDate'];
@@ -126,18 +131,14 @@ class AppointmentController extends Controller {
             'doctor_availability' => 'Sorry this time slot is not available',
             'clinic_off_hours' => 'Appoint can be selected only between ' . config("constants.CLINIC_OPEN_TIME") . ' and ' . config("constants.CLINIC_CLOSE_TIME")
         ];
-
         $validator = Validator::make($data, [
                     'appDate' => 'required|date|future_date:' . $time . '|doctor_availability:' . $time . ',' . $doctor_id . '|clinic_off_hours:' . $time . ',' . config("constants.CLINIC_OPEN_TIME") . ',' . config("constants.CLINIC_CLOSE_TIME"),
                     'comment' => 'required',
                         ], $messages);
-
         if ($validator->fails()) {
             return Redirect::to('/appointment/newAppointment')->withInput()->withErrors($validator->errors());
         }
-
         if (empty($request->patient_id)) {
-
             $controller = new PatientController();
             if (!($request->patient_id = $controller->saveAppointmentPatient($request))) {
                 \Session::flash('flash_message', 'some occur occcured in patient detail.');
@@ -152,7 +153,7 @@ class AppointmentController extends Controller {
 
     /*
      * function to show all the appointment in calendar view
-     * 
+     *
      * @return \resource\view\appointment\viewappointment.blade.php
      */
 
@@ -167,7 +168,7 @@ class AppointmentController extends Controller {
 
     /*
      * Find the doctor schedule
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
 
@@ -179,78 +180,69 @@ class AppointmentController extends Controller {
 
     /*
      * Find the list of all appointment with Patient & Doctor details
-     * 
+     *
      * @return \resource\view\appointment\listappointment.blade.php
      */
 
-        public function listappointment(Request $request) {
-            
-            $location_id = Session::get('location_id');
-            if (isset($location_id) && $location_id > 0) {
+    public function listappointment(Request $request) {
 
-                $location = DB::table('appointments')
-                        ->join('appointment_requests', 'appointment_requests.id', '=', 'appointments.request_id')
-                        ->where('location_id', '=', Session::get('location_id'))
-                        ->select('appointments.id')
-                        ->get();
-                $appt_id = array();
-                foreach ($location as $loc) {
-                    $appt_id[] = $loc->id;
-                }
-                $appointments = Appointment::with(['patient', 'appointmentRequest', 'appointmentRequest.locations', 'patient.reason' => function($query) {
+        $location_id = Session::get('location_id');
+        // If flocation id selected on the dashboard
+        if (isset($location_id) && $location_id > 0) {
+
+            $location = DB::table('appointments')
+                    ->join('appointment_requests', 'appointment_requests.id', '=', 'appointments.request_id')
+                    ->where('location_id', '=', Session::get('location_id'))
+                    ->select('appointments.id')
+                    ->get();
+            $appt_id = array();
+            foreach ($location as $loc) {
+                $appt_id[] = $loc->id;
+            }
+            $appointments = Appointment::with(['patient', 'appointmentRequest', 'appointmentRequest.locations', 'patient.reason' => function($query) {
                             $query->where('reason_id', '>', 8);
                         }, 'patient.reason.reasonCode'])
                             ->orderBy('id', 'desc')
                             ->whereIn('id', $appt_id)->get();
-            } else {
-                $appointments = Appointment::with(['patient', 'appointmentRequest.locations', 'patient.reason' => function($query) {
-                        $query->where('reason_id', '>', 8);
-                    }, 'patient.reason.reasonCode'])->orderBy('id', 'desc')->get();
-            }
+        } else {
+            $appointments = Appointment::with(['patient', 'appointmentRequest.locations', 'patient.reason' => function($query) {
+                    $query->where('reason_id', '>', 8);
+                }, 'patient.reason.reasonCode'])->orderBy('id', 'desc')->get();
+        }
         $patients = User::where('role', $this->patient_role)->get();
-            $doctors = User::where('role', $this->doctor_role)->get();
-            $followupStatus = FollowupStatus::select('id', 'title')->where('status', 1)->get();
-            return view('appointment.listappointment', [
-                'appointments' => $appointments, 'patients' => $patients, 'doctors' => $doctors, 'followupStatus' => $followupStatus
-            ]);
+        $doctors = User::where('role', $this->doctor_role)->get();
+        $followupStatus = FollowupStatus::select('id', 'title')->where('status', 1)->get();
+        return view('appointment.listappointment', [
+            'appointments' => $appointments, 'patients' => $patients, 'doctors' => $doctors, 'followupStatus' => $followupStatus
+        ]);
     }
 
     /*
      * Find the Appointment details with patient & doctor
-     * 
+     *
      * @return \resource\view\appointment\viewappointment.blade.php
      */
 
     public function viewappointment() {
-        
-          $location_id = Session::get('location_id');
-            if (isset($location_id) && $location_id > 0) {
-                $location = DB::table('appointments')
-                        ->join('appointment_requests', 'appointment_requests.id', '=', 'appointments.request_id')
-                        ->where('location_id', '=', Session::get('location_id'))
-                        ->select('appointments.id')
-                        ->get();
-                $appt_id = array();
-                foreach ($location as $loc) {
-                    $appt_id[] = $loc->id;
-                }
-                $appointments = $appointments = Appointment::with(['patient.patientDetail','appointmentRequest.locations', 'patient.reason', 'patient.reason.reasonCode'])->whereIn('status', [1, 4])->whereIn('id', $appt_id)->get();
-                         
-            } else {
-               $appointments = Appointment::with(['patient.patientDetail','appointmentRequest.locations', 'patient.reason', 'patient.reason.reasonCode'])->whereIn('status', [1, 4])->get();
-            }       
-            
-//            $location_id = Session::get('location_id');
-//            if(isset($location_id) && $location_id > 0){ 
-//             $appointments = Appointment::with(['patient.patientDetail','appointmentRequest' => function($query1) {
-//                        $query1->where('location_id', '=', Session::get('location_id'));},'appointmentRequest.locations', 'patient.reason', 'patient.reason.reasonCode'])->whereIn('status', [1, 4])->get();
-//            }
-//            else{
-//                 $appointments = Appointment::with(['patient.patientDetail','appointmentRequest.locations', 'patient.reason', 'patient.reason.reasonCode'])->whereIn('status', [1, 4])->get();
-//            }
 
+        $location_id = Session::get('location_id');
+        if (isset($location_id) && $location_id > 0) {
+            $location = DB::table('appointments')
+                    ->join('appointment_requests', 'appointment_requests.id', '=', 'appointments.request_id')
+                    ->where('location_id', '=', Session::get('location_id'))
+                    ->select('appointments.id')
+                    ->get();
+            $appt_id = array();
+            foreach ($location as $loc) {
+                $appt_id[] = $loc->id;
+            }
+            $appointments = $appointments = Appointment::with(['patient.patientDetail', 'appointmentRequest.locations', 'patient.reason', 'patient.reason.reasonCode'])->whereIn('status', [1, 4])->whereIn('id', $appt_id)->get();
+        } else {
+            $appointments = Appointment::with(['patient.patientDetail', 'appointmentRequest.locations', 'patient.reason', 'patient.reason.reasonCode'])->whereIn('status', [1, 4])->get();
+        }
         $collevent = array();
         $i = 0;
+        //make an object for the appointment to show on calendar
         foreach ($appointments as $appointment) {
             $events = array();
             $events ['id'] = $appointment->id;
@@ -263,12 +255,12 @@ class AppointmentController extends Controller {
             $events ['mobile'] = 'Phone: ' . $appointment->patient->patientDetail->phone;
             $events ['start'] = $appointment->apptTime;
             $events ['end'] = date('Y-m-d H:i:s', strtotime($appointment->apptTime . '+ 30 minute'));
-            if($appointment->patient->patientDetail->patient_status == 1){
+            if ($appointment->patient->patientDetail->patient_status == 1) {
                 $events ['color'] = '#47a447';
-            }else{
+            } else {
                 $events ['color'] = '#0088cc';
             }
-            
+
             $collevent[$i] = $events;
             $i++;
         }
@@ -279,14 +271,13 @@ class AppointmentController extends Controller {
         return view('appointment.viewappointment', [
             'appointments' => $collevent, 'patients' => $patients, 'doctors' => $doctors, 'followupStatus' => $followupStatus
         ]);
-      
     }
 
     /*
      * Find the Appointment details with patient & doctor
-     * 
+     *
      * @param Illuminate\Http\Request
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
 
@@ -304,14 +295,13 @@ class AppointmentController extends Controller {
 
     /*
      * Save the Apointment with the patient details
-     * 
+     *
      * @param Illuminate\Http\Request
-     * 
+     *
      * @return \Illuminate\View\View
      */
 
     public function saveappointment(Request $request) {
-        
         $appointment = Appointment::find($request->appointment_id);
         $appointment_request = AppointmentRequest::find($appointment->request_id);
         $appointment_requestInput['location_id'] = $request->location;
@@ -330,19 +320,17 @@ class AppointmentController extends Controller {
         }
         $patientInput['first_name'] = $request->first_name;
         $patientInput['last_name'] = $request->last_name;
-        if(isset($request->email)){
+        if (isset($request->email)) {
             $patientInput['email'] = $request->email;
-        }        
+        }
         $patientDetailData = Patient::where('user_id', $appointment->patient_id)->get()->first();
-        //echo '<pre>';        print_r($patientDetailData->toArray());die;
         if ($request->dob) {
             $patientDetailInput['dob'] = date('Y-m-d', strtotime($request->dob));
         }
-        //$patientDetailInput['gender'] = $request->gender;
         $patientDetailInput['phone'] = $request->phone;
         $patientDetailInput['address1'] = $request->address1;
-         $patientDetailInput['location_id'] = $request->location;
-        if ($patient->fill($patientInput)->save() && $patientDetailData->fill($patientDetailInput)->save() &&  $appointment_request->fill($appointment_requestInput)) {
+        $patientDetailInput['location_id'] = $request->location;
+        if ($patient->fill($patientInput)->save() && $patientDetailData->fill($patientDetailInput)->save() && $appointment_request->fill($appointment_requestInput)) {
             $appointment->save();
             \Session::flash('flash_message', 'Appointment updated successfully.');
             return redirect()->back();
@@ -351,17 +339,15 @@ class AppointmentController extends Controller {
 
     /*
      * Delete the Appointment
-     * 
+     *
      * @param $id as Appointment id
      *
      * @return \Illuminate\Http\Response
      */
-
     public function deleteappointment($id = null) {
         if (!($apptRequest = AppointmentRequest::where('id', '=', base64_decode($id))->first())) {
             App::abort(404, 'Page not found.');
         }
-
         if (AppointmentRequest::destroy(base64_decode($id))) {
             \Session::flash('flash_message', 'Appointment deleted successfully.');
             return redirect()->back();
@@ -370,12 +356,11 @@ class AppointmentController extends Controller {
 
     /*
      * Delete the Followup
-     * 
+     *
      * @param $id as followup id
      *
      * @return \Illuminate\Http\Response
      */
-
     public function deletefollowup($id = null) {
         if (!($followup = FollowUp::where('id', '=', base64_decode($id))->first())) {
             App::abort(404, 'Page not found.');
@@ -401,8 +386,6 @@ class AppointmentController extends Controller {
         }
         die;
     }
-    
-    
 
     /**
      * Function for the saving the followup with the appointment
@@ -410,8 +393,6 @@ class AppointmentController extends Controller {
      * @return \Illuminate\View\View
      */
     public function saveAppointmentFolloup(Request $request) {
-
-        //echo '<pre>'; print_r($request->all());die;
         $appointment = Appointment::where('id', '=', $request->appointment_id)->get()->first();
         if (!($appointment)) {
             App::abort(404, 'Page not found.');
@@ -426,7 +407,7 @@ class AppointmentController extends Controller {
                 break;
             case '2' :
                 $appointment->status = $request->action;
-                $appointment->save(); // save the updated status in pre appointment 
+                $appointment->save(); // save the updated status in pre appointment
                 $old_appointment_id = $appointment->id;
                 unset($appointment->id); // Unset the id of first appointment
                 unset($appointment->status); // Unset the status of first appointment
@@ -485,7 +466,7 @@ class AppointmentController extends Controller {
     }
 
     /**
-     * Upcoming listing of the appointment  
+     * Upcoming listing of the appointment
      *
      * @return \resource\view\appointment\followp.blade.php
      * Modified Date: 17 Sep 2016
@@ -498,8 +479,8 @@ class AppointmentController extends Controller {
     }
 
     /**
-     * View the followup for the appointment 
-     * 
+     * View the followup for the appointment
+     *
      * @param $id
      *
      * @return \resource\view\appointment\view_followup
@@ -509,13 +490,13 @@ class AppointmentController extends Controller {
         $followup = FollowUp::with(['appointment', 'followupStatus', 'appointment.patient' => function($query) {
                 $query->select('id', 'first_name', 'last_name', 'email');
             }, 'appointment.patient.patientDetail'])->where('id', $id)->first();
-       
+
         return view('appointment.view_followup', ['followup' => $followup]);
     }
 
     /**
-     * Edit the patient for the filling the details for the medical 
-     * 
+     * Edit the patient for the filling the details for the medical
+     *
      * @param $id
      *
      * @return \resource\view\appointment\patient_medical
@@ -609,7 +590,7 @@ class AppointmentController extends Controller {
 
     /*
      * Find the list of all appointment which appointment time are within 72 Hours.
-     * 
+     *
      * @return \resource\view\apptsetting\listappointment.blade.php
      * Modified Date: 17 Sep 2016
      */
@@ -626,7 +607,7 @@ class AppointmentController extends Controller {
 
     /**
      * Save the patient medical form for different diseases
-     * 
+     *
      * @param $id
      *
      * @return \resource\view\appointment\patient_medical
@@ -658,7 +639,6 @@ class AppointmentController extends Controller {
             if ($validator->fails()) {
                 \Session::flash('error_message', 'Please upload a valid driving license image (jpeg,png,pdf).');
                 return redirect()->back();
-                //return Redirect::to('upload')->withInput()->withErrors($validator);
             } else {
                 if (Input::file('driving_license')->isValid()) {
                     $destinationPath = 'uploads/driving_license'; // upload path
@@ -671,7 +651,7 @@ class AppointmentController extends Controller {
                 }
             }
         }
-
+        // Save patient data
         $patient->dob = date('Y/m/d', strtotime($formData['dob']));
         $patient->gender = $formData['gender'];
         $patient->phone = $formData['phone'];
@@ -690,10 +670,7 @@ class AppointmentController extends Controller {
         $patient->employer = $formData['employer'];
         $patient->call_time = $formData['call_time'];
         $patient->mobile = $formData['mobile'];
-        //$patient->image			= $formData[''];
         $patient->marital_status = $formData['marital_status'];
-        //$patient->payment_bill	= $formData[''];
-        //$patient->never_treat_status = $formData[''];
         $patient->save();
 
         if (isset($formData['vitaminSuppliments']) && !empty($formData['vitaminSuppliments'])) {
@@ -772,7 +749,7 @@ class AppointmentController extends Controller {
 
         $appt = App\Appointment::orderBy('id', 'DESC')->firstOrCreate(['patient_id' => $id]);
         $appt->save();
-
+        // Save in adam questionaries
         $adamsQ = App\AdamsQuestionaires::firstOrCreate(['patient_id' => $id]);
         $adamsQ->patient_id = $id;
         $adamsQ->libido_rate = $formData['libido_rate'];
@@ -787,6 +764,7 @@ class AppointmentController extends Controller {
         $adamsQ->lost_height_rate = $formData['lost_height_rate'];
         $adamsQ->save();
 
+        // save in medical histoies
         $medHistory = App\MedicalHistories::firstOrCreate(['patient_id' => $id]);
         $medHistory->cardiovascular = $formData['cardiovascular'];
         $medHistory->hypertension = $formData['hypertension'];
@@ -833,7 +811,7 @@ class AppointmentController extends Controller {
         $medHistory->kind_of_hi = $formData['kind_of_hi'];
         $medHistory->medication = $formData['medication'];
         $medHistory->save();
-
+        //save in Erectile Dysfunctions
         $erectileD = App\ErectileDysfunctions::firstOrCreate(['patient_id' => $id]);
         $erectileD->sex_status = $formData['sex_status'];
         $erectileD->sex_often = $formData['sex_often'];
@@ -865,7 +843,7 @@ class AppointmentController extends Controller {
         $erectileD->maintain_score = $formData['maintain_score'];
         $erectileD->difficult_score = $formData['difficult_score'];
         $erectileD->save();
-
+        //save in Weight loss packages
         $weightL = App\WeightLoss::firstOrCreate(['patient_id' => $id]);
         $weightL->weight_surgeries = $formData['weight_surgeries'];
         $weightL->surgeries_kind = $formData['surgeries_kind'];
@@ -881,7 +859,7 @@ class AppointmentController extends Controller {
         $weightL->frequently_eat = $formData['frequently_eat'];
         $weightL->eat_more = $formData['eat_more'];
         $weightL->save();
-
+        // Save in Paripus packages
         $priapus = App\Priapus::firstOrCreate(['patient_id' => $id]);
         $priapus->abnormal = $formData['abnormal'];
         $priapus->abnormal_type = $formData['abnormal_type'];
@@ -895,7 +873,7 @@ class AppointmentController extends Controller {
         $priapus->prp_maintain_score = $formData['prp_maintain_score'];
         $priapus->prp_difficult_score = $formData['prp_difficult_score'];
         $priapus->save();
-
+        // Save in High Testosterone packages
         $testosterone = App\HighTestosterone::firstOrCreate(['patient_id' => $id]);
         $testosterone->harmone_therapy = $formData['harmone_therapy'];
         $testosterone->harmone_therapy_type = $formData['harmone_therapy_type'];
@@ -925,7 +903,7 @@ class AppointmentController extends Controller {
         $testosterone->intolerance = isset($formData['intolerance']) ? 1 : '';
         $testosterone->unexplained_weight = isset($formData['unexplained_weight']) ? 1 : '';
         $testosterone->save();
-
+        // Save in Vitamins Packages
         $vitamins = App\Vitamins::firstOrCreate(['patient_id' => $id]);
         $vitamins->needle_afraid = isset($formData['needle_afraid']) ? $formData['needle_afraid'] : '';
         $vitamins->afraid_limit = $formData['afraid_limit'];
@@ -937,7 +915,7 @@ class AppointmentController extends Controller {
         $vitamins->wellness_tested = $formData['wellness_tested'];
         $vitamins->vitamin_drip = $formData['vitamin_drip'];
         $vitamins->save();
-
+        // Save in Cosmetices packages
         $cosmetics = App\Cosmetics::firstOrCreate(['patient_id' => $id]);
         $cosmetics->facial_surgeries = $formData['facial_surgeries'];
         $cosmetics->facial_kind = $formData['facial_kind'];
@@ -968,47 +946,44 @@ class AppointmentController extends Controller {
         } else {
             App::abort(404, '');
         }
-
-
     }
 
     /*
      * Find the list of all appointment which appointment time are within 24 Hours.
-     * 
+     *
      * @return \resource\view\apptsetting\listappointment.blade.php
      */
 
     public function todayVisits() {
-        
-         $location_id = Session::get('location_id');
-            if (isset($location_id) && $location_id > 0) {
-                $location = DB::table('appointments')
-                        ->join('appointment_requests', 'appointment_requests.id', '=', 'appointments.request_id')
-                        ->where('location_id', '=', Session::get('location_id'))
-                        ->select('appointments.id')
-                        ->get();
-                $appt_id = array();
-                foreach ($location as $loc) {
-                    $appt_id[] = $loc->id;
-                }
-                $appointments = Appointment::with(['patient', 'patient.reason' => function($query) {
-                        $query->where('reason_id', '>', 8);
-                    }, 'patient.reason.reasonCode'])
-                        ->whereIn('id', $appt_id)
-                        ->whereIn('status', [4, 5])
-                        ->whereDate('apptTime', '=', date('Y-m-d'))
-                        ->orderBy('id', 'DESC')->get();                
-                         
-            } else {
-               $appointments = Appointment::with(['patient', 'patient.reason' => function($query) {
-                        $query->where('reason_id', '>', 8);
-                    }, 'patient.reason.reasonCode'])
-                        ->whereIn('status', [4, 5])
-                        ->whereDate('apptTime', '=', date('Y-m-d'))
-                        ->orderBy('id', 'DESC')->get();
-            }  
-        
-        
+
+        $location_id = Session::get('location_id');
+        if (isset($location_id) && $location_id > 0) {
+            $location = DB::table('appointments')
+                    ->join('appointment_requests', 'appointment_requests.id', '=', 'appointments.request_id')
+                    ->where('location_id', '=', Session::get('location_id'))
+                    ->select('appointments.id')
+                    ->get();
+            $appt_id = array();
+            foreach ($location as $loc) {
+                $appt_id[] = $loc->id;
+            }
+            $appointments = Appointment::with(['patient', 'patient.reason' => function($query) {
+                            $query->where('reason_id', '>', 8);
+                        }, 'patient.reason.reasonCode'])
+                            ->whereIn('id', $appt_id)
+                            ->whereIn('status', [4, 5])
+                            ->whereDate('apptTime', '=', date('Y-m-d'))
+                            ->orderBy('id', 'DESC')->get();
+        } else {
+            $appointments = Appointment::with(['patient', 'patient.reason' => function($query) {
+                            $query->where('reason_id', '>', 8);
+                        }, 'patient.reason.reasonCode'])
+                            ->whereIn('status', [4, 5])
+                            ->whereDate('apptTime', '=', date('Y-m-d'))
+                            ->orderBy('id', 'DESC')->get();
+        }
+
+
         $patients = User::where('role', $this->patient_role)->get();
         return view('appointment.today_visits', [
             'appointments' => $appointments, 'patients' => $patients
@@ -1044,14 +1019,14 @@ class AppointmentController extends Controller {
             }
             $labReports = App\LabReports::insert($files);
         }
-        
-        if(isset($request->patient_status)){
-            if($request->patient_status == 1){
-                $values = ['patient_status' => $request->patient_status,  'progress_status' => $request->progress_status];
-            }elseif($request->patient_status == 2){
+
+        if (isset($request->patient_status)) {
+            if ($request->patient_status == 1) {
+                $values = ['patient_status' => $request->patient_status, 'progress_status' => $request->progress_status];
+            } elseif ($request->patient_status == 2) {
                 $values = ['patient_status' => $request->patient_status];
-            }            
-        }else{
+            }
+        } else {
             $values = [ 'progress_status' => $request->progress_status];
         }
         Appointment::where('id', $request->appointment_id)->update($values);
@@ -1077,56 +1052,56 @@ class AppointmentController extends Controller {
 
     /*
      * Find the counting for the Appointmennts
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
 
     public function countAppointments(Request $request) {
-        if($request->isMethod('get')){
-                return redirect('/home');
+        if ($request->isMethod('get')) {
+            return redirect('/home');
         }
         $appointment = array();
-        
-         $location_id = Session::get('location_id');
-            if (isset($location_id) && $location_id > 0) {
 
-                $location = DB::table('appointments')
-                        ->join('appointment_requests', 'appointment_requests.id', '=', 'appointments.request_id')
-                        ->where('location_id', '=', Session::get('location_id'))
-                        ->select('appointments.id')
-                        ->get();
-                $appt_id = array();
-                foreach ($location as $loc) {
-                    $appt_id[] = $loc->id;
-                }
-                $appointments = Appointment::with(['patient', 'appointmentRequest', 'appointmentRequest.locations', 'patient.reason' => function($query) {
+        $location_id = Session::get('location_id');
+        if (isset($location_id) && $location_id > 0) {
+
+            $location = DB::table('appointments')
+                    ->join('appointment_requests', 'appointment_requests.id', '=', 'appointments.request_id')
+                    ->where('location_id', '=', Session::get('location_id'))
+                    ->select('appointments.id')
+                    ->get();
+            $appt_id = array();
+            foreach ($location as $loc) {
+                $appt_id[] = $loc->id;
+            }
+            $appointments = Appointment::with(['patient', 'appointmentRequest', 'appointmentRequest.locations', 'patient.reason' => function($query) {
                             $query->where('reason_id', '>', 8);
                         }, 'patient.reason.reasonCode'])
                             ->orderBy('id', 'desc')
                             ->whereIn('id', $appt_id)->count();
-                $visitAppointment = Appointment::with(['patient', 'patient.reason' => function($query) {
-                        $query->where('reason_id', '>', 8);
-                    }, 'patient.reason.reasonCode'])
-                        ->whereIn('id', $appt_id)
-                        ->whereIn('status', [4, 5])
-                        ->whereDate('apptTime', '=', date('Y-m-d'))
-                        ->count(); 
-            } else {
-                $appointments = Appointment::with(['patient', 'appointmentRequest.locations', 'patient.reason' => function($query) {
-                        $query->where('reason_id', '>', 8);
-                    }, 'patient.reason.reasonCode'])->count();
-                    
-                $visitAppointment = Appointment::with(['patient', 'patient.reason' => function($query) {
-                        $query->where('reason_id', '>', 8);}, 'patient.reason.reasonCode'])
-                        ->whereIn('status', [4, 5])
-                        ->whereDate('apptTime', '=', date('Y-m-d'))
-                        ->count();       
-            }
-        
-       
-        $labAppointment = Appointment::whereIn('progress_status', [1, 2])->count();      
+            $visitAppointment = Appointment::with(['patient', 'patient.reason' => function($query) {
+                    $query->where('reason_id', '>', 8);
+                }, 'patient.reason.reasonCode'])
+                    ->whereIn('id', $appt_id)
+                    ->whereIn('status', [4, 5])
+                    ->whereDate('apptTime', '=', date('Y-m-d'))
+                    ->count();
+        } else {
+            $appointments = Appointment::with(['patient', 'appointmentRequest.locations', 'patient.reason' => function($query) {
+                    $query->where('reason_id', '>', 8);
+                }, 'patient.reason.reasonCode'])->count();
+
+            $visitAppointment = Appointment::with(['patient', 'patient.reason' => function($query) {
+                    $query->where('reason_id', '>', 8);
+                }, 'patient.reason.reasonCode'])
+                    ->whereIn('status', [4, 5])
+                    ->whereDate('apptTime', '=', date('Y-m-d'))
+                    ->count();
+        }
+
+
+        $labAppointment = Appointment::whereIn('progress_status', [1, 2])->count();
         $upcomingAppointment = Appointment::whereDate('apptTime', '<=', date('Y-m-d', strtotime("+3 day")))->whereNotIn('status', [ 2, 6])->count();
-        //$visitAppointment = Appointment::where('status', '4')->whereDate('apptTime', '=', date('Y-m-d'))->count();
         $readyappointments = Appointment::where('progress_status', '3')->count();
         $anotherAppointments = Appointment::where('relative_id', '!=', '0')->count();
         $followup = FollowUp::count();
@@ -1176,36 +1151,38 @@ class AppointmentController extends Controller {
             'appointments' => $appointments, 'patients' => $patients
         ]);
     }
-    
-	/**
+
+    /**
      * Function find the current status of Appointment
      *
      * @return \resource\view\Appointment\lab_appointment.php
      */
     public function checkAppointmentStatus($id) {
-        
-        $appointment = Appointment::where('id', $id)->select('progress_status')->first();       
+
+        $appointment = Appointment::where('id', $id)->select('progress_status')->first();
         echo json_encode($appointment);
         die;
     }
-    
-   /**
+
+    /**
      * Function to set the session value for Location
      *
      * @return \resource\view\Appointment\listappointment.php
      */
     public function setSession(Request $request) {
-        Session::set('location_id',$request->location_id);
-        Session::save();     
+        Session::set('location_id', $request->location_id);
+        Session::save();
         exit();
     }
-      /**
-         * Function to reset the session value for Location
-         *
-         * @return \resource\view\Appointment\listappointment.php
-         */
-        public function resetSession() {
-            Session::forget('location_id');  
-            exit();
-        }
+
+    /**
+     * Function to reset the session value for Location
+     *
+     * @return \resource\view\Appointment\listappointment.php
+     */
+    public function resetSession() {
+        Session::forget('location_id');
+        exit();
+    }
+
 }

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
@@ -11,14 +10,13 @@ use App\Role;
 use App\User;
 use App\UserDetail;
 use App\State;
-use View;
 use App;
 
 /**
  * Class is used to handle all the action related to user module
  *
  * @category App\Http\Controllers;
- * 
+ *
  * @return void
  */
 class UserController extends Controller {
@@ -44,14 +42,14 @@ class UserController extends Controller {
      * super admin can add staff member from here.
      *
      * @param void
-     * 
+     *
      * @return \resource\views\user\add_user.blade.php
      */
     public function addUser() {
         // get the all role except doctor and patient
         $roles = Role::whereNotIn('id', [$this->doctor_role, $this->patient_role])
-            ->lists('role_title', 'id')
-            ->toArray();
+                ->lists('role_title', 'id')
+                ->toArray();
 
         // get the state list from state table
         $states = State::lists('name', 'id')->toArray();
@@ -67,7 +65,7 @@ class UserController extends Controller {
      * @return redirect to '/user/listUsers'
      */
     public function saveUser(Request $request) {
-        // validation rules 
+        // validation rules
         $this->validate($request, [
             'first_name' => 'required|max:255',
             'last_name' => 'required|max:255',
@@ -124,8 +122,8 @@ class UserController extends Controller {
     public function listUsers() {
         // get all users except doctor and patient to show on listing page
         $users = User::with('roleName')->whereNotIn('role', [$this->doctor_role, $this->patient_role])
-            ->orderBy('id', 'DESC')
-            ->get();
+                ->orderBy('id', 'DESC')
+                ->get();
 
         return view('user.index', [
             'users' => $users
@@ -150,8 +148,8 @@ class UserController extends Controller {
         } else {
             // update the user status by user id
             \DB::table('users')
-                ->where('id', $userId)
-                ->update(['status' => $status]);
+                    ->where('id', $userId)
+                    ->update(['status' => $status]);
 
             echo $this->success;
             exit();
@@ -208,7 +206,7 @@ class UserController extends Controller {
      * This function is used to delete the user
      * soft delete technique is used to delete the user
      *
-     * @param $id 
+     * @param $id
      *
      * @return \Illuminate\Http\Response
      */
@@ -255,10 +253,8 @@ class UserController extends Controller {
     public function viewUser($id = null) {
         // find the user details by user id
         if (!($user = User::with(
-            'userDetail',
-            'UserDetail.userStateName',
-            'roleName'
-            )->find(base64_decode($id)))) {
+                        'userDetail', 'UserDetail.userStateName', 'roleName'
+                )->find(base64_decode($id)))) {
             App::abort(404, 'Page not found.');
         }
 
