@@ -2,23 +2,26 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
-use App\Http\Requests;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Facades\Input;
 use App\Permission;
 use App\Role;
-use App\User;
 use App\PermissionRole;
-use View;
 use App;
-use Auth;
+
+/**
+ * This class is used to handle Role Management System
+ *
+ * @category App\Http\Controllers;
+ *
+ * @return null
+ */
 
 class AclController extends Controller {
 
     protected $success = true;
     protected $error = false;
-    
+
     /**
      * Create a new controller instance.
      *
@@ -27,10 +30,10 @@ class AclController extends Controller {
     public function __construct() {
         $this->middleware('auth');
     }
-    
+
     /**
      * Define the rule for server side validation
-     * @var type 
+     * @var type
      */
     private $rules = array(
         'role_title' => 'required',

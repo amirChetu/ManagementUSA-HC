@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests;
 use Illuminate\Http\Request;
 use App\Appointment;
 use App\User;
-use App\Role;
 use App\FollowupStatus;
 use Auth;
 use App\State;
@@ -44,7 +42,7 @@ class HomeController extends Controller {
      */
     public function index() {
         // get all appointments which status is active
-        
+
         $location_id = Session::get('location_id');
         if (isset($location_id) && $location_id > 0) {
             $location = DB::table('appointments')
@@ -60,12 +58,14 @@ class HomeController extends Controller {
 
         } else {
            $appointments = Appointment::with(['patient.patientDetail','appointmentRequest.locations', 'patient.reason', 'patient.reason.reasonCode'])->whereIn('status', [1, 4])->get();
-        } 
+        }
 
         $collevent = [];
         $i = 0;
+        /*
+         * making an Appointment object for the calendar
+         */
         foreach ($appointments as $appointment) {
-            //echo '<pre>'; print_r($appointment->toArray());
             $events = [];
             $events ['id'] = $appointment->id;
             $reasonArr = $appointment->patient->reason->toArray();
@@ -93,14 +93,14 @@ class HomeController extends Controller {
                 }else{
                     $events ['color'] = '#0088cc';
                 }
-                
+
             }
             $events ['start'] = $appointment->apptTime;
             $events ['end'] = date('Y-m-d H:i:s', strtotime($appointment->apptTime . '+ 30 minute'));
             $collevent[$i] = $events;
             $i++;
         }
-   
+
         // get all patients list
         $patients = User::where('role', $this->patient_role)->get();
         // get all doctors list
@@ -116,12 +116,12 @@ class HomeController extends Controller {
             'followupStatus' => $followupStatus
         ]);
     }
-    
-    
-   
-    /** Niwedita : to show the profile details of user
+
+
+
+    /*
+    *  To show the profile details of user*
     * This function is used to view the patient details.
-    *
     * @return \Illuminate\Http\Response
     */
     public function userProfile() {
@@ -134,17 +134,15 @@ class HomeController extends Controller {
             ->find($user_id))) {
             App::abort(404, 'Page not found.');
         }
-         
+
         return view('homes.user_profile', [
             'user' => $user
         ]);
     }
-    
+
     /**
      * This function is used to fetch layout of edit user profile form and user details to display on that form
-     *
      * @param $id
-     *
      * @return \Illuminate\Http\Response
      */
     public function editUserProfile($id = null) {
@@ -160,7 +158,7 @@ class HomeController extends Controller {
             'states' => $states
         ]);
     }
-    
+
     /**
      * This function is used to update the user profile detail
      *
@@ -206,3 +204,4 @@ class HomeController extends Controller {
     }
 
 }
+

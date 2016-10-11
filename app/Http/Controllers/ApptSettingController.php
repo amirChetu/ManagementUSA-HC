@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Helpers\helpers;
 use App\Patient;
 use App\Appointment;
 use App\AdamsQuestionary;
@@ -11,18 +10,22 @@ use App\User;
 use App\WebLead;
 use App\AppointmentRequest;
 use App\AppointmentSource;
-use App\AppointmentReason;
 use App\ReasonCode;
 use App\AppointmentFollowup;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
-use Session;
 use App;
 use Auth;
 use App\Location;
 use App\ApiData;
+
+/**
+ * This class is used for appointment setting with followup details
+ *
+ * @category App\Http\Controllers;
+ *
+ * @return null
+ */
 
 class ApptSettingController extends Controller {
 
@@ -33,19 +36,31 @@ class ApptSettingController extends Controller {
     protected $error = false;
     protected $confirmedAppointmentStatus = 4;
 
+    /**
+     * Create a appointment setting  controller instance.
+     *
+     * @return void
+     */
     public function __construct() {
         $this->middleware('auth');
     }
 
+    /*
+     * convert the value ito md5
+     *
+     * @param $salt value
+     *
+     * @return hash string
+     */
     public function getPatientHash($salt) {
         return md5(uniqid($salt, true));
     }
 
     /*
-     * Open the appointment form for telemarketing, walkin patient 
-     * 
+     * Open the appointment form for telemarketing, walkin patient
+     *
      * @param $value = 'marketingCall' or 'walkin'
-     * 
+     *
      * @return \resource\view\apptsetting\index
      */
 
@@ -59,11 +74,9 @@ class ApptSettingController extends Controller {
                 ->select('users.id', 'users.first_name', 'users.last_name', 'users.email')
                 ->get();
         $locations = DB::table('locations')->get();
-       
-        //$resources = AppointmentSource::lists('name', 'id');  // $resources not required remove if no error occur
         $noSetReasonCode = ReasonCode::where('type', '2')->lists('reason', 'id')->toArray();
         $setReasonCode = ReasonCode::where('type', '1')->lists('reason', 'id')->toArray();
-        
+
         return view('apptsetting.index', [
             'value' => $value, 'patients' => $patients,'locations' => $locations,'noSetReasonCode' => $noSetReasonCode, 'setReasonCode' => $setReasonCode
         ]);
@@ -93,7 +106,6 @@ class ApptSettingController extends Controller {
                 ->where('appointment_requests.followup_date', $current_date)
                 ->where('appointment_requests.noSetStatus', 0)
                 ->get();
-        //echo '<pre>';print_r($requestFollowups->toArray());die;
         $noSetReasonCode = ReasonCode::where('type', '2')->lists('reason', 'id')->toArray();
         $resources = AppointmentSource::lists('name', 'id');
         $reasonCode = ReasonCode::where('type', '1')->lists('reason', 'id')->toArray();
@@ -102,10 +114,9 @@ class ApptSettingController extends Controller {
     }
 
     /*
-     * 
-     * Edit Request-Followups 
-     * 
-     * 
+     * Edit Request-Followups
+     *
+     *@return json object
      */
 
     public function editRequestfollowup(Request $request) {
@@ -117,17 +128,17 @@ class ApptSettingController extends Controller {
     }
 
     /*
-     * Save the Marketign Calls 
-     * 
+     * Save the Marketign Calls
+     *
      * @param Illuminate\Http\Request
-     * 
+     *
      * @return \resource\view\apptsetting\saveRequestFollowUp
      */
 
     public function saveRequestFollowUp(Request $request) {
-        
+
         $formData = $request->all();
-        
+
         if (!$formData) {
             App::abort(404, 'Empty form data.');
         }
@@ -152,7 +163,7 @@ class ApptSettingController extends Controller {
                 return Redirect::back();
             }
         }
-        
+        // If the appointment status will set
         if ($formData['status'] == config("constants.APPOINTMENT_SET_FLAG")) {
 
             $user = User::where('id', $id)->first();
@@ -165,7 +176,7 @@ class ApptSettingController extends Controller {
             $patient->phone = $formData['phone'];
             $patient->dob = date('Y-m-d', strtotime($formData['dob']));
             $patient->save();
-           
+
             $appointment_requests = App\AppointmentRequest::firstOrCreate(['id' => $requestId]);
             $exist_request = App\AppointmentRequest::where('user_id', $id)->first();
             $appointment_requests->user_id = $id;
@@ -214,7 +225,7 @@ class ApptSettingController extends Controller {
                 $appointment->save();
             }
         } else {
-           
+
             $user = User::where('id', $id)->first();
             $user->first_name = $formData['first_name'];
             $user->last_name = $formData['last_name'];
@@ -243,7 +254,7 @@ class ApptSettingController extends Controller {
             $appointment_requests->followup_status = 0;
             $appointment_requests->noSetStatus = 1;
             $appointment_requests->save();
-             //echo '<pre>'; print_r($appointment_requests);die;
+
             $reason = new App\AppointmentReason;
             $reason->patient_id = $id;
             $reason->reason_id = $formData['reason_id'];
@@ -260,6 +271,13 @@ class ApptSettingController extends Controller {
         }
     }
 
+    /*
+     * send the patient medical form in edit case to send on email
+     *
+     * @param $user : user data
+     *
+     * @return url for the email attachement
+     */
     public function emailPatientEditForm($user) {
         $this->user = $user;
         $url = 'appointment/patientMedical/' . base64_encode($user->id) . '/hash/' . $user->hash;
@@ -272,15 +290,15 @@ class ApptSettingController extends Controller {
 
     /*
      * Common function to save the Followup with the patient details from Webleads & Telemarketing calls
-     * 
+     *
      * @param Illuminate\Http\Request
-     * 
+     *
      * @return \Illuminate\View\View
      */
 
     public function saveAppointment(Request $request) {
         $formData = $request->all();
-       
+
         if ($formData['status'] == 1) {
             $formData['reason_id'] = $formData['noset_reason_id'];
         }
@@ -307,19 +325,17 @@ class ApptSettingController extends Controller {
         $user->first_name = $formData['first_name'];
         $user->last_name = $formData['last_name'];
         $user->email = $formData['email'];
-        $user->role = $patientRole;        
+        $user->role = $patientRole;
         $user->save();
-        
+
         $patient = App\Patient::firstOrCreate(['user_id' => $id]);
         $patient->phone = $formData['phone'];
         $patient->dob = date_create($formData['dob']);
         $patient->hash = $this->getPatientHash($id);
          ///saving location id
-        
         $patient->location_id = $formData['location_id'];
         $patient->save();
         
-        //$appointment_requests = App\AppointmentRequest::firstOrCreate(['user_id' => $id]);
         $appointment_requests = new App\AppointmentRequest;
         $appointment_requests->user_id = $id;
         if (isset($formData['marketing_phone'])) {
@@ -338,16 +354,17 @@ class ApptSettingController extends Controller {
         } else {
             if(isset($formData['followup_date'])){
                 $appointment_requests->followup_date = date('Y-m-d', strtotime($formData['followup_date']));
-            }            
+            }
             $appointment_requests->followup_status = 0;
         }
+        // save the appointment reason
         $appointment_requests->save();
         $reason = new App\AppointmentReason;
         $reason->patient_id = $id;
         $reason->reason_id = $formData['reason_id'];
         $reason->request_id = $appointment_requests->id;
         $reason->save();
-
+        // if the appointment status is set
         if ($formData['status'] == config("constants.APPOINTMENT_SET_FLAG")) {
             $appointment = new App\Appointment;
             $appointment->patient_id = $id;
@@ -378,7 +395,7 @@ class ApptSettingController extends Controller {
                 $appointment->save();
             }
         }
-        // Case of selecting patient from drop down 
+        // Case of selecting patient from drop down
         if ($formData['status'] == config("constants.APPOINTMENT_SET_FLAG")) {
             \Session::flash('flash_message', 'Appointment added successfully.');
             return redirect()->action('AppointmentController@listappointment');
@@ -394,7 +411,7 @@ class ApptSettingController extends Controller {
      * @return \Illuminate\View\View
      */
     public function uniqueEmail() {
-        
+
         $appointment = User::where('email', $_GET['email'])->count();
         if ($appointment) {
             echo json_encode($this->error);
@@ -406,9 +423,9 @@ class ApptSettingController extends Controller {
 
     /*
      * Find the Appointment Request Detail at the time of appointment creation
-     * 
+     *
      * @param Illuminate\Http\Request
-     * 
+     *
      * @return \Illuminate\Http\Response
      */
 
@@ -447,14 +464,14 @@ class ApptSettingController extends Controller {
 
     /*
      * Common function to make the another Appointment for preveios Appointment request
-     * 
+     *
      * @param Illuminate\Http\Request
-     * 
+     *
      * @return \Illuminate\View\View
      */
 
     public function anotherAppointment(Request $request) {
-        $formData = $request->all();        
+        $formData = $request->all();
         if (!$formData) {
             App::abort(404, 'Empty form data.');
         }
@@ -485,7 +502,7 @@ class ApptSettingController extends Controller {
         $patient->dob = date('Y-m-d', strtotime($formData['dob']));
         $patient->patient_status= 1;
         $patient->save();
-   
+
         $relative_appointment = Appointment::where('id', $formData['appointment_id'])->first();
 
         $relative_appointment->progress_status = config("constants.APPOINTMENT_AFTER_REPORT_FLAG");
@@ -548,7 +565,7 @@ class ApptSettingController extends Controller {
                 $appointment->save();
             }
         }
-        // Case of selecting patient from drop down 
+        // Case of selecting patient from drop down
         if ($formData['status'] == config("constants.APPOINTMENT_SET_FLAG")) {
             \Session::flash('flash_message', 'Appointment added successfully.');
             return redirect()->action('AppointmentController@listappointment');
@@ -564,13 +581,13 @@ class ApptSettingController extends Controller {
      * @return \Illuminate\View\View
      */
     public function showAccessData() {
-        $dbName = realpath( "managementUSA.mdb"); 
+        $dbName = realpath( "managementUSA.mdb");
         $connection = odbc_connect("Driver={Microsoft Access Driver (*.mdb)};Dbq=$dbName",'root', '');
         $resultset=odbc_exec($connection, "SELECT * FROM user");
         odbc_result_all($resultset,"border=1");
         die;
     }
-    
+
     /**
      * Function for the showing the PDF Files
      *
@@ -579,5 +596,5 @@ class ApptSettingController extends Controller {
     public function pdfList() {
       return view('apptsetting.pdf_list');
     }
-    
+
 }

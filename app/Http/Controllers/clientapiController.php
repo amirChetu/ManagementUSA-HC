@@ -6,7 +6,15 @@ use App\ApiSetting;
 use App\Http\Traits\CommonTrait;
 use Illuminate\Http\Request;
 
+/**
+ * Class is used to test the Client Api functionality
+ *
+ * @category App\Http\Controllers;
+ *
+ * @return void
+ */
 class ClientApiController extends Controller
+
 {
     use CommonTrait;
    /**
@@ -17,7 +25,7 @@ class ClientApiController extends Controller
     public function __construct() {
         $this->middleware('auth');
     }
-    
+
     /**
      * This function is used to fetch the layout for API setting.
      *
@@ -31,7 +39,7 @@ class ClientApiController extends Controller
             'data' => $data
         ]);
     }
-    
+
     /**
      * This function is used to save the API setting details in database.
      *
@@ -41,7 +49,7 @@ class ClientApiController extends Controller
      */
     public function saveSetting(Request $request) {
         $saved = $this->saveApiSetting($request);
-        
+
         if($saved)
         {
             // set the flash message for doctor creation success.
@@ -55,7 +63,7 @@ class ClientApiController extends Controller
             return redirect('/api/setting');
         }
     }
-    
+
      /**
      * This function is used to save the api data in api_data table.
      *
@@ -64,7 +72,7 @@ class ClientApiController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function store()
-    {   
+    {
         $data = ApiSetting::first();
         if(count($data))
         {
