@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Redirect;
 use App\User;
 use App;
 use DB;
+use Exception;
 use App\Category;
 
 /**

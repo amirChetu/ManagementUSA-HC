@@ -15,6 +15,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\DB;
 use App;
 use Auth;
+use Exception;
 use App\ApiData;
 
 /**

@@ -3,14 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Input;
-use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Redirect;
 use App\Role;
 use App\User;
 use App\UserDetail;
 use App\State;
-use App;
+use Exception;
 
 /**
  * Class is used to handle all the action related to user module
@@ -54,14 +52,14 @@ class UserController extends Controller {
 
 			if(!class_exists('App/Role')){
 				throw new Exception('Class Role not found');
-			}		
+			}
 			// get the state list from state table
 			$states = State::lists('name', 'id')->toArray();
 
-			return view('user.add_user', ['roles' => $roles, 'states' => $states]);			
+			return view('user.add_user', ['roles' => $roles, 'states' => $states]);
 		}catch(Exception $e){
 			\Log::error($e);
-			\App::abort(404, $e->getMessage());			
+			\App::abort(404, $e->getMessage());
 		}
     }
 
@@ -121,10 +119,10 @@ class UserController extends Controller {
 				}
 			} else {
 				return redirect('/user/addUser');
-			}			
+			}
 		}catch(Exception $e){
 			\Log::error($e);
-			\App::abort(404, $e->getMessage());			
+			\App::abort(404, $e->getMessage());
 		}
     }
 
@@ -147,10 +145,10 @@ class UserController extends Controller {
 
 			return view('user.index', [
 				'users' => $users
-			]);			
+			]);
 		}catch(Exception $e){
 			\Log::error($e);
-			\App::abort(404, $e->getMessage());			
+			\App::abort(404, $e->getMessage());
 		}
     }
 
@@ -178,10 +176,10 @@ class UserController extends Controller {
 
 				echo $this->success;
 				exit();
-			}			
+			}
 		}catch(Exception $e){
 			\Log::error($e);
-			\App::abort(404, $e->getMessage());			
+			\App::abort(404, $e->getMessage());
 		}
     }
 
@@ -232,10 +230,10 @@ class UserController extends Controller {
 				return redirect('/user/listUsers');
 			} else {
 				return redirect('/user/editUser');
-			}			
+			}
 		}catch(Exception $e){
 			\Log::error($e);
-			\App::abort(404, $e->getMessage());			
+			\App::abort(404, $e->getMessage());
 		}
     }
 
@@ -260,8 +258,8 @@ class UserController extends Controller {
 			return Redirect::back();
 		}catch(Exception $e){
 			\Log::error($e);
-			\App::abort(404, $e->getMessage());			
-		}		
+			\App::abort(404, $e->getMessage());
+		}
     }
 
     /**
@@ -283,11 +281,11 @@ class UserController extends Controller {
 			return view('user.edit_user', [
 				'user' => $user,
 				'states' => $states
-			]);			
+			]);
 		}catch(Exception $e){
 			\Log::error($e);
-			\App::abort(404, $e->getMessage());			
-		}	
+			\App::abort(404, $e->getMessage());
+		}
     }
 
     /**
@@ -308,10 +306,10 @@ class UserController extends Controller {
 
 			return view('user.view_user', [
 				'user' => $user
-			]);			
+			]);
 		}catch(Exception $e){
 			\Log::error($e);
-			\App::abort(404, $e->getMessage());			
+			\App::abort(404, $e->getMessage());
 		}
     }
 }

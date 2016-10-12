@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use DB;
+use Exception;
 
 /**
  * This class is used for Cart functionality
@@ -79,7 +80,7 @@ class CartController extends Controller
 					return Redirect::back();
 				}
 
-			}			
+			}
 		}catch(Exception $e){
 			\Log::error($e);
 			\App::abort(404, $e->getMessage());
@@ -98,11 +99,11 @@ class CartController extends Controller
 				throw new Exception('Class Cart not found');
 			}
 			$cart = Cart::getCartDetails($patientId);
-			
-			return view('cart.cart',['category_list' => $cart['category_list'], 'category_detail_list' => $cart['category_detail_list'], 'original_package_price' => $cart['original_package_price'], 'discouonted_package_price' => $cart['discouonted_package_price'], 'package_discount' => $cart['package_discount'], 'total_cart_price' => $cart['total_cart_price']]);			
+
+			return view('cart.cart',['category_list' => $cart['category_list'], 'category_detail_list' => $cart['category_detail_list'], 'original_package_price' => $cart['original_package_price'], 'discouonted_package_price' => $cart['discouonted_package_price'], 'package_discount' => $cart['package_discount'], 'total_cart_price' => $cart['total_cart_price']]);
 		}catch(Exception $e){
 			\Log::error($e);
-			\App::abort(404, $e->getMessage());			
+			\App::abort(404, $e->getMessage());
 		}
     }
 

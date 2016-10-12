@@ -8,6 +8,7 @@ use App\Patient;
 use App\User;
 use App\State;
 use DB;
+use Exception;
 
 /**
  * Class is used to handle all the action related to Patient

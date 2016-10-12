@@ -11,6 +11,7 @@ use App\State;
 use App\UserDetail;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use Exception;
 
 /**
  * This class is used to handle home page related action

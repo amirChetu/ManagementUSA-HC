@@ -7,8 +7,8 @@ use Illuminate\Support\Facades\Redirect;
 use DB;
 use Auth;
 use App\User;
-use App\TrimixDose;
 use App\TrimixDosesFeedback;
+use Exception;
 
 /**
  * Class is used to handle all the action related to doses management
@@ -118,7 +118,7 @@ class DoseManagmentController extends Controller {
 			} else {
 				\Session::flash('flash_message', 'There are something went wrong Plz Try again.');
 				return Redirect::back();
-			}			
+			}
 		}catch(Exception $e){
 			\Log::error($e);
 			App::abort(404, $e->getMessage());
