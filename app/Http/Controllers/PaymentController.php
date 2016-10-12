@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App;
 use Session;
 use PayPal\Rest\ApiContext;
 use PayPal\Auth\OAuthTokenCredential;
@@ -76,9 +75,9 @@ class PaymentController extends Controller {
         try {
             $payment->create($this->_api_context);
         } catch (\PayPal\Exception\PayPalConnectionException $ex) {
-			\Log::error($ex->getData());
-			echo 'Error occured';
-			die;
+            \Log::error($ex->getData());
+            echo 'Error occured';
+            die;
         }
 
         foreach ($payment->getLinks() as $link) {
@@ -88,7 +87,7 @@ class PaymentController extends Controller {
             }
         }
 
-// add payment ID to session
+        // add payment ID to session
         Session::put('paypal_payment_id', $payment->getId());
         if (empty($request->input('PayerID')) || empty($request->input('token'))) {
             echo 'failed';
@@ -108,7 +107,7 @@ class PaymentController extends Controller {
         //Execute the payment
         $result = $payment->execute($execution, $this->_api_context);
         if (isset($redirect_url)) {
-        // redirect to paypal
+            // redirect to paypal
             return redirect($redirect_url);
         }
         echo 'error';
@@ -178,7 +177,7 @@ class PaymentController extends Controller {
         }
     }
 
-     /**
+    /**
      * Displays the details of payment errors
      * @param  int  $id
      * @return\Illuminate\Http\Response
