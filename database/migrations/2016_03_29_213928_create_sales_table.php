@@ -16,6 +16,7 @@ class CreateSalesTable extends Migration
             $table->increments('id');
             $table->integer('appt');
             $table->integer('user_id');
+            $table->integer('patient_id');
             $table->integer('description');
             $table->integer('status');//NP or CP
             $table->integer('cash');
@@ -25,6 +26,7 @@ class CreateSalesTable extends Migration
             $table->integer('check');
             $table->integer('lab_follow_up');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

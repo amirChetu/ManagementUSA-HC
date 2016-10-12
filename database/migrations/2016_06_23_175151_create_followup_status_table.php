@@ -17,6 +17,7 @@ class CreateFollowupStatusTable extends Migration
             $table->string('title');
             $table->boolean('status');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

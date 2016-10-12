@@ -14,9 +14,11 @@ class CreateAppointmentReasonsTable extends Migration
     {
         Schema::create('appointment_reasons', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('patient_id');  
-            $table->integer('reason_id');            
+            $table->integer('patient_id');
+            $table->integer('request_id')->comment('Appointment Request Id');
+            $table->integer('reason_id');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

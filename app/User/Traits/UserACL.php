@@ -37,7 +37,7 @@ trait UserACL {
 	 */
 	protected function checkPermission(Array $permArray = [])
 	{
-		$perms = $this->role->permissions->fetch('permission_slug');
+		$perms = $this->role->permissions->fetch('slug');
 		
 		$perms = array_map('strtolower', $perms->toArray());
 
@@ -128,7 +128,7 @@ trait UserACL {
 		
 		$requiredPerm = array_pop($parts);
 
-		$perms = $this->role->permissions->fetch('permission_slug');
+		$perms = $this->role->permissions->fetch('slug');
 
 		foreach ($perms as $perm)
 		{

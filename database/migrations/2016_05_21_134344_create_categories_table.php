@@ -17,6 +17,7 @@ class CreateCategoriesTable extends Migration
             $table->string('cat_name');
             $table->integer('duration_months');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

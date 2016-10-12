@@ -12,12 +12,13 @@ class CreateIllnessListTable extends Migration
      */
     public function up()
     {
-        Schema::create('illness_list', function (Blueprint $table) {
+        Schema::create('illness_lists', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('patient_id');  
+            $table->integer('patient_id');
             $table->string('illness');
             $table->timestamps();
-        }); 
+            $table->softDeletes();
+        });
     }
     /**
      * Reverse the migrations.

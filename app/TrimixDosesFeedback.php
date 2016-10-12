@@ -11,7 +11,7 @@ class TrimixDosesFeedback extends Model
      *
      * @var string
      */
-    protected $table = 'trimix_dose_feedback';
+    protected $table = 'trimix_dose_feedbacks';
     protected $fillable = [
         'trimix_dose_id',
         'agent_id',
@@ -21,13 +21,13 @@ class TrimixDosesFeedback extends Model
         'antidote',
         'notes'
     ];
-    
+
     /*
     |--------------------------------------------------------------------------
     | Relationship Methods
     |--------------------------------------------------------------------------
     */
-    public function trimixDose() 
+    public function trimixDose()
     {
         return $this->belongsTo('App\TrimixDose', 'trimix_dose_id');
     }

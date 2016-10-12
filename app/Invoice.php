@@ -11,7 +11,7 @@ class Invoice extends Model
      *
      * @var string
      */
-    protected $table = 'invoice';
+    protected $table = 'invoices';
     protected $fillable = [
         'user_id',
         'order_id',

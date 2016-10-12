@@ -12,7 +12,7 @@ class CreateApiSettingTable extends Migration
      */
     public function up()
     {
-        Schema::connection('mysql2')->create('api_setting', function (Blueprint $table) {
+        Schema::connection('mysql2')->create('api_settings', function (Blueprint $table) {
             $table->increments('id');
             $table->string('api_url');
             $table->string('user_name');

@@ -11,7 +11,7 @@ class FollowupReschedule extends Model {
 
 	use SoftDeletes;
 	
-    protected $table = 'followup_reschedule';
+    protected $table = 'followup_reschedules';
     public function appointment() {
         return $this->belongsTo('App\Appointment', 'new_appointment_id')->select('id', 'apptTime');
     }

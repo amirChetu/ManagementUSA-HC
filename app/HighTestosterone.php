@@ -9,7 +9,7 @@ class HighTestosterone extends Model
 {
 	use SoftDeletes;
 	
-    protected $table = 'high_testosterone';
+    protected $table = 'high_testosterones';
     protected $fillable = [
 		'id',
 		'patient_id',

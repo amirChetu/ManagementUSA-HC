@@ -21,6 +21,7 @@ class CreateFollowupsTable extends Migration
             $table->string('comment');
             $table->date('followup_later_date');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
