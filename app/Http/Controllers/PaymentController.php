@@ -11,18 +11,28 @@ use PayPal\Api\Item;
 use PayPal\Api\ItemList;
 use PayPal\Api\Payer;
 use PayPal\Api\Payment;
-use PayPal\Api\RedirectUrls;
-use PayPal\Api\ExecutePayment;
 use PayPal\Api\PaymentExecution;
 use PayPal\Api\Transaction;
 use PayPal\Api\CreditCard;
 use PayPal\Api\FundingInstrument;
 use Exception;
 
+/**
+ * This class is used Paypal Payment integration modules
+ *
+ * @category App\Http\Controllers;
+ *
+ * @return null
+ */
 class PaymentController extends Controller {
 
     private $_api_context;
 
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
     public function __construct() {
         // setup PayPal api context
         $paypal_conf = config('paypal');
@@ -30,6 +40,11 @@ class PaymentController extends Controller {
         $this->_api_context->setConfig($paypal_conf['settings']);
     }
 
+    /**
+     * Make a function for the paypal testing with debit card
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function debit(Request $request) {
 
         $card = new CreditCard();
@@ -79,14 +94,12 @@ class PaymentController extends Controller {
             echo 'Error occured';
             die;
         }
-
         foreach ($payment->getLinks() as $link) {
             if ($link->getRel() == 'approval_url') {
                 $redirect_url = $link->getHref();
                 break;
             }
         }
-
         // add payment ID to session
         Session::put('paypal_payment_id', $payment->getId());
         if (empty($request->input('PayerID')) || empty($request->input('token'))) {
@@ -98,9 +111,6 @@ class PaymentController extends Controller {
         $payment = Payment::get($payment_id, $this->_api_context);
 
         // PaymentExecution object includes information necessary
-        // to execute a PayPal account payment.
-        // The payer_id is added to the request query parameters
-        // when the user is redirected from paypal back to your site
         $execution = new PaymentExecution();
         $execution->setPayerId($request->input('PayerID'));
 
@@ -121,7 +131,7 @@ class PaymentController extends Controller {
 
     /**
      * Save the order from the makePayment function
-     *
+     * @param  \Illuminate\Http\Request  Payment Data
      *  */
     public function payment($paymentData) {
         $cardNumber = urlencode($paymentData['card_number']);
