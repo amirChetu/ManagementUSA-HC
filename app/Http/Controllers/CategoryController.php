@@ -74,7 +74,7 @@ class CategoryController extends Controller {
                 'duration_months' => 'required'
             ]);
 
-            if (!class_exists('App/Categories')) {
+            if (!class_exists('App\Category')) {
                 throw new Exception('Class Categories not found');
             }
 

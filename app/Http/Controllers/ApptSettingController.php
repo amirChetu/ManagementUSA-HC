@@ -93,7 +93,7 @@ class ApptSettingController extends Controller {
      */
     public function missedCall() {
         try {
-            if (!class_exists('App/ApiData')) {
+            if (!class_exists('App\ApiData')) {
                 throw new Exception('404');
             }
             $missedData = ApiData::where('type', 1)->get();
@@ -113,7 +113,7 @@ class ApptSettingController extends Controller {
      */
     public function requestFollowUp() {
         try {
-            if (!class_exists('App/AppointmentRequest')) {
+            if (!class_exists('App\AppointmentRequest')) {
                 throw new Exception('404');
             }
             $current_date = date('Y-m-d');

@@ -87,7 +87,7 @@ class PatientController extends Controller {
                 'zipCode' => 'required|min:6|max:15'
             ]);
 
-            if (!class_exists('App/User')) {
+            if (!class_exists('App\User')) {
                 throw new Exception('Class User not exist');
             }
 
@@ -132,7 +132,7 @@ class PatientController extends Controller {
                 'phone' => 'required',
             ]);
 
-            if (!class_exists('App/User')) {
+            if (!class_exists('App\User')) {
                 throw new Exception('Class User not found');
             }
             $userData = new User;

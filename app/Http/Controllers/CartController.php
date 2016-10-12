@@ -95,7 +95,7 @@ class CartController extends Controller
     public function showCart($id){
 		try{
 			$patientId = base64_decode($id);
-			if(!class_exists('App/Cart')){
+			if(!class_exists('App\Cart')){
 				throw new Exception('Class Cart not found');
 			}
 			$cart = Cart::getCartDetails($patientId);

@@ -44,23 +44,23 @@ class UserController extends Controller {
      * @return \resource\views\user\add_user.blade.php
      */
     public function addUser() {
-		try{
-			// get the all role except doctor and patient
-			$roles = Role::whereNotIn('id', [$this->doctor_role, $this->patient_role])
-					->lists('role_title', 'id')
-					->toArray();
+        try {
+            // get the all role except doctor and patient
+            $roles = Role::whereNotIn('id', [$this->doctor_role, $this->patient_role])
+                    ->lists('role_title', 'id')
+                    ->toArray();
 
-			if(!class_exists('App/Role')){
-				throw new Exception('Class Role not found');
-			}
-			// get the state list from state table
-			$states = State::lists('name', 'id')->toArray();
+            if (!class_exists('App\Role')) {
+                throw new Exception('Class Role not found');
+            }
+            // get the state list from state table
+            $states = State::lists('name', 'id')->toArray();
 
-			return view('user.add_user', ['roles' => $roles, 'states' => $states]);
-		}catch(Exception $e){
-			\Log::error($e);
-			\App::abort(404, $e->getMessage());
-		}
+            return view('user.add_user', ['roles' => $roles, 'states' => $states]);
+        } catch (Exception $e) {
+            \Log::error($e);
+            \App::abort(404, $e->getMessage());
+        }
     }
 
     /**
@@ -71,59 +71,59 @@ class UserController extends Controller {
      * @return redirect to '/user/listUsers'
      */
     public function saveUser(Request $request) {
-		try{
-			// validation rules
-			$this->validate($request, [
-				'first_name' => 'required|max:255',
-				'last_name' => 'required|max:255',
-				'email' => 'required|email|unique:users',
-				'password' => 'required|min:6|confirmed',
-				'role' => 'required',
-				'phone' => 'required',
-				'zipCode' => 'required|min:6|max:15'
-			]);
+        try {
+            // validation rules
+            $this->validate($request, [
+                'first_name' => 'required|max:255',
+                'last_name' => 'required|max:255',
+                'email' => 'required|email|unique:users',
+                'password' => 'required|min:6|confirmed',
+                'role' => 'required',
+                'phone' => 'required',
+                'zipCode' => 'required|min:6|max:15'
+            ]);
 
-			// create new object for User
-			if(!class_exists('App/User')){
-				throw new Exception('Class User not found');
-			}
-			$userData = new User;
-			$userData->first_name = $request->first_name;
-			$userData->last_name = $request->last_name;
-			$userData->email = $request->email;
-			$userData->password = bcrypt($request['password']);
-			$userData->role = $request->role;
+            // create new object for User
+            if (!class_exists('App\User')) {
+                throw new Exception('Class User not found');
+            }
+            $userData = new User;
+            $userData->first_name = $request->first_name;
+            $userData->last_name = $request->last_name;
+            $userData->email = $request->email;
+            $userData->password = bcrypt($request['password']);
+            $userData->role = $request->role;
 
-			// save data in user table
-			if ($userData->save()) {
-				$userDetailData = new UserDetail;
-				$userDetailData->user_id = $userData->id;
-				if ($request->dob) {
-					$userDetailData->dob = date('Y-m-d', strtotime($request->dob));
-				}
-				$userDetailData->gender = $request->gender;
-				$userDetailData->phone = $request->phone;
-				$userDetailData->address1 = $request->address1;
-				$userDetailData->address2 = $request->address2;
-				$userDetailData->city = $request->city;
-				$userDetailData->state = $request->state;
-				$userDetailData->zipCode = $request->zipCode;
+            // save data in user table
+            if ($userData->save()) {
+                $userDetailData = new UserDetail;
+                $userDetailData->user_id = $userData->id;
+                if ($request->dob) {
+                    $userDetailData->dob = date('Y-m-d', strtotime($request->dob));
+                }
+                $userDetailData->gender = $request->gender;
+                $userDetailData->phone = $request->phone;
+                $userDetailData->address1 = $request->address1;
+                $userDetailData->address2 = $request->address2;
+                $userDetailData->city = $request->city;
+                $userDetailData->state = $request->state;
+                $userDetailData->zipCode = $request->zipCode;
 
-				// save user details in user_details table
-				if ($userDetailData->save()) {
-					// set flash message when user created successfully.
-					\Session::flash('flash_message', 'User created successfully.');
-					return redirect('/user/listUsers');
-				} else {
-					return redirect('/user/addUser');
-				}
-			} else {
-				return redirect('/user/addUser');
-			}
-		}catch(Exception $e){
-			\Log::error($e);
-			\App::abort(404, $e->getMessage());
-		}
+                // save user details in user_details table
+                if ($userDetailData->save()) {
+                    // set flash message when user created successfully.
+                    \Session::flash('flash_message', 'User created successfully.');
+                    return redirect('/user/listUsers');
+                } else {
+                    return redirect('/user/addUser');
+                }
+            } else {
+                return redirect('/user/addUser');
+            }
+        } catch (Exception $e) {
+            \Log::error($e);
+            \App::abort(404, $e->getMessage());
+        }
     }
 
     /**
@@ -134,22 +134,22 @@ class UserController extends Controller {
      * @return \resource\views\user\index.blade.php
      */
     public function listUsers() {
-		try{
-			if(!class_exists('App/User')){
-				throw new Exception('Class User not found');
-			}
-			// get all users except doctor and patient to show on listing page
-			$users = User::with('roleName')->whereNotIn('role', [$this->doctor_role, $this->patient_role])
-					->orderBy('id', 'DESC')
-					->get();
+        try {
+            if (!class_exists('App\User')) {
+                throw new Exception('Class User not found');
+            }
+            // get all users except doctor and patient to show on listing page
+            $users = User::with('roleName')->whereNotIn('role', [$this->doctor_role, $this->patient_role])
+                    ->orderBy('id', 'DESC')
+                    ->get();
 
-			return view('user.index', [
-				'users' => $users
-			]);
-		}catch(Exception $e){
-			\Log::error($e);
-			\App::abort(404, $e->getMessage());
-		}
+            return view('user.index', [
+                'users' => $users
+            ]);
+        } catch (Exception $e) {
+            \Log::error($e);
+            \App::abort(404, $e->getMessage());
+        }
     }
 
     /**
@@ -160,27 +160,27 @@ class UserController extends Controller {
      * @return null
      */
     public function updateUserStatus(Request $request) {
-		try{
-			$data = $request->all();
-			$status = $data['data']['status'];
-			$userId = $data['data']['userId'];
-			if (!($user = User::find($userId))) {
-				throw new Exception('Page not found.');
-				echo $this->error;
-				exit();
-			} else {
-				// update the user status by user id
-				\DB::table('users')
-						->where('id', $userId)
-						->update(['status' => $status]);
+        try {
+            $data = $request->all();
+            $status = $data['data']['status'];
+            $userId = $data['data']['userId'];
+            if (!($user = User::find($userId))) {
+                throw new Exception('Page not found.');
+                echo $this->error;
+                exit();
+            } else {
+                // update the user status by user id
+                \DB::table('users')
+                        ->where('id', $userId)
+                        ->update(['status' => $status]);
 
-				echo $this->success;
-				exit();
-			}
-		}catch(Exception $e){
-			\Log::error($e);
-			\App::abort(404, $e->getMessage());
-		}
+                echo $this->success;
+                exit();
+            }
+        } catch (Exception $e) {
+            \Log::error($e);
+            \App::abort(404, $e->getMessage());
+        }
     }
 
     /**
@@ -191,50 +191,50 @@ class UserController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function updateUser($id = null, Request $request) {
-		try{
-			if (!($userData = User::find($id))) {
-				throw new Exception('Page not found.');
-			}
+        try {
+            if (!($userData = User::find($id))) {
+                throw new Exception('Page not found.');
+            }
 
-			// validation rule
-			$this->validate($request, [
-				'first_name' => 'required|max:255',
-				'last_name' => 'required|max:255',
-				'phone' => 'required',
-				'zipCode' => 'required|min:6|max:15'
-			]);
+            // validation rule
+            $this->validate($request, [
+                'first_name' => 'required|max:255',
+                'last_name' => 'required|max:255',
+                'phone' => 'required',
+                'zipCode' => 'required|min:6|max:15'
+            ]);
 
-			$userInput['first_name'] = $request->first_name;
-			$userInput['last_name'] = $request->last_name;
+            $userInput['first_name'] = $request->first_name;
+            $userInput['last_name'] = $request->last_name;
 
-			// get user details data by user id
-			if(!class_exists('App/UserDetail')){
-				throw new Exception('Class UserDetail not found');
-			}
-			$userDetailData = UserDetail::where('user_id', $id)->get();
-			if ($request->dob) {
-				$userDetailInput['dob'] = date('Y-m-d', strtotime($request->dob));
-			}
-			$userDetailInput['gender'] = $request->gender;
-			$userDetailInput['phone'] = $request->phone;
-			$userDetailInput['address1'] = $request->address1;
-			$userDetailInput['address2'] = $request->address2;
-			$userDetailInput['city'] = $request->city;
-			$userDetailInput['state'] = $request->state;
-			$userDetailInput['zipCode'] = $request->zipCode;
+            // get user details data by user id
+            if (!class_exists('App\UserDetail')) {
+                throw new Exception('Class UserDetail not found');
+            }
+            $userDetailData = UserDetail::where('user_id', $id)->get();
+            if ($request->dob) {
+                $userDetailInput['dob'] = date('Y-m-d', strtotime($request->dob));
+            }
+            $userDetailInput['gender'] = $request->gender;
+            $userDetailInput['phone'] = $request->phone;
+            $userDetailInput['address1'] = $request->address1;
+            $userDetailInput['address2'] = $request->address2;
+            $userDetailInput['city'] = $request->city;
+            $userDetailInput['state'] = $request->state;
+            $userDetailInput['zipCode'] = $request->zipCode;
 
-			// save user data in user table and user details data in user details table.
-			if ($userData->fill($userInput)->save() && $userDetailData[0]->fill($userDetailInput)->save()) {
-				\Session::flash('flash_message', 'User details updated successfully.');
+            // save user data in user table and user details data in user details table.
+            if ($userData->fill($userInput)->save() && $userDetailData[0]->fill($userDetailInput)->save()) {
+                \Session::flash('flash_message', 'User details updated successfully.');
 
-				return redirect('/user/listUsers');
-			} else {
-				return redirect('/user/editUser');
-			}
-		}catch(Exception $e){
-			\Log::error($e);
-			\App::abort(404, $e->getMessage());
-		}
+                return redirect('/user/listUsers');
+            } else {
+                return redirect('/user/editUser');
+            }
+        } catch (Exception $e) {
+            \Log::error($e);
+            \App::abort(404, $e->getMessage());
+        }
     }
 
     /**
@@ -246,20 +246,20 @@ class UserController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function deleteUser($id = null) {
-		try{
-			if (!($user = User::find(base64_decode($id)))) {
-				throw new Exception('Page not found.');
-			}
-			// delete the user by user id
-			User::destroy(base64_decode($id));
-			// set the flash message.
-			\Session::flash('flash_message', 'User deleted successfully.');
-			// redirect back to the page.
-			return Redirect::back();
-		}catch(Exception $e){
-			\Log::error($e);
-			\App::abort(404, $e->getMessage());
-		}
+        try {
+            if (!($user = User::find(base64_decode($id)))) {
+                throw new Exception('Page not found.');
+            }
+            // delete the user by user id
+            User::destroy(base64_decode($id));
+            // set the flash message.
+            \Session::flash('flash_message', 'User deleted successfully.');
+            // redirect back to the page.
+            return Redirect::back();
+        } catch (Exception $e) {
+            \Log::error($e);
+            \App::abort(404, $e->getMessage());
+        }
     }
 
     /**
@@ -270,22 +270,22 @@ class UserController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function editUser($id = null) {
-		try{
-			if (!($user = User::with('userDetail')->find(base64_decode($id)))) {
-				throw new Exception('Page not found.');
-			}
+        try {
+            if (!($user = User::with('userDetail')->find(base64_decode($id)))) {
+                throw new Exception('Page not found.');
+            }
 
-			// get the state list from state table
-			$states = State::lists('name', 'id')->toArray();
+            // get the state list from state table
+            $states = State::lists('name', 'id')->toArray();
 
-			return view('user.edit_user', [
-				'user' => $user,
-				'states' => $states
-			]);
-		}catch(Exception $e){
-			\Log::error($e);
-			\App::abort(404, $e->getMessage());
-		}
+            return view('user.edit_user', [
+                'user' => $user,
+                'states' => $states
+            ]);
+        } catch (Exception $e) {
+            \Log::error($e);
+            \App::abort(404, $e->getMessage());
+        }
     }
 
     /**
@@ -296,20 +296,21 @@ class UserController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function viewUser($id = null) {
-		try{
-			// find the user details by user id
-			if (!($user = User::with(
-							'userDetail', 'UserDetail.userStateName', 'roleName'
-					)->find(base64_decode($id)))) {
-				throw new Exception('Page not found.');
-			}
+        try {
+            // find the user details by user id
+            if (!($user = User::with(
+                            'userDetail', 'UserDetail.userStateName', 'roleName'
+                    )->find(base64_decode($id)))) {
+                throw new Exception('Page not found.');
+            }
 
-			return view('user.view_user', [
-				'user' => $user
-			]);
-		}catch(Exception $e){
-			\Log::error($e);
-			\App::abort(404, $e->getMessage());
-		}
+            return view('user.view_user', [
+                'user' => $user
+            ]);
+        } catch (Exception $e) {
+            \Log::error($e);
+            \App::abort(404, $e->getMessage());
+        }
     }
+
 }

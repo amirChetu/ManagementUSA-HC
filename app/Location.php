@@ -18,11 +18,7 @@ class Location extends Model
         'state',
         'patient_id',
         'appt_request_id'
-        
+
     ];
     
-//     public function AppointmentRequest()
-//    {
-//        return $this->belongsTo('App/AppointmentRequest', 'id');
-//    }
 }

@@ -13,11 +13,11 @@ use Illuminate\Http\Request;
  *
  * @return void
  */
-class ClientApiController extends Controller
+class ClientApiController extends Controller {
 
-{
     use CommonTrait;
-   /**
+
+    /**
      * Create a new controller instance.
      *
      * @return void
@@ -50,48 +50,39 @@ class ClientApiController extends Controller
     public function saveSetting(Request $request) {
         $saved = $this->saveApiSetting($request);
 
-        if($saved)
-        {
+        if ($saved) {
             // set the flash message for doctor creation success.
             \Session::flash('flash_message', 'Setting Saved Successfully.');
             return redirect('/api/setting');
-        }
-        else
-        {
+        } else {
             // set the flash message for doctor creation success.
             \Session::flash('error_message', 'Some Thing Went Wrong Please Try Again.');
             return redirect('/api/setting');
         }
     }
 
-     /**
+    /**
      * This function is used to save the api data in api_data table.
      *
      * @param Request
      *
      * @return \Illuminate\Http\Response
      */
-    public function store()
-    {
+    public function store() {
         $data = ApiSetting::first();
-        if(count($data))
-        {
+        if (count($data)) {
             $status = $this->saveApiData($data);
-            if($status)
-            {
+            if ($status) {
                 \Session::flash('flash_message', 'Api Data Save Successfully.');
                 return redirect('/');
-            }
-            else
-            {
-               \Session::flash('error_message', 'Some thing went wrong please try again');
+            } else {
+                \Session::flash('error_message', 'Some thing went wrong please try again');
                 return redirect('/');
             }
-        }
-        else
-        {
-             \Session::flash('error_message', 'Please set the valid authntication detail');
-             return redirect('/api/setting');
+        } else {
+            \Session::flash('error_message', 'Please set the valid authntication detail');
+            return redirect('/api/setting');
         }
     }
+
 }

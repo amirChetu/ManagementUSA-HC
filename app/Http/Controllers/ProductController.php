@@ -11,7 +11,6 @@ use Illuminate\Support\Facades\DB;
 use Session;
 use App;
 
-
 /**
  * Class is used to handle all the action related to Inventory Management
  *
