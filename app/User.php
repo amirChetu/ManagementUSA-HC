@@ -158,7 +158,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 	
     public function adamsQuestionaires()
     {
-            return $this->hasOne('App\AdamsQuestionaires', 'patient_id');
+            return $this->hasOne('App\AdamsQuestionary', 'patient_id');
     }
     
     public function allergiesList()    
@@ -168,7 +168,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     
     public function reason() 
     {
-        return $this->hasMany('App\AppointmentReasons', 'patient_id');
+        return $this->hasMany('App\AppointmentReason', 'patient_id');
     }
     
     public function appointments()
@@ -192,11 +192,11 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
 
     public function cosmetics() 
     {
-            return $this->hasOne('App\Cosmetics', 'patient_id');
+            return $this->hasOne('App\Cosmetic', 'patient_id');
     }
     public function erectileDysfunctions() 
     {
-            return $this->hasOne('App\ErectileDysfunctions', 'patient_id');
+            return $this->hasOne('App\ErectileDysfunction', 'patient_id');
     }
     public function highTestosterone()  
     {
@@ -208,7 +208,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     }
     public function medicalHistories() 
     {
-            return $this->hasOne('App\MedicalHistories', 'patient_id');
+            return $this->hasOne('App\MedicalHistory', 'patient_id');
     }
     public function patientMedicationList() 
     {
@@ -232,7 +232,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     }
     public function vitamins() 
     {
-            return $this->hasMany('App\Vitamins', 'patient_id');
+            return $this->hasMany('App\Vitamin', 'patient_id');
     }
     public function weightLoss() 
     {
@@ -246,7 +246,7 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
     
     public function trimixDoses() 
     {
-            return $this->hasMany('App\TrimixDoses', 'patient_id');
+            return $this->hasMany('App\TrimixDose', 'patient_id');
     }
     
     public function paymentByPatientId()

@@ -13,7 +13,8 @@ use Illuminate\Http\Request;
  *
  * @return void
  */
-class ClientapiController extends Controller
+class ClientApiController extends Controller
+
 {
     use CommonTrait;
    /**

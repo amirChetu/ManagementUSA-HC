@@ -57,6 +57,6 @@ class Patient extends Model {
         return $this->belongsTo('App\State', 'state');
     }
        public function patientLocationName() {
-        return $this->belongsTo('App\Locations', 'location_id');
+        return $this->belongsTo('App\Location', 'location_id');
     }
 }

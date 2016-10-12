@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Patient;
 use App\Appointment;
+use App\AdamsQuestionary;
 use App\User;
 use App\WebLead;
 use App\AppointmentRequest;
@@ -15,6 +16,7 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\DB;
 use App;
 use Auth;
+use App\Location;
 use App\ApiData;
 
 /**

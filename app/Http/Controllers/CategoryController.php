@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Redirect;
 use App\User;
 use App;
 use DB;
-use App\Categories;
+use App\Category;
+
 
 /**
  * This class is used Categoies details
@@ -18,8 +19,7 @@ use App\Categories;
  *
  * @return null
  */
-
-class CategoriesController extends Controller
+class CategoryController extends Controller
 {
 	protected $success = false;
 	protected $patient_role = 6;
@@ -107,12 +107,11 @@ class CategoriesController extends Controller
 
             $patients = User::getAllPatientsIdAndName(config("constants.PATIENT_ROLE_ID"));
 
-            $category = Categories::where('id', $id)->get()->first();
+            $category = Category::where('id', $id)->get()->first();
             if(empty($category)){
                 \Session::flash('error_message', 'Category Not found.');
                 return Redirect::back();
             }
-
             $category_details = App\Packages::getCategoryDetailsById($id);
             if (empty($category_details['category_info'])) {
                 \Session::flash('error_message', 'This package is empty.');

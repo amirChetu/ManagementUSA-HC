@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Redirect;
 use DB;
 use Auth;
 use App\User;
-use App\TrimixDoses;
+use App\TrimixDose;
 use App\TrimixDosesFeedback;
 
 /**

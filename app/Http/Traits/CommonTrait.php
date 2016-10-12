@@ -47,11 +47,8 @@ trait CommonTrait {
      * return saved status
      *  */
     public function saveApiData($data) {
-        //$path = realpath('json.txt');
-        //$json_data = file_get_contents($path);
         $json_data = $this->getResponse($data);
         $datas = json_decode($json_data, true);
-        //echo "<pre>";print_r($datas);die;
         $error_row = [];
         if(isset($datas['Data']) && !empty($datas['Data']))
         {

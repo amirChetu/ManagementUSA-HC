@@ -5,7 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Categories extends Model
+class Category extends Model
 {
 	use SoftDeletes;
     
@@ -16,13 +16,11 @@ class Categories extends Model
      * @return array
    */
      public function category() {
-         
-       // return $this->belongsToMany('App\CategoryAddOns', 'category_id');
-          return $this->hasMany('App\CategoryAddOns', 'category_id'); 
+          return $this->hasMany('App\CategoryAddOn', 'category_id'); 
     }
 	
     public function productCategories() {
-        return $this->hasMany('App\productCategories', 'category_id');
+        return $this->hasMany('App\productCategory', 'category_id');
     }
 	
 	public function cart() {
@@ -30,11 +28,11 @@ class Categories extends Model
     }
 	
 	public function packages() {
-        return $this->hasMany('App\Packages', 'category_id');
+        return $this->hasMany('App\Package', 'category_id');
     }
 	
     public function CategoryAddOns() {  
-        return $this->belongsTo('App\CategoryAddOns', 'category_id');
+        return $this->belongsTo('App\CategoryAddOn', 'category_id');
     }
     
    

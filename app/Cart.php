@@ -76,12 +76,12 @@ class Cart extends Model
     
     public function categories()
     {
-        return $this->belongsTo('App\Categories', 'category_id');
+        return $this->belongsTo('App\Category', 'category_id');
     }
 	
     public function categoryTypes()
     {
-        return $this->belongsTo('App\CategoryTypes', 'category_type_id');
+        return $this->belongsTo('App\CategoryType', 'category_type_id');
     }
 
 }

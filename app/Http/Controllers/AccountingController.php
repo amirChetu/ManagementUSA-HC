@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use App;
 use Auth;
-use App\Cashlogs;
+use App\Cashlog;
 use App\Order;
 use Exception;
 

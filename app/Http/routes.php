@@ -521,39 +521,39 @@ Route::group(['middleware' => 'web'], function () {
     ]);
     
 
-    // Route for CategoriesController in Products Categories
+    // Route for CategoryController in Products Categories
     Route::get('/categories/listCategories', [
-        'uses' => 'CategoriesController@listCategories',
+        'uses' => 'CategoryController@listCategories',
         'as' => 'categories.listCategories',
         'middleware' => ['acl:product_categories_read']
     ]);
 
     Route::get('/categories/categoryDetails/{id}', [
-        'uses' => 'CategoriesController@categoryDetails',
+        'uses' => 'CategoryController@categoryDetails',
         'as' => 'categories.categoryDetails',
         'middleware' => ['acl:product_categories_read']
     ]);
     
     Route::get('/categories/newCategory', [
-        'uses' => 'CategoriesController@addNewCategory',
+        'uses' => 'CategoryController@addNewCategory',
         'as' => 'categories.addNewCategory',
         'middleware' => ['acl:product_categories_write']
     ]);
        
     Route::get('/categories/addcategories', [
-        'uses' => 'CategoriesController@addcategories',
+        'uses' => 'CategoryController@addcategories',
         'as' => 'categories.addcategories',
         'middleware' => ['acl:product_categories_write']
     ]);
     
     Route::post('/categories/saveCategories', [
-        'uses' => 'CategoriesController@saveCategories',
+        'uses' => 'CategoryController@saveCategories',
         'as' => 'categories.savecategories',
         'middleware' => ['acl:product_categories_write']	
     ]);
     
     Route::post('/categories/saveCategory', [
-        'uses' => 'CategoriesController@saveCategory',
+        'uses' => 'CategoryController@saveCategory',
         'as' => 'CategoriesController.saveCategory',
         'middleware' => ['acl:product_categories_write']
     ]);
@@ -609,38 +609,38 @@ Route::group(['middleware' => 'web'], function () {
     
     // Route for ProductsController in Products Imports
     Route::get('/products/addproducts', [
-        'uses' => 'ProductsController@addproducts',
+        'uses' => 'ProductController@addproducts',
         'as' => 'products.addproducts',
         'middleware' => ['acl:product_imports_write']
     ]);
 
     Route::post('/products/saveProducts', [
-        'uses' => 'ProductsController@saveProducts',
+        'uses' => 'ProductController@saveProducts',
         'as' => 'products.saveproducts',
         'middleware' => ['acl:product_imports_write']
     ]);
     
      Route::get('/product/inventory', [
-        'uses' => 'ProductsController@showInventory',
+        'uses' => 'ProductController@showInventory',
         'as' => 'products.showInventory',
         'middleware' => ['acl:product_categories_read']
     ]);
 		
     Route::post('/product/updateProduct', [
-        'uses' => 'ProductsController@updateProduct',
+        'uses' => 'ProductController@updateProduct',
         'as' => 'products.updateProduct',
         'middleware' => ['acl:product_categories_write']
     ]);
     
     
     Route::get('/product/create', [
-        'uses' => 'ProductsController@create',
+        'uses' => 'ProductController@create',
         'as' => 'products.create',
         //'middleware' => ['acl:accounting_write']	
     ]);
     
     Route::post('/product/store', [
-        'uses' => 'ProductsController@store',
+        'uses' => 'ProductController@store',
         'as' => 'products.store',
         //'middleware' => ['acl:accounting_write']	
     ]);
@@ -649,7 +649,7 @@ Route::group(['middleware' => 'web'], function () {
      * for invoice section
      */
     Route::get('/products/generateInvoice', [
-        'uses' => 'ProductsController@generateInvoice',
+        'uses' => 'ProductController@generateInvoice',
         'as' => 'products.generateInvoice',
         //'middleware' => ['acl:save_categories']	
     ]);
@@ -667,19 +667,19 @@ Route::group(['middleware' => 'web'], function () {
      * for payment after checkout
      */ 
     Route::get('/products/paymentForm/', [
-        'uses' => 'ProductsController@paymentForm',
+        'uses' => 'ProductController@paymentForm',
         'as' => 'products.paymentForm',
         //'middleware' => ['acl:save_categories']	
     ]);
 	
     Route::get('/categories/addcategories', [
-        'uses' => 'CategoriesController@addcategories',
+        'uses' => 'CategoryController@addcategories',
         'as' => 'categories.addcategories',
         //'middleware' => ['acl:add_categories']	
     ]);	
 
     Route::post('/categories/saveCategories', [
-        'uses' => 'CategoriesController@saveCategories',
+        'uses' => 'CategoryController@saveCategories',
         'as' => 'categories.savecategories',
         //'middleware' => ['acl:save_categories']   
     ]);
@@ -687,7 +687,7 @@ Route::group(['middleware' => 'web'], function () {
     Route::get('pdf/{invoice_id}', function($invoice_id) {
         $item = [
             //'middleware' => ['acl:save_products']
-            'items' => App\Products::all(),
+            'items' => App\Product::all(),
             'bag' => App\CartItem::where('invoice_id', $invoice_id)->first()
         ];
         
@@ -886,7 +886,7 @@ Route::group(['middleware' => 'web'], function () {
     ]);
 
     Route::get('/api/store',[
-        'uses' => 'clientapiController@store',
+        'uses' => 'ClientApiController@store',
         //'middleware' => ['acl.doseManagement_read']
     ]);
 
@@ -909,7 +909,7 @@ Route::group(['middleware' => 'web'], function () {
      * Show the API setting form
      */
     Route::get('/api/setting', [
-       'uses' => 'clientapiController@setting',
+       'uses' => 'ClientApiController@setting',
         'as' => 'api.setting',
         //'middleware' => ['acl.doseManagement_read']
     ]);
@@ -918,7 +918,7 @@ Route::group(['middleware' => 'web'], function () {
      * Save the API setting form
      */
     Route::post('/api/saveSetting', [
-       'uses' => 'clientapiController@saveSetting',
+       'uses' => 'ClientApiController@saveSetting',
         'as' => 'api.setting',
         //'middleware' => ['acl.doseManagement_read']
     ]);
