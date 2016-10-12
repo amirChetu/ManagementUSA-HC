@@ -17,6 +17,7 @@ class CreateAppointmentSourcesTable extends Migration
             $table->string('name', 31);
             $table->string('description');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

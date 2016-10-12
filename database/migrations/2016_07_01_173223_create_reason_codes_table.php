@@ -18,6 +18,7 @@ class CreateReasonCodesTable extends Migration
             $table->integer('type')->comment('1=>Set, 1=> No Set');
             $table->integer('status');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

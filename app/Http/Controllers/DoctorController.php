@@ -8,6 +8,7 @@ use App\Doctor;
 use App\User;
 use App\State;
 use App;
+use Exception;
 
 /**
  * Class is used to handle all the action related to doctor module
@@ -118,11 +119,11 @@ class DoctorController extends Controller {
 				}
 			} else {
 				return redirect('/doctor/addDcotor');
-			}			
+			}
 		}catch(Exception $e){
 			\Log::error($e);
-			\App::abort(404, $e->getMessage());			
-		}		
+			\App::abort(404, $e->getMessage());
+		}
     }
 
     /**
@@ -190,11 +191,11 @@ class DoctorController extends Controller {
 				return redirect('/doctor');
 			} else {
 				return redirect('/doctor/editdoctor');
-			}			
+			}
 		}catch(Exception $e){
 			\Log::error($e);
 			App::abort(404, $e->getMessage());
-		}		
+		}
     }
 
     /**
@@ -237,11 +238,11 @@ class DoctorController extends Controller {
 
 			return view('doctor.view_doctor', [
 				'doctor' => $doctor
-			]);			
+			]);
 		}catch(Exception $e){
 			\Log::error($e);
 			App::abort(404, $e->getMessage());
-		}		
+		}
     }
 
 }

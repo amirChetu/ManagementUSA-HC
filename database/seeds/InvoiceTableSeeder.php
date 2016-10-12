@@ -11,7 +11,7 @@ class InvoiceTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('invoice')->insert([ 
+        DB::table('invoices')->insert([
             [
                 'user_id' => 4,
                 'order_id' => 1,

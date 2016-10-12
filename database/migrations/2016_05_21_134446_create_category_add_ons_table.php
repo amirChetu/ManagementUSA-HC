@@ -14,10 +14,11 @@ class CreateCategoryAddOnsTable extends Migration
     {
       Schema::create('category_add_ons', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('category_id');  
-            $table->string('add_on_name');  
-            $table->string('cost', 31);  
+            $table->integer('category_id');
+            $table->string('add_on_name');
+            $table->string('cost', 31);
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

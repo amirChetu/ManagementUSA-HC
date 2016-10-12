@@ -24,10 +24,10 @@ class CreatePatientDetails extends Migration
             $table->string('call_time', 31);
             $table->string('driving_license');
             $table->string('address1')->nullable();
-            $table->string('address2')->nullable(); 
+            $table->string('address2')->nullable();
             $table->string('city', 31)->nullable();
             $table->integer('state');
-            $table->string('zipCode',11);       
+            $table->string('zipCode',11);
             $table->string('height',31);
             $table->string('weight',31);
             $table->string('employment_place', 63);
@@ -40,8 +40,11 @@ class CreatePatientDetails extends Migration
             $table->string('hash');
             $table->boolean('never_treat_status')->default(0);
             $table->boolean('form_status')->default(0);
+            $table->tinyInteger('patient_status')->default(0)->comment('0=> New Patient, 1=> Current Patient');
+            $table->integer('location_id');
             $table->timestamps();
-        }); 
+            $table->softDeletes();
+        });
     }
 
     /**

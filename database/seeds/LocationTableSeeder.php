@@ -13,43 +13,21 @@ class LocationTableSeeder extends Seeder
     {
          DB::table('locations')->insert([
             [
-				'name' =>'Newcastle',
-                'city' => 'Newcastle',
-                'state' => 'Texas',
+		'name' =>'Arizona',
+                'city' => 'Arizona',
+                'state' => 'Arizona',
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s'),
             ],
             [
-               'name' =>'Lancaster',
-                'city' => 'Lancaster',
-                'state' => 'South Carolina',
+               'name' =>'Oklahoma',
+                'city' => 'Oklahoma',
+                'state' => 'Oklahoma',
                 'created_at' => date('Y-m-d H:i:s'),
                 'updated_at' => date('Y-m-d H:i:s'),
 
             ],
-            [
-                'name' =>'Chester',
-                'city' => 'Chester',
-                'state' => 'Pennsylvania',
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s'),
-            ],
-            [
-			
-                'name' =>'Andover',
-                'city' => 'Andover',
-                'state' => 'Ohio',
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s'),
-            ],
-            [
-				'name' =>'Kent',
-                'city' => 'Kent',
-                'state' => 'Washington',
-                'created_at' => date('Y-m-d H:i:s'),
-                'updated_at' => date('Y-m-d H:i:s'),
-            ]
-
+            
         ]);
     }
 }

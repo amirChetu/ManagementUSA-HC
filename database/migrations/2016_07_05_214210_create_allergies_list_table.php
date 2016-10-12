@@ -12,12 +12,13 @@ class CreateAllergiesListTable extends Migration
      */
     public function up()
     {
-        Schema::create('allergies_list', function (Blueprint $table) {
+        Schema::create('allergies_lists', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('patient_id');  
-            $table->string('allergic_medicine');           
+            $table->integer('patient_id');
+            $table->string('allergic_medicine');
             $table->timestamps();
-        }); 
+            $table->softDeletes();
+        });
     }
     /**
      * Reverse the migrations.

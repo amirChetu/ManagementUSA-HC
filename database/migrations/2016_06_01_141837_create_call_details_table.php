@@ -14,10 +14,11 @@ class CreateCallDetailsTable extends Migration
     {
        Schema::create('call_details', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('number', 20);  
+            $table->string('number', 20);
             $table->tinyInteger('status'); //'missedcall, set or noset'
-            $table->string('source', 31);  //'advertizing, digital media etc' 
-            $table->timestamps();           
+            $table->string('source', 31);  //'advertizing, digital media etc'
+            $table->timestamps();
+            $table->softDeletes();
         });
     }
 

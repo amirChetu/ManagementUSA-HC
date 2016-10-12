@@ -14,11 +14,13 @@ class CreateCartsTable extends Migration
     {
         Schema::create('carts', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id'); 
-            $table->integer('category_id'); 
-            $table->integer('category_type_id');           
+            $table->integer('user_id');
+            $table->integer('category_id');
+            $table->integer('category_type_id');
+            $table->integer('patient_id');
             $table->timestamps();
-        });     
+            $table->softDeletes();
+        });
     }
     /**
      * Reverse the migrations.

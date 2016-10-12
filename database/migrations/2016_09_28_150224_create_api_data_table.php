@@ -12,7 +12,7 @@ class CreateApiDataTable extends Migration
      */
     public function up()
     {
-        Schema::connection('mysql2')->create('api_data', function (Blueprint $table) {
+        Schema::connection('mysql2')->create('api_datas', function (Blueprint $table) {
             $table->increments('id');
             $table->bigInteger('timestamp');
             $table->dateTime('date_time');
