@@ -98,11 +98,12 @@ class User extends Model implements AuthenticatableContract, CanResetPasswordCon
         
         $permissions = $permissions['permissions'];
         $permissionSlugArr = array();
-        foreach($permissions as $permission)
-        {
-            $permissionSlugArr[] = $permission['permission_slug'];
-        }
-        return $permissionSlugArr;
+
+       foreach($permissions as $permission)
+       {
+           $permissionSlugArr[] = $permission['slug'];
+       }
+       return $permissionSlugArr;
     }
 
     /**

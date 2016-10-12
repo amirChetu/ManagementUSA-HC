@@ -15,8 +15,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class Emi extends Model
 {
     use SoftDeletes;
-	
-    protected $table = 'emi';
+
+    protected $table = 'emis';
 
     protected $fillable = [
         'id',
@@ -32,4 +32,5 @@ class Emi extends Model
         'updated_at',
         'deleted_at'
     ];
+
 }

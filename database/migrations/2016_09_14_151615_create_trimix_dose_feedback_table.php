@@ -12,7 +12,7 @@ class CreateTrimixDoseFeedbackTable extends Migration
      */
     public function up()
     {
-        Schema::create('trimix_dose_feedback', function (Blueprint $table) {
+        Schema::create('trimix_dose_feedbacks', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('trimix_dose_id');
             $table->integer('agent_id');

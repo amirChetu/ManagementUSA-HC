@@ -15,8 +15,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class FollowupReschedule extends Model {
 
     use SoftDeletes;
-	
-    protected $table = 'followup_reschedule';
+
+    protected $table = 'followup_reschedules';
     
     /**
     * This function create linking between appointments table and followup_reschedules table.

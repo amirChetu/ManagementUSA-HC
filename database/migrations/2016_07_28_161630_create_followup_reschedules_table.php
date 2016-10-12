@@ -12,11 +12,11 @@ class CreateFollowupReschedulesTable extends Migration
      */
     public function up()
     {
-        Schema::create('followup_reschedule', function (Blueprint $table) {
+        Schema::create('followup_reschedules', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('old_appointment_id')->comment('Appointment before the followup reshedule/later'); 
+            $table->integer('old_appointment_id')->comment('Appointment before the followup reshedule/later');
             $table->integer('new_appointment_id')->comment('Appointment After the followup reshedule/later');;
-            $table->integer('followup_id');   
+            $table->integer('followup_id');
             $table->timestamps();
             $table->softDeletes();
         });

@@ -18,7 +18,7 @@ class TrimixDosesFeedback extends Model
      *
      * @var string
      */
-    protected $table = 'trimix_dose_feedback';
+    protected $table = 'trimix_dose_feedbacks';
     protected $fillable = [
         'trimix_dose_id',
         'agent_id',
@@ -28,7 +28,7 @@ class TrimixDosesFeedback extends Model
         'antidote',
         'notes'
     ];
-    
+
     /*
     |--------------------------------------------------------------------------
     | Relationship Methods

@@ -365,7 +365,7 @@ $(function() {
         if($('#addApptRequest').find('#patientMainDiv').is(':visible')){
             if ($("#patient_id").val() === undefined || $("#patient_id").val() === "")
                  {
-                     if( $("#patientMainDiv").find('span.comment').length == 0){
+                     if( $("#patientMainDiv").find('span.comment').length === 0){
                          $('#patient_id').parent("#patientMainDiv").append('<span class="help-block comment error"><strong>Please Select Patient</strong></span>');                                                           
                      }
                          count = count + 1;

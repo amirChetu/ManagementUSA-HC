@@ -15,8 +15,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class PatientVitaminList extends Model
 {
     use SoftDeletes;
-	
-    protected $table = 'patient_vitamin_list';
+
+    protected $table = 'patient_vitamin_lists';
+
     protected $fillable = [
         'patient_id',
         'name',

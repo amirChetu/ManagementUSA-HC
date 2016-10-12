@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class ApiData extends Model
 {
     use SoftDeletes;
-    protected $table = 'api_data';
+    protected $table = 'api_datas';
     protected $connection = 'mysql2';
     protected $fillable = [
         'timestamp',

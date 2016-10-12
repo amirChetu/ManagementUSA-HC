@@ -20,8 +20,9 @@ class CreateProductCategoriesTable extends Migration
             $table->double('product_price');
             $table->integer('category_type_id');
             $table->timestamps();
+            $table->softDeletes();
         });
-        
+
     }
 
     /**

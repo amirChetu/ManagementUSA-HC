@@ -22,12 +22,12 @@ class Permission extends Model
      * @var string
      */
     protected $table = 'permissions';
-    
+
     protected $fillable =
     [
-        'permission_title',
-        'permission_slug',
-        'permission_description',
+        'title',
+        'slug',
+        'description',
         'parent_id',
         'status',
     ];
@@ -42,21 +42,21 @@ class Permission extends Model
     public static function getPermissionForLoggedUser($role = null)
     {
         $permissions = PermissionRole::with('permissionId')->where('role_id', $role)->get();
-        
         $permissions = $permissions->toArray();
-        
+
         $permissionsArr = array();
         foreach($permissions as $permission)
         {
             $permissionsArr[] = $permission['permission_id'];
         }
-        
+
         $permissionSlugArr = array();
-        foreach($permissionsArr as $permission)
-        {
-            $permissionSlugArr[] = $permission['permission_slug'];
-        }
-      
+
+       foreach($permissionsArr as $permission)
+       {
+           $permissionSlugArr[] = $permission['slug'];
+       }
+
        return $permissionSlugArr;
     }
 

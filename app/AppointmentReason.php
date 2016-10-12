@@ -15,7 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class AppointmentReason extends Model
 {
     use SoftDeletes;
-	
+
     protected $table = 'appointment_reasons';
     protected $fillable = [
         'id',
@@ -56,17 +56,15 @@ class AppointmentReason extends Model
     */
     public function appointmentRequest(){
         return $this->belongsTo('App/AppointmentRequest', 'request_id');
-    }	
+    }
 
     /**
-    * This function create linking between reason_codes table and appointment_reasons table.
+    * hasOne Relationship Method for accessing the Appointment Reason
     *
-    * @parms void;
-    *
-    * @return null
+    * @return QueryBuilder Object
     */
     public function reasonCode()
     {
         return $this->belongsTo('App\ReasonCode', 'reason_id')->select(array('id', 'reason'));
-    }	
+    }
 }

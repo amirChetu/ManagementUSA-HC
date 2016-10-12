@@ -16,7 +16,7 @@ class IllnessList extends Model
 {
     use SoftDeletes;
 	
-    protected $table = 'illness_list';
+    protected $table = 'illness_lists';
     protected $fillable = [
         'id',
         'patient_id',

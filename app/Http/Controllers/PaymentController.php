@@ -17,10 +17,22 @@ use PayPal\Api\CreditCard;
 use PayPal\Api\FundingInstrument;
 use Exception;
 
+/**
+ * This class is used Paypal Payment integration modules
+ *
+ * @category App\Http\Controllers;
+ *
+ * @return null
+ */
 class PaymentController extends Controller {
 
     private $_api_context;
 
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
     public function __construct() {
         // setup PayPal api context
         $paypal_conf = config('paypal');
@@ -28,6 +40,11 @@ class PaymentController extends Controller {
         $this->_api_context->setConfig($paypal_conf['settings']);
     }
 
+    /**
+     * Make a function for the paypal testing with debit card
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
     public function debit(Request $request) {
 
         $card = new CreditCard();
@@ -73,23 +90,17 @@ class PaymentController extends Controller {
         try {
             $payment->create($this->_api_context);
         } catch (\PayPal\Exception\PayPalConnectionException $ex) {
-            echo '<pre>';
-            print_r($ex->getCode()); // Prints the Error Code
-            echo '<pre>';
-            print_r(json_decode($ex->getData())); // Prints the detailed error message
+            \Log::error($ex->getData());
+            echo 'Error occured';
             die;
         }
-        echo '<pre>';
-        print_r($payment->toArray());
-        echo '<br>';
         foreach ($payment->getLinks() as $link) {
             if ($link->getRel() == 'approval_url') {
                 $redirect_url = $link->getHref();
                 break;
             }
         }
-
-// add payment ID to session
+        // add payment ID to session
         Session::put('paypal_payment_id', $payment->getId());
         if (empty($request->input('PayerID')) || empty($request->input('token'))) {
             echo 'failed';
@@ -100,16 +111,13 @@ class PaymentController extends Controller {
         $payment = Payment::get($payment_id, $this->_api_context);
 
         // PaymentExecution object includes information necessary
-        // to execute a PayPal account payment.
-        // The payer_id is added to the request query parameters
-        // when the user is redirected from paypal back to your site
         $execution = new PaymentExecution();
         $execution->setPayerId($request->input('PayerID'));
 
         //Execute the payment
         $result = $payment->execute($execution, $this->_api_context);
         if (isset($redirect_url)) {
-        // redirect to paypal
+            // redirect to paypal
             return redirect($redirect_url);
         }
         echo 'error';
@@ -123,7 +131,7 @@ class PaymentController extends Controller {
 
     /**
      * Save the order from the makePayment function
-     *
+     * @param  \Illuminate\Http\Request  Payment Data
      *  */
     public function payment($paymentData) {
         $cardNumber = urlencode($paymentData['card_number']);
@@ -179,7 +187,7 @@ class PaymentController extends Controller {
         }
     }
 
-     /**
+    /**
      * Displays the details of payment errors
      * @param  int  $id
      * @return\Illuminate\Http\Response

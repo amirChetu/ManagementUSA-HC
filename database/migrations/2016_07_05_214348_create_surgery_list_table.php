@@ -12,14 +12,15 @@ class CreateSurgeryListTable extends Migration
      */
     public function up()
     {
-        Schema::create('surgery_list', function (Blueprint $table) {
+        Schema::create('surgery_lists', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('patient_id');  
+            $table->integer('patient_id');
             $table->string('type_of_surgery');
-            $table->date('date');            
+            $table->date('date');
             $table->string('reason');
             $table->timestamps();
-        });        
+            $table->softDeletes();
+        });
     }
 
     /**

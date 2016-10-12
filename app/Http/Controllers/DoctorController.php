@@ -8,6 +8,7 @@ use App\Doctor;
 use App\User;
 use App\State;
 use App;
+use Exception;
 
 /**
  * Class is used to handle all the action related to doctor module
@@ -70,55 +71,59 @@ class DoctorController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function create(Request $request) {
+		try{
+			// define validation rule
+			$this->validate($request, [
+				'first_name' => 'required|max:255',
+				'last_name' => 'required|max:255',
+				'email' => 'required|email|max:255|unique:users',
+				'password' => 'required|min:6|confirmed',
+				'phone' => 'required',
+				'zipCode' => 'required|min:6|max:15'
+			]);
 
-        // define validation rule
-        $this->validate($request, [
-            'first_name' => 'required|max:255',
-            'last_name' => 'required|max:255',
-            'email' => 'required|email|max:255|unique:users',
-            'password' => 'required|min:6|confirmed',
-            'phone' => 'required',
-            'zipCode' => 'required|min:6|max:15'
-        ]);
+			// create User object
+			$userData = new User;
+			$userData->first_name = $request->first_name;
+			$userData->last_name = $request->last_name;
+			$userData->email = $request->email;
+			$userData->password = bcrypt($request['password']);
+			$userData->role = $this->role;
 
-        // create User object
-        $userData = new User;
-        $userData->first_name = $request->first_name;
-        $userData->last_name = $request->last_name;
-        $userData->email = $request->email;
-        $userData->password = bcrypt($request['password']);
-        $userData->role = $this->role;
+			// save user data in user table
+			if ($userData->save()) {
+				// create doctor object to store doctor details in doctor_details table
+				$doctorData = new Doctor;
+				// get the last inserted id to store in doctor_details table as reference key
+				$doctorData->user_id = $userData->id;
+				if ($request->dob) {
+					$doctorData->dob = date('Y-m-d', strtotime($request->dob));
+				}
+				$doctorData->gender = $request->gender;
+				$doctorData->phone = $request->phone;
+				$doctorData->address1 = $request->address1;
+				$doctorData->address2 = $request->address2;
+				$doctorData->city = $request->city;
+				$doctorData->state = $request->state;
+				$doctorData->zipCode = $request->zipCode;
+				$doctorData->employer = $request->employer;
+				$doctorData->specialization = $request->specialization;
 
-        // save user data in user table
-        if ($userData->save()) {
-            // create doctor object to store doctor details in doctor_details table
-            $doctorData = new Doctor;
-            // get the last inserted id to store in doctor_details table as reference key
-            $doctorData->user_id = $userData->id;
-            if ($request->dob) {
-                $doctorData->dob = date('Y-m-d', strtotime($request->dob));
-            }
-            $doctorData->gender = $request->gender;
-            $doctorData->phone = $request->phone;
-            $doctorData->address1 = $request->address1;
-            $doctorData->address2 = $request->address2;
-            $doctorData->city = $request->city;
-            $doctorData->state = $request->state;
-            $doctorData->zipCode = $request->zipCode;
-            $doctorData->employer = $request->employer;
-            $doctorData->specialization = $request->specialization;
-
-            // save the user details data in user_details table
-            if ($doctorData->save()) {
-                // set the flash message for doctor creation success.
-                \Session::flash('flash_message', 'Doctor created successfully.');
-                return redirect('/doctor');
-            } else {
-                return redirect('/doctor/adddoctor');
-            }
-        } else {
-            return redirect('/doctor/addDcotor');
-        }
+				// save the user details data in user_details table
+				if ($doctorData->save()) {
+					// set the flash message for doctor creation success.
+					\Session::flash('flash_message', 'Doctor created successfully.');
+					return redirect('/doctor');
+				} else {
+					return redirect('/doctor/adddoctor');
+				}
+			} else {
+				return redirect('/doctor/addDcotor');
+			}
+		}catch(Exception $e){
+			\Log::error($e);
+			\App::abort(404, $e->getMessage());
+		}
     }
 
     /**
@@ -129,16 +134,21 @@ class DoctorController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function edit($id) {
-        if (!($doctor = User::with('doctorDetail')->find(base64_decode($id)))) {
-            App::abort(404, 'Page not found.');
-        }
-        // get the state list from state table
-        $states = State::lists('name', 'id')->toArray();
+		try{
+			if (!($doctor = User::with('doctorDetail')->find(base64_decode($id)))) {
+				throw new Exception('Page not found.');
+			}
+			// get the state list from state table
+			$states = State::lists('name', 'id')->toArray();
 
-        return view('doctor.edit_doctor', [
-            'doctor' => $doctor,
-            'states' => $states
-        ]);
+			return view('doctor.edit_doctor', [
+				'doctor' => $doctor,
+				'states' => $states
+			]);
+		}catch(Exception $e){
+			\Log::error($e);
+			App::abort(404, $e->getMessage());
+		}
     }
 
     /**
@@ -147,40 +157,45 @@ class DoctorController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function update($id, Request $request) {
-        if (!($userData = User::find($id))) {
-            App::abort(404, 'Page not found.');
-        }
-        $this->validate($request, [
-            'first_name' => 'required|max:255',
-            'last_name' => 'required|max:255',
-            'phone' => 'required',
-            'zipCode' => 'required|min:6|max:15'
-        ]);
+		try{
+			if (!($userData = User::find($id))) {
+				throw new Exception('Page not found.');
+			}
+			$this->validate($request, [
+				'first_name' => 'required|max:255',
+				'last_name' => 'required|max:255',
+				'phone' => 'required',
+				'zipCode' => 'required|min:6|max:15'
+			]);
 
-        $userInput['first_name'] = $request->first_name;
-        $userInput['last_name'] = $request->last_name;
+			$userInput['first_name'] = $request->first_name;
+			$userInput['last_name'] = $request->last_name;
 
-        $doctorData = Doctor::where('user_id', $id)->get();
-        if ($request->dob) {
-            $doctorInput['dob'] = date('Y-m-d', strtotime($request->dob));
-        }
-        $doctorInput['gender'] = $request->gender;
-        $doctorInput['phone'] = $request->phone;
-        $doctorInput['address1'] = $request->address1;
-        $doctorInput['address2'] = $request->address2;
-        $doctorInput['city'] = $request->city;
-        $doctorInput['state'] = $request->state;
-        $doctorInput['zipCode'] = $request->zipCode;
-        $doctorInput['employer'] = $request->employer;
-        $doctorInput['specialization'] = $request->specialization;
+			$doctorData = Doctor::where('user_id', $id)->get();
+			if ($request->dob) {
+				$doctorInput['dob'] = date('Y-m-d', strtotime($request->dob));
+			}
+			$doctorInput['gender'] = $request->gender;
+			$doctorInput['phone'] = $request->phone;
+			$doctorInput['address1'] = $request->address1;
+			$doctorInput['address2'] = $request->address2;
+			$doctorInput['city'] = $request->city;
+			$doctorInput['state'] = $request->state;
+			$doctorInput['zipCode'] = $request->zipCode;
+			$doctorInput['employer'] = $request->employer;
+			$doctorInput['specialization'] = $request->specialization;
 
-        if ($userData->fill($userInput)->save() && $doctorData[0]->fill($doctorInput)->save()) {
-            \Session::flash('flash_message', 'Doctor details updated successfully.');
+			if ($userData->fill($userInput)->save() && $doctorData[0]->fill($doctorInput)->save()) {
+				\Session::flash('flash_message', 'Doctor details updated successfully.');
 
-            return redirect('/doctor');
-        } else {
-            return redirect('/doctor/editdoctor');
-        }
+				return redirect('/doctor');
+			} else {
+				return redirect('/doctor/editdoctor');
+			}
+		}catch(Exception $e){
+			\Log::error($e);
+			App::abort(404, $e->getMessage());
+		}
     }
 
     /**
@@ -191,14 +206,19 @@ class DoctorController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function delete($id = null) {
-        $doctor = User::find(base64_decode($id));
-        if (!$doctor || $doctor->role != config("constants.DOCTOR_ROLE_ID")) {
-            App::abort(404, 'Page not found.');
-        }
+		try{
+			$doctor = User::find(base64_decode($id));
+			if (!$doctor || $doctor->role != config("constants.DOCTOR_ROLE_ID")) {
+				throw new Exception('Page not found.');
+			}
 
-        User::destroy(base64_decode($id));
-        \Session::flash('flash_message', 'Doctor has been deleted successfully.');
-        return Redirect::back();
+			User::destroy(base64_decode($id));
+			\Session::flash('flash_message', 'Doctor has been deleted successfully.');
+			return Redirect::back();
+		}catch(Exception $e){
+			\Log::error($e);
+			App::abort(404, $e->getMessage());
+		}
     }
 
     /**
@@ -209,15 +229,20 @@ class DoctorController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function view($id = null) {
-        if (!($doctor = User::with(
-                        'doctorDetail', 'UserDetail.userStateName', 'roleName'
-                )->find(base64_decode($id)))) {
-            App::abort(404, 'Page not found.');
-        }
+		try{
+			if (!($doctor = User::with(
+							'doctorDetail', 'UserDetail.userStateName', 'roleName'
+					)->find(base64_decode($id)))) {
+				throw new Exception('Page not found.');
+			}
 
-        return view('doctor.view_doctor', [
-            'doctor' => $doctor
-        ]);
+			return view('doctor.view_doctor', [
+				'doctor' => $doctor
+			]);
+		}catch(Exception $e){
+			\Log::error($e);
+			App::abort(404, $e->getMessage());
+		}
     }
 
 }
