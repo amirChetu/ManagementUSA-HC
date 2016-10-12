@@ -7,6 +7,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Crypt;
 use Illuminate\Contracts\Encryption\DecryptException;
 
+/**
+ * This class is used to handle all the data related to API Data
+ *
+ * @category App\Http\Controllers;
+ *
+ * @return null
+ */
 class ApiSetting extends Model
 {
     use SoftDeletes;

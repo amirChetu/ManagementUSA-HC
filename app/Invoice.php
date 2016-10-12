@@ -4,6 +4,13 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * This class is used to handle all the data related to invoices tables
+ *
+ * @category App\Http\Controllers;
+ *
+ * @return null
+ */
 class Invoice extends Model
 {
     /**

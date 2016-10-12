@@ -4,81 +4,128 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * This class is used to handle all the data related to Cart tables
+ *
+ * @category App\Http\Controllers;
+ *
+ * @return null
+ */
 class Cart extends Model
 {
-	use SoftDeletes;
+    use SoftDeletes;
+    
+    /**
+    * This function is used to get the cart data from carts table.
+    *
+    * @parms void;
+    *
+    * @return null
+    */
+    public static function getCartDetails($patientId){
+        $category_list = [];
+        $category_detail_list = [];
 
-	public static function getCartDetails($patientId){
-		$category_list = [];
-		$category_detail_list = [];
-		
-		$original_package_price = [];
-		$discouonted_package_price = [];
-		$total_cart_price = 0;
-		$package_discount = [];
-		
-		$cart = Cart::with('patient', 'user', 'categoryTypes', 'categories', 'categories.packages', 'categories.packages.Product')->where('patient_id', $patientId)->get();	
+        $original_package_price = [];
+        $discouonted_package_price = [];
+        $total_cart_price = 0;
+        $package_discount = [];
 
+        $cart = Cart::with('patient', 'user', 'categoryTypes', 'categories', 'categories.packages', 'categories.packages.Product')->where('patient_id', $patientId)->get();
+        foreach($cart as $i => $v){
+            $original_package_price[$v->id] = 0;
+            $discouonted_package_price[$v->id] = 0;
 
-		foreach($cart as $i => $v){
-			$original_package_price[$v->id] = 0;
-			$discouonted_package_price[$v->id] = 0;
-		
-			$category_list[$v->id] = [
-								'category_id' => $v->category_id, 
-								'category' => $v->categories->cat_name, 
-								'duration' => $v->categories->duration_months, 
-								'user_id' => $v->user_id, 
-								'user' => $v->user->first_name.' '.$v->user->last_name, 
-								'patient_id' => $v->patient_id, 
-								'patient' => $v->patient->first_name.' '.$v->patient->last_name,
-								'category_type_id' => $v->category_type_id,
-								'category_type' => $v->categoryTypes->name
-							]; 
+            $category_list[$v->id] = [
+                'category_id' => $v->category_id, 
+                'category' => $v->categories->cat_name, 
+                'duration' => $v->categories->duration_months, 
+                'user_id' => $v->user_id, 
+                'user' => $v->user->first_name.' '.$v->user->last_name, 
+                'patient_id' => $v->patient_id, 
+                'patient' => $v->patient->first_name.' '.$v->patient->last_name,
+                'category_type_id' => $v->category_type_id,
+                'category_type' => $v->categoryTypes->name
+            ]; 
 
-			$category_detail_list[$v->id] = [];
-			foreach($v->categories->packages as $ind => $val){
- 				if($category_list[$v->id]['category_type_id'] == $val['category_type']){
-					$category_detail_list[$v->id][$ind]['package_id'] = $val->id;
-					$category_detail_list[$v->id][$ind]['product_id'] = $val->product_id;
-					$category_detail_list[$v->id][$ind]['sku'] = $val->product->sku;
-					$category_detail_list[$v->id][$ind]['product'] = $val->product->name;
-					$category_detail_list[$v->id][$ind]['count'] = $val->product_count;
-					$category_detail_list[$v->id][$ind]['discount_price'] = $val->product_price;
-					$category_detail_list[$v->id][$ind]['original_price'] = $val->product->price;
-					$category_detail_list[$v->id][$ind]['unit_of_measurement'] = $val->product->unit_of_measurement;
-					
-					$original_package_price[$v->id] +=  $val->product_count * $val->product->price;
-					$discouonted_package_price[$v->id] +=  $val->product_price;
-					$total_cart_price +=  $val->product_price; 
-				}
-			}
-			$package_discount[$v->id] =  $original_package_price[$v->id] - $discouonted_package_price[$v->id];
-		} 
-	
-		return ['category_list' => $category_list, 'category_detail_list' => $category_detail_list, 'original_package_price' => $original_package_price, 'discouonted_package_price' => $discouonted_package_price,	'package_discount' => $package_discount, 'total_cart_price' => $total_cart_price];
-	}
-	
+            $category_detail_list[$v->id] = [];
+            foreach($v->categories->packages as $ind => $val){
+                if($category_list[$v->id]['category_type_id'] == $val['category_type']){
+                    $category_detail_list[$v->id][$ind]['package_id'] = $val->id;
+                    $category_detail_list[$v->id][$ind]['product_id'] = $val->product_id;
+                    $category_detail_list[$v->id][$ind]['sku'] = $val->product->sku;
+                    $category_detail_list[$v->id][$ind]['product'] = $val->product->name;
+                    $category_detail_list[$v->id][$ind]['count'] = $val->product_count;
+                    $category_detail_list[$v->id][$ind]['discount_price'] = $val->product_price;
+                    $category_detail_list[$v->id][$ind]['original_price'] = $val->product->price;
+                    $category_detail_list[$v->id][$ind]['unit_of_measurement'] = $val->product->unit_of_measurement;
+
+                    $original_package_price[$v->id] +=  $val->product_count * $val->product->price;
+                    $discouonted_package_price[$v->id] +=  $val->product_price;
+                    $total_cart_price +=  $val->product_price; 
+                }
+            }
+            $package_discount[$v->id] =  $original_package_price[$v->id] - $discouonted_package_price[$v->id];
+        } 
+
+        return ['category_list' => $category_list, 'category_detail_list' => $category_detail_list, 'original_package_price' => $original_package_price, 'discouonted_package_price' => $discouonted_package_price,	'package_discount' => $package_discount, 'total_cart_price' => $total_cart_price];
+    }
+    
+    /**
+    * This function create linking between users table and carts table.
+    *
+    * @parms void;
+    *
+    * @return null
+    */
     public function user()
     {
         return $this->belongsTo('App\User', 'user_id');
     }
-
+    
+    /**
+    * This function create linking between users table and carts table.
+    *
+    * @parms void;
+    *
+    * @return null
+    */
     public function patient()
     {
         return $this->belongsTo('App\User', 'patient_id');
     }
-
+    
+    /**
+    * This function create linking between cart_items table and carts table.
+    *
+    * @parms void;
+    *
+    * @return null
+    */
     public function cartItems()
     {
         return $this->hasMany('App\CartItem', 'cart_id');
     }
     
+    /**
+    * This function create linking between categories table and carts table.
+    *
+    * @parms void;
+    *
+    * @return null
+    */
     public function categories()
     {
         return $this->belongsTo('App\Category', 'category_id');
     }
-	
+    
+    /**
+    * This function create linking between category_types table and carts table.
+    *
+    * @parms void;
+    *
+    * @return null
+    */
     public function categoryTypes()
     {
         return $this->belongsTo('App\CategoryType', 'category_type_id');

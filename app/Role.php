@@ -5,9 +5,16 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * This class is used to handle all the data related to roles tables
+ *
+ * @category App\Http\Controllers;
+ *
+ * @return null
+ */
 class Role extends Model
 {
-	use SoftDeletes;
+    use SoftDeletes;
 	
     /**
      * The database table used by the model.

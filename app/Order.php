@@ -5,6 +5,14 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+
+/**
+ * This class is used to handle all the data related to orders tables
+ *
+ * @category App\Http\Controllers;
+ *
+ * @return null
+ */
 class Order extends Model
 {
     /**
@@ -31,25 +39,48 @@ class Order extends Model
     */
 
     /**
-     * many-to-many relationship method
-     *
-     * @return QueryBuilder
-     */
+    * This function create linking between order_details table and orders table.
+    *
+    * @parms void;
+    *
+    * @return null
+    */
     public function orderDetail()
     {
         return $this->hasMany('App\OrderDetail', 'order_id');
     }
     
+    /**
+    * This function create linking between invoices table and orders table.
+    *
+    * @parms void;
+    *
+    * @return null
+    */
     public function invoice()
     {
         return $this->hasOne('App\Invoice', 'order_id');
     }
-	
+    
+    /**
+    * This function create linking between payments table and orders table.
+    *
+    * @parms void;
+    *
+    * @return null
+    */
     public function payment()
     {
         return $this->belongsTo('App\Payment', 'payment_id');
     }
     
+    /**
+    * This function is used to get all orders form orders tables using unique paymentId.
+    *
+    * @parms void;
+    *
+    * @return null
+    */
     public static function getAllOrders($orderId)
     {
         $orders = [];
