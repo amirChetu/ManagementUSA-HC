@@ -5,10 +5,17 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * This class is used to handle all the data related to sales tables
+ *
+ * @category App\Http\Controllers;
+ *
+ * @return null
+ */
 class Sale extends Model
 {
-	use SoftDeletes;
-    //
+    use SoftDeletes;
+    
     protected $fillable = 
     [
         'description',
@@ -19,24 +26,38 @@ class Sale extends Model
         'credit_cd3',
         'check',
     ];
-	
-	public function user()
-	{
-		return $this->belongsTo('App\User', 'patient_id');
-	}	
     
     /**
-     * Get the user that conducts the sale.
-     */
+    * This function create linking between users table and sales table.
+    *
+    * @parms void;
+    *
+    * @return null
+    */
+    public function user()
+    {
+        return $this->belongsTo('App\User', 'patient_id');
+    }	
+    
+    /**
+    * This function create linking between users table and sales table.
+    *
+    * @parms void;
+    *
+    * @return null
+    */
     public function seller(){
         return $this->belongsTo('App\User');
     }
     
     /**
-     * Get the user patient that bought.
-     */
+    * This function create linking between appointments table and sales table.
+    *
+    * @parms void;
+    *
+    * @return null
+    */
     public function appt(){
         return $this->belongsTo('App\Appointment');
     }
-    
 }

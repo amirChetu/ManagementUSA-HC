@@ -4,6 +4,13 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
+/**
+ * This class is used to handle all the data related to locations tables
+ *
+ * @category App\Http\Controllers;
+ *
+ * @return null
+ */
 class Location extends Model
 {
     /**
@@ -18,11 +25,5 @@ class Location extends Model
         'state',
         'patient_id',
         'appt_request_id'
-        
     ];
-    
-//     public function AppointmentRequest()
-//    {
-//        return $this->belongsTo('App/AppointmentRequest', 'id');
-//    }
 }

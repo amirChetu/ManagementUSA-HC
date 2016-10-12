@@ -7,8 +7,6 @@ use App\Patient;
 use App\Appointment;
 use App\FollowupReschedule;
 use App\AppointmentRequest;
-use App\AdamsQuestionary;
-use App\Doctor;
 use App\User;
 use App\FollowUp;
 use App\State;
