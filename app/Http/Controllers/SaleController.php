@@ -51,8 +51,8 @@ class SaleController extends Controller {
     public function index() {
 
         try {
-            if (!class_exists('App/User')) {
-                throw new Exception('Calss User not found');
+            if (!class_exists('App\User')) {
+                throw new Exception('Class User not found');
             }
 
             $patients = User::where('role', $this->patient_role)

@@ -50,7 +50,7 @@ class UserController extends Controller {
 					->lists('role_title', 'id')
 					->toArray();
 
-			if(!class_exists('App/Role')){
+			if(!class_exists('App\Role')){
 				throw new Exception('Class Role not found');
 			}
 			// get the state list from state table
@@ -84,7 +84,7 @@ class UserController extends Controller {
 			]);
 
 			// create new object for User
-			if(!class_exists('App/User')){
+			if(!class_exists('App\User')){
 				throw new Exception('Class User not found');
 			}
 			$userData = new User;
@@ -135,7 +135,7 @@ class UserController extends Controller {
      */
     public function listUsers() {
 		try{
-			if(!class_exists('App/User')){
+			if(!class_exists('App\User')){
 				throw new Exception('Class User not found');
 			}
 			// get all users except doctor and patient to show on listing page
@@ -208,7 +208,7 @@ class UserController extends Controller {
 			$userInput['last_name'] = $request->last_name;
 
 			// get user details data by user id
-			if(!class_exists('App/UserDetail')){
+			if(!class_exists('App\UserDetail')){
 				throw new Exception('Class UserDetail not found');
 			}
 			$userDetailData = UserDetail::where('user_id', $id)->get();

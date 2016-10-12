@@ -94,10 +94,10 @@ class AclController extends Controller {
 			$sales = [];
 			\Log::error($e);
 		}
-		
+
 		return view('account.sales_report', [
 			'sales' => $sales
-		]);		
+		]);
     }
 
     /**
@@ -109,8 +109,8 @@ class AclController extends Controller {
      */
     public function listRoles() {
 		try{
-			if(!class_exists('App/Role')){
-				throw new Exception('Class App/Role not found');
+			if(!class_exists('App\Role')){
+				throw new Exception('Class App\Role not found');
 			}
 			$role = new Role;
 			$roles = $role->get();
@@ -190,14 +190,14 @@ class AclController extends Controller {
      */
     public function listPermissions($roleId = null) {
 		try{
-			if(!class_exists('App/Permission')){
-				throw new Exception('Class App/Permission not found');
+			if(!class_exists('App\Permission')){
+				throw new Exception('Class App\Permission not found');
 			}
-			
-			if(!class_exists('App/PermissionRole')){
-				throw new Exception('Class App/PermissionRole not found');
+
+			if(!class_exists('App\PermissionRole')){
+				throw new Exception('Class App\PermissionRole not found');
 			}
-			
+
 			$parents = Permission::with('children', 'parent')->get();
 			$permissionRoleData = PermissionRole::where('role_id', base64_decode($roleId))->get();
 			return view('acl.permission', [
@@ -208,7 +208,7 @@ class AclController extends Controller {
 		} catch(Exception $e){
 			\Log::error($e);
 			App::abort(404, 'Page not found.');
-		}		
+		}
     }
 
     /**
