@@ -124,7 +124,7 @@ var initCalendar = function(events, start = "00:00:00", end = "24:00:00", defaul
 };
 var initDoctorSchedulrCalendar = function(events, inputDate = null, slotMinutes = 30, start = '00:00:00', end = '24:00:00') {
     var $calendar = $('#calendar');
-    var date = (inputDate == null || inputDate == "" || inputDate == undefined) ? new Date() : new Date(inputDate);
+    var date = (inputDate === null || inputDate === "" || inputDate === undefined) ? new Date() : new Date(inputDate);
     var d = date.getDate();
     var m = date.getMonth();
     var y = date.getFullYear();
@@ -505,7 +505,7 @@ $(document).ready(function() {
             row['dosage'] = $(v).find('.dosage input').val();
             row['how_often'] = $(v).find('.how_often input').val();
             row['condition'] = $(v).find('.condition input').val();
-            if (row['name'] != '') {
+            if (row['name'] !== '') {
                 data.push(row);
             }
         });
@@ -523,7 +523,7 @@ $(document).ready(function() {
         $(".illnessInput").closest('tr').each(function(i, v) {
             row = {};
             row['illness'] = $(v).find('.illness input').val();
-            if (row['illness'] != '') {
+            if (row['illness'] !== '') {
                 data.push(row);
             }
         });
@@ -544,7 +544,7 @@ $(document).ready(function() {
             row['dosage'] = $(v).find('.dosage input').val();
             row['how_often'] = $(v).find('.how_often input').val();
             row['condition'] = $(v).find('.condition input').val();
-            if (row['name'] != '') {
+            if (row['name'] !== '') {
                 data.push(row);
             }
         });
@@ -610,7 +610,7 @@ $(document).ready(function() {
     });
     $('.callStatus').on('click', function() {
         var call_value = $(this).val();
-        if (call_value == 0) {
+        if (parseInt(call_value) === 0) {
 $('#nosetAppointment').hide();
         $("input, select, textarea", $("#nosetAppointment")).attr("disabled", "disabled");
         $("input, select, textarea", $("#setAppointment")).removeAttr("disabled");
@@ -626,7 +626,7 @@ $('#setAppointment').hide();
         var val = $("#changeStatus").find('[name="progress_status"]:checked').val();
         //3 is for ready lab report
         if (val != 3){
-            if ($("#labFilesUpload").length != 0){
+            if ($("#labFilesUpload").length !== 0){
             $("#labFilesUpload").remove();
                     }
             } else{
@@ -640,7 +640,7 @@ $('#setAppointment').hide();
         $('.showSellMessage').hide();
         $(".addPackageToCart").on('click', function(){
 var patientId = $('select[name="patient_id"]').val();
-        if (patientId == ''){
+        if (patientId === ''){
 showMessage('Please select patient from Select Patient drop down.', 'error');
         //notifyUser('Please select patient from Select Patient drop down.', 'error');
         return false;
@@ -674,7 +674,7 @@ var catId = $(this).data('cat-value');
          */
         $('#front_sale_patient').on('change', function(){
 var patient_id = $(this).val();
-        if (patient_id != ''){
+        if (patient_id !== ''){
 $.ajax({
 method: 'post',
         dataType: 'json',
