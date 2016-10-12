@@ -140,6 +140,7 @@ class CartController extends Controller
 
     public function countCartItem(Request $request){
         $cart = Cart::where('patient_id', $request->id)->get()->count();
-        echo $cart;die;
+        echo $cart;
+        exit();
     }
 }

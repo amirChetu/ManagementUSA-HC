@@ -139,12 +139,12 @@ class ApptSettingController extends Controller {
      * @return json object
      */
 
-    public function editRequestfollowup(Request $request) {
+    public function editRequestFollowup(Request $request) {
         $requestFollowup = AppointmentRequest::with('patient.patientDetail', 'noSetReason', 'noSetReason.reasonCode')->where('user_id', $request['id'])->get()->first();
 
         $combine['requestFollowup'] = $requestFollowup;
         echo json_encode($combine);
-        die;
+        exit();
     }
 
     /*
