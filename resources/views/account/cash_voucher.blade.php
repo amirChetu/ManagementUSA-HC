@@ -10,7 +10,14 @@
             <a class="sidebar-right-toggle" data-open="sidebar-right"><i class="fa fa-chevron-left"></i></a>
         </div>
     </header>
-
+	
+	<div class="row">
+		@if(Session::has('flash_message'))
+			<div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span> <em>{!! session('flash_message') !!}</em></div>
+		@elseif(Session::has('error_message'))
+			<div class="alert alert-danger"><span class="glyphicon glyphicon-exclamation-sign"></span> <em>{!! session('error_message') !!}</em></div>
+		@endif
+	</div>
     <div class="row">
         <div class="col-lg-12">	
             <section class="panel panel-primary">
