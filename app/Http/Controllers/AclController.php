@@ -8,6 +8,7 @@ use App\Permission;
 use App\Role;
 use App\PermissionRole;
 use App;
+use Exception;
 
 /**
  * This class is used to handle Role Management System
@@ -58,37 +59,45 @@ class AclController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function saveRole(Request $request) {
+		try{
+			$this->validate($request, [
+				'role_title' => 'required|unique:roles',
+			]);
 
-        $this->validate($request, [
-            'role_title' => 'required|unique:roles',
-        ]);
+			$roleData = new Role();
+			$roleData = array(
+				'role_title' => $request['role_title'],
+				'role_slug' => strtolower($request['role_title']),
+				'status' => 1,
+			);
 
-        $roleData = new Role();
-        $roleData = array(
-            'role_title' => $request['role_title'],
-            'role_slug' => strtolower($request['role_title']),
-            'status' => 1,
-        );
-
-        $validator = Validator::make($roleData, $this->rules);
-        if ($validator->fails()) {
-            return redirect('/acl/listRole')
-                            ->withInput()
-                            ->withErrors($validator);
-        } else {
-            //save to DB user details
-            $role = new Role;
-            if ($role::create($roleData)) {
-                \Session::flash('flash_message', 'Role Created successfully.');
-                return redirect('/acl/listRole')
-                    ->withInput()
-                    ->withErrors($validator);
-            } else {
-                return redirect('/acl/listRole')
-                    ->withInput()
-                    ->withErrors($validator);
-            }
-        }
+			$validator = Validator::make($roleData, $this->rules);
+			if ($validator->fails()) {
+				return redirect('/acl/listRole')
+								->withInput()
+								->withErrors($validator);
+			} else {
+				//save to DB user details
+				$role = new Role;
+				if ($role::create($roleData)) {
+					\Session::flash('flash_message', 'Role Created successfully.');
+					return redirect('/acl/listRole')
+						->withInput()
+						->withErrors($validator);
+				} else {
+					return redirect('/acl/listRole')
+						->withInput()
+						->withErrors($validator);
+				}
+			}
+		}catch(Exception $e){
+			$sales = [];
+			\Log::error($e);
+		}
+		
+		return view('account.sales_report', [
+			'sales' => $sales
+		]);		
     }
 
     /**
@@ -99,12 +108,20 @@ class AclController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function listRoles() {
-        $role = new Role;
-        $roles = $role->get();
+		try{
+			if(!class_exists('App/Role')){
+				throw new Exception('Class App/Role not found');
+			}
+			$role = new Role;
+			$roles = $role->get();
 
-        return view('acl.roles', [
-            'roles' => $roles
-        ]);
+			return view('acl.roles', [
+				'roles' => $roles
+			]);
+		} catch(Exception $e){
+			\Log::error($e);
+			App::abort(404, 'Page not found.');
+		}
     }
 
     /**
@@ -172,13 +189,26 @@ class AclController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function listPermissions($roleId = null) {
-        $parents = Permission::with('children', 'parent')->get();
-        $permissionRoleData = PermissionRole::where('role_id', base64_decode($roleId))->get();
-        return view('acl.permission', [
-            'permissions' => $parents,
-            'roleId' => base64_decode($roleId),
-            'permissionRoleDatas' => $permissionRoleData
-        ]);
+		try{
+			if(!class_exists('App/Permission')){
+				throw new Exception('Class App/Permission not found');
+			}
+			
+			if(!class_exists('App/PermissionRole')){
+				throw new Exception('Class App/PermissionRole not found');
+			}
+			
+			$parents = Permission::with('children', 'parent')->get();
+			$permissionRoleData = PermissionRole::where('role_id', base64_decode($roleId))->get();
+			return view('acl.permission', [
+				'permissions' => $parents,
+				'roleId' => base64_decode($roleId),
+				'permissionRoleDatas' => $permissionRoleData
+			]);
+		} catch(Exception $e){
+			\Log::error($e);
+			App::abort(404, 'Page not found.');
+		}		
     }
 
     /**

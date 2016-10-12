@@ -27,8 +27,10 @@
         <div class="panel-body">
           <div class="row">
             @if(Session::has('flash_message'))
-            <div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span><em>{!! session('flash_message') !!}</em></div>
-            @endif
+				<div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span><em>{!! session('flash_message') !!}</em></div>
+			@elseif(Session::has('error_message'))
+				<div class="alert alert-danger"><span class="glyphicon glyphicon-exclamation-sign"></span> <em>{!! session('error_message') !!}</em></div>
+			@endif
            </div>
             
             <table class="table table-bordered table-striped mb-none" id="pettyCashLogs" data-swf-path="{{ URL::asset('vendor/jquery-datatables/extras/TableTools/swf/copy_csv_xls_pdf.swf') }}">

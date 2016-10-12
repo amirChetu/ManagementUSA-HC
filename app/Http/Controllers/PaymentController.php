@@ -76,15 +76,11 @@ class PaymentController extends Controller {
         try {
             $payment->create($this->_api_context);
         } catch (\PayPal\Exception\PayPalConnectionException $ex) {
-            echo '<pre>';
-            print_r($ex->getCode()); // Prints the Error Code
-            echo '<pre>';
-            print_r(json_decode($ex->getData())); // Prints the detailed error message
-            die;
+			\Log::error($ex->getData());
+			echo 'Error occured';
+			die;
         }
-        echo '<pre>';
-        print_r($payment->toArray());
-        echo '<br>';
+
         foreach ($payment->getLinks() as $link) {
             if ($link->getRel() == 'approval_url') {
                 $redirect_url = $link->getHref();
