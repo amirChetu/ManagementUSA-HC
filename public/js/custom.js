@@ -1107,7 +1107,7 @@ var data = $(this).serializeArray();
                         //var user_id = $(this).attr('rel');
                         $.ajax({
                         type: "POST",
-                                url: ajax_url + "/apptsetting/editRequestfollowup",
+                                url: ajax_url + "/apptsetting/editRequestFollowup",
                                 data: {"id": user_id },
                                 success: function(response) {
                                 var combine = JSON.parse(response);
