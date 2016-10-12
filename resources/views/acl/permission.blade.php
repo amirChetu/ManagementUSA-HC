@@ -35,7 +35,7 @@
                                     <div class="panel-heading panel-custom">
                                         <h4 class="panel-title">
                                             <a class="accordion-toggle" data-toggle="collapse" data-parent="#accordionPrimary" href="#collapsePrimary{{ $permission->id }}"> <i class="list-toggle fa fa-plus"></i>
-                                                {{ $permission->permission_title }} 
+                                                {{ $permission->title }} 
                                             </a>
                                         </h4>
                                     </div>
@@ -55,7 +55,7 @@
                                                     @foreach($childs as $child)
                                                     <tr>
                                                         <td class="table-text">{{ $inc }}</td>
-                                                        <td class="table-text">{{ $child->permission_title }}</td>
+                                                        <td class="table-text">{{ $child->title }}</td>
                                                         <td class="table-text">
                                                             <?php $status = false; ?>
                                                             @if(!empty($permissionRoleDatas[0]))

@@ -15,10 +15,12 @@ class CreateProductsTable extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name');
-            $table->string('unit_of_measurement', 31)->nullable()->change();
             $table->string('price', 6);
             $table->string('sku')->unique();
+            $table->integer('count')->default(0)->comment('used for keeping track of product inventory count');
+            $table->string('unit_of_measurement', 10)->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

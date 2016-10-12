@@ -104,7 +104,7 @@ class CategoryController extends Controller
                 \Session::flash('error_message', 'Category Not found.');
                 return Redirect::back();
             }
-            $category_details = App\Packages::getCategoryDetailsById($id);
+            $category_details = App\Package::getCategoryDetailsById($id);
             if (empty($category_details['category_info'])) {
                 \Session::flash('error_message', 'This package is empty.');
                 return Redirect::back();
@@ -159,7 +159,7 @@ class CategoryController extends Controller
 
                     $product[] = $pro;
                     $proUpdated = App\Product::firstOrNew(array('sku' => $n['sku']));
-                    $proUpdated->fill($pro)->save();    
+                    $proUpdated->fill($pro)->save();
 
                     $packRows = ['product_id' => $proUpdated->getKey(), 'category_id' => $n['category_id'], 'product_count' => $n['p_count'], 'product_price' => $n['spl_price'], 'category_type' => $category_types[ucfirst($n['package'])]];
                     $packageRows[] = $packRows;

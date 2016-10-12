@@ -9,7 +9,7 @@ class AllergiesList extends Model
 {
 	use SoftDeletes;
 	
-    protected $table = 'allergies_list';
+    protected $table = 'allergies_lists';
     protected $fillable = [
 		'id',
 		'patient_id',

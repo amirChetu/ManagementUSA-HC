@@ -9,7 +9,7 @@ class Emi extends Model
 {
     use SoftDeletes;
 	
-	protected $table = 'emi';
+	protected $table = 'emis';
 	
 	protected $fillable = [
 		'id',

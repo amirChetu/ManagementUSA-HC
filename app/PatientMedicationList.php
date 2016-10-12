@@ -9,7 +9,7 @@ class PatientMedicationList extends Model
 {
 	use SoftDeletes;
 	
-	protected $table = 'patient_medication_list';
+	protected $table = 'patient_medication_lists';
     protected $fillable = [
 		'patient_id',
 		'name',

@@ -17,7 +17,7 @@ class CreateUserDetails extends Migration
             $table->integer('user_id')->unique();
             $table->date('dob')->nullable();
             $table->enum('gender', ['Male', 'Female'])->default('Male');
-            $table->string('phone', 15);			
+            $table->string('phone', 15);
             $table->string('address1')->nullable();
             $table->string('address2')->nullable();
             $table->string('city', 31)->nullable();
@@ -25,6 +25,7 @@ class CreateUserDetails extends Migration
             $table->string('zipCode', 11);
             $table->string('image')->nullable();
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

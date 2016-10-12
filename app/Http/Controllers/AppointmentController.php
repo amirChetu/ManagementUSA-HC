@@ -515,7 +515,7 @@ class AppointmentController extends Controller {
         $erectileD = DB::table('erectile_dysfunctions')->where('patient_id', $id)->first();
         $weightL = DB::table('weight_loss')->where('patient_id', $id)->first();
         $priapus = DB::table('priapus')->where('patient_id', $id)->first();
-        $testosterone = DB::table('high_testosterone')->where('patient_id', $id)->first();
+        $testosterone = DB::table('high_testosterones')->where('patient_id', $id)->first();
         $vitamins = DB::table('vitamins')->where('patient_id', $id)->first();
         $cosmetics = DB::table('cosmetics')->where('patient_id', $id)->first();
         $labReports = DB::table('lab_reports')->where('patient_id', $id)->get();
@@ -567,19 +567,19 @@ class AppointmentController extends Controller {
             $id = $request['id'];
             if ($id == 'vitamin_taken1') {
                 $patientId = $request['patientId'];
-                $data = DB::table('patient_vitamin_list')->where('patient_id', $patientId)->get();
+                $data = DB::table('patient_vitamin_lists')->where('patient_id', $patientId)->get();
             } elseif ($id == 'surgeries1') {
                 $patientId = $request['patientId'];
-                $data = DB::table('surgery_list')->where('patient_id', $patientId)->get();
+                $data = DB::table('surgery_lists')->where('patient_id', $patientId)->get();
             } elseif ($id == 'allergies1') {
                 $patientId = $request['patientId'];
-                $data = DB::table('allergies_list')->where('patient_id', $patientId)->get();
+                $data = DB::table('allergies_lists')->where('patient_id', $patientId)->get();
             } elseif ($id == 'illness1') {
                 $patientId = $request['patientId'];
-                $data = DB::table('illness_list')->where('patient_id', $patientId)->get();
+                $data = DB::table('illness_lists')->where('patient_id', $patientId)->get();
             } elseif ($id == 'medication1') {
                 $patientId = $request['patientId'];
-                $data = DB::table('patient_medication_list')->where('patient_id', $patientId)->get();
+                $data = DB::table('patient_medication_lists')->where('patient_id', $patientId)->get();
             }
 
             return view('appointment.medical.medicine_list', [

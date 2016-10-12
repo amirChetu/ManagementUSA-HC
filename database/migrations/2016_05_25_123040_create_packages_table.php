@@ -14,13 +14,14 @@ class CreatePackagesTable extends Migration
     {
        Schema::create('packages', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('product_id');  
+            $table->integer('product_id');
             $table->integer('category_id');
-            $table->integer('product_count');  
-            $table->double('product_price');  
-            $table->string('category_type', 63);  
+            $table->integer('product_count');
+            $table->double('product_price');
+            $table->string('category_type', 63);
             $table->timestamps();
-            
+            $table->softDeletes();
+
         });
     }
 

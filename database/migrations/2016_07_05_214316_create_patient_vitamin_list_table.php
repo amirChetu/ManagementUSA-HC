@@ -12,15 +12,16 @@ class CreatePatientVitaminListTable extends Migration
      */
     public function up()
     {
-        Schema::create('patient_vitamin_list', function (Blueprint $table) {
+        Schema::create('patient_vitamin_lists', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('patient_id');  
+            $table->integer('patient_id');
             $table->string('name');
             $table->tinyInteger('dosage')->nullable();
-             $table->string('how_often', 31);         
+             $table->string('how_often', 31);
             $table->string('taken_for', 31);
             $table->timestamps();
-        });  
+            $table->softDeletes();
+        });
     }
     /**
      * Reverse the migrations.

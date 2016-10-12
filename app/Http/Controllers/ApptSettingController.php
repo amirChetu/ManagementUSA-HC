@@ -335,7 +335,7 @@ class ApptSettingController extends Controller {
          ///saving location id
         $patient->location_id = $formData['location_id'];
         $patient->save();
-        
+
         $appointment_requests = new App\AppointmentRequest;
         $appointment_requests->user_id = $id;
         if (isset($formData['marketing_phone'])) {
