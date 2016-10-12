@@ -323,7 +323,6 @@ class SaleController extends Controller {
         if (isset($patient_id)) {
             $patient = User::select('first_name', 'last_name')->where('id', $patient_id)->first();
             $template = PdfForm::where('id', 1)->first();
-            //echo "<pre>";print_r($patient);die;
         }
         return view('sale.generate_pdf_form', [
             'template' => $template,

@@ -1,9 +1,7 @@
-/* Add here all your CSS customizations */
 .document_link { float:left; padding-right:10px; }
 .mandatory:after{ content:'*'; color:red; padding-left:5px; }
 .deleteBtn { color:#fff !important; }
 
-/* CSS for the Header section */
 .cancl-btn {
     float: right;
 }
@@ -15,7 +13,6 @@
 .panel-action-dismiss {
     display: none;
 }
-/*  CSS for the Patient medical record form wizard */
 .toggle-content .inputRow { padding-bottom: 15px; } 
 .toggle-content .inputRow label { color: #777; } 
 .inputRow .toggle-radio-custom { padding-top: 6px; }
@@ -23,7 +20,7 @@
 .inputRow .toggle-radio-custom { padding-top: 6px; }
 .questionRadio .toggle-radio-custom .radio-custom { margin-right: 25px; }
 .medicalTitle { padding-bottom: 10px; }
-/* End */
+
 #w3-medical .control-label {   margin-bottom: 0; padding-top: 6px; text-align: left; }
 .customFormRow { margin-bottom: 10px; }
 #testo_treatment .checkbox-custom { margin-bottom: 15px; }
@@ -38,7 +35,7 @@ table.solidTdTags, table.solidTdTags td{ border: 1px solid #dddddd; }
 .background-silver{ background: #C0C0C0; }
 .background-bronze{ background: #cd7f32; color: #fff; }
 .wizard-steps li a, html.dark .wizard-progress .wizard-steps li a {
-         word-break: break-word !important; 
+    word-wrap: break-word !important; 
 }
 li a .badge { background: #D2312D; color: #FFF;	font-size: 10px; font-weight: normal; height: 16px; padding: 3px 5px 3px 5px; margin-left: 5px; right: -8px; top: -3px; }
 td span.badge { background: #47a447; color: #FFF;	font-size: 10px; font-weight: normal; height: 16px; padding: 3px 5px 3px 5px; margin-left: 5px; right: -8px; top: -3px; }
@@ -55,13 +52,13 @@ th.countColoumn { border-left: none;}
 .packages-table th:first-child{ text-align:center;}
 .packages-table .table-bordered > tbody > tr > td:first-child{ text-align:left; }
 .pricing-table h3.bronze {
-   background-color: #cd7f32;
+    background-color: #cd7f32;
 }
 .pricing-table h3.silver {
-   background-color: #C0C0C0;
+    background-color: #C0C0C0;
 }
 .pricing-table h3.gold {
-   background-color: #DAA520;
+    background-color: #DAA520;
 }
 .categoryCartList .toggle-content h4, .categoryCartList .toggle-content a{text-align: center; color: #fff; text-transform: capitalize}
 .addPackageToCart{cursor: pointer;}

@@ -1,6 +1,6 @@
 @extends('layouts.common')
 
-@section('content')	
+@section('content')
 <meta name="csrf-token" content="{{ csrf_token() }}" />
 <section role="main" class="content-body">
     <header class="page-header">
@@ -27,16 +27,11 @@
                 <div class="col-sm-12"><div class="alert alert-danger"><span class="glyphicon glyphicon-ok"></span><em> {!! session('error_message') !!}</em></div></div>
                 @endif
                 <div class="row">
-                    <!--div class="col-md-12 text-left col-sm-offset-1">
-                        <a href="javascript:void(0)"><button id="add-view-appointment" class="btn btn-primary">Add Appointment <i class="fa fa-plus"></i></button></a>
-                        <a href="{{ url('/patient/addpatient') }}"><button id="addToTable" class="btn btn-primary">Add Patient    <i class="fa fa-plus"></i></button></a>
-                    </div-->
                 </div>
                 <div class="col-md-12">
 
                     <div id="calendar"></div>
                     <section class="panel">
-
 
                         <div class="panel-body">
                             <div id="dialog" class="modal-block mfp-hide">
@@ -63,22 +58,20 @@
                             </div>
 
                             <!-- Modal Form -->
-                            <div id="modalForm" class="modal-block modal-block-primary mfp-hide">                               
-                                @include('appointment.edit_appointment')                                          
+                            <div id="modalForm" class="modal-block modal-block-primary mfp-hide">
+                                @include('appointment.edit_appointment')
                             </div>
 
-                            <div id="modal-add-view-appointment" class="modal-block modal-block-primary mfp-hide">                                
-                                @include('appointment.popup_appointment_form')                                          
+                            <div id="modal-add-view-appointment" class="modal-block modal-block-primary mfp-hide">
+                                @include('appointment.popup_appointment_form')
                             </div>
 
                             <!-- Model for the Follow up Status -->
-                             @include('appointment.followup_popup') 
+                             @include('appointment.followup_popup')
                         </div>
                     </section>
 
                 </div>
-
-
             </div>
         </div>
     </section>
@@ -92,18 +85,14 @@
 		var clinicCloseTime = "{{ @config('constants.CLINIC_CLOSE_TIME') }}";
 		var defaultApptTime = "{{ @config('constants.DEFAULT_APPOINTMENT_TIME_SPAN') }}";
 		var gapBetweenAppt = "{{ @config('constants.GAP_BETWEEN_APPOINTMENTS') }}";
-		
+
         'use strict';
 
         $(function() {
             initCalendar(<?php echo json_encode($appointments, true); ?>, clinicOpenTime, clinicCloseTime, defaultApptTime, gapBetweenAppt);
-            //initCalendarDragNDrop();
         });
 
     }).apply(this, [jQuery]);
 
 </script>
-
-
-
-@endsection	
+@endsection
