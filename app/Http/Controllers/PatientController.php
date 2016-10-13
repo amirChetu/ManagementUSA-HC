@@ -384,7 +384,7 @@ class PatientController extends Controller {
                             'patientDetail', 'PatientDetail.patientStateName', 'roleName'
                     )
                     ->find(base64_decode($id)))) {
-                throw new Exception('Page not found');
+                throw new Exception(config("constants.PAGE_NOT_FOUND"));
             }
             $id = base64_decode($id);
             $packageData = showCart($id);
@@ -400,7 +400,7 @@ class PatientController extends Controller {
             $erectileD = DB::table('erectile_dysfunctions')->where('patient_id', $id)->first();
             $weightL = DB::table('weight_loss')->where('patient_id', $id)->first();
             $priapus = DB::table('priapus')->where('patient_id', $id)->first();
-            $testosterone = DB::table('high_testosterone')->where('patient_id', $id)->first();
+            $testosterone = DB::table('high_testosterones')->where('patient_id', $id)->first();
             $vitamins = DB::table('vitamins')->where('patient_id', $id)->first();
             $cosmetics = DB::table('cosmetics')->where('patient_id', $id)->first();
             $labReports = DB::table('lab_reports')->where('patient_id', $id)->get();

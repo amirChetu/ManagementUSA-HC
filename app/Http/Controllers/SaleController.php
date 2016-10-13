@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\User;
 use App\State;
 use App\Cart;
+use App\Category;
 use App\Payment;
 use App\Emi;
 use App\Order;
