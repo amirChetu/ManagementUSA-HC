@@ -766,7 +766,7 @@ var data = $(this).serializeArray();
 		}
 	});
 
-	$('.confirmation-callback').confirmation({
+	$('.confirmation-callback-diff').confirmation({
 //        onConfirm: function() {
 //            var link = $('.confirmation-callback').data('href');
 //            window.location = ajax_url + link;

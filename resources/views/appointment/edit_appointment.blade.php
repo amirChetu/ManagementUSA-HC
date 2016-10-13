@@ -112,7 +112,7 @@
             @endif            
             <div class="col-md-8 text-right">
                 {{ Form::button( 'Submit', array( 'class'=>'mb-xs mt-xs mr-xs btn btn-primary', 'type'=>'submit')) }}
-                <a href="javascript:void(0)" class="btn btn-default remove-row confirmation-callback" id = "deleteAppointmentFromCalendar"><i class="fa fa-trash-o"></i> Delete</a> 
+                <a href="javascript:void(0)" class="btn btn-default remove-row confirmation-callback-diff" id = "deleteAppointmentFromCalendar"><i class="fa fa-trash-o"></i> Delete</a> 
                 <button class="btn btn-default closePop">Cancel</button>
             </div>
         </div>
