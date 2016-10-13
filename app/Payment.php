@@ -19,7 +19,7 @@ class Payment extends Model
      */
     protected $table = 'payments';
     protected $dates = ['deleted_at'];
-    
+
     /**
     * This function is used to get payment history from payment table by patient_id.
     *
@@ -39,7 +39,7 @@ class Payment extends Model
             if($row->payment_type == 0){
                 $payment[$row->id]['payment_type'] = 'Cash on delivery';
             } elseif($row->payment_type == 1) {
-                $payment[$row->id]['payment_type'] = 'Credit Card';				
+                $payment[$row->id]['payment_type'] = 'Credit Card';
             }
             $payment[$row->id]['total_amount'] = $row->total_amount;
             $payment[$row->id]['paid_amount'] = $row->paid_amount;
@@ -68,13 +68,13 @@ class Payment extends Model
                     $order_detail[$order->id][$detail->id]['quantity'] = $detail->quantity;
                     $order_detail[$order->id][$detail->id]['unit_price'] = $detail->unit_price;
                     $order_detail[$order->id][$detail->id]['discount_price'] = $detail->discount_price;
-                } 
+                }
             }
-        } 
+        }
 
         return ['payment' => $payment, 'orders' => $orders, 'order_detail' => $order_detail];
     }
-    
+
     /**
     * This function is used to ftch the uncomplete payment details.
     *
@@ -83,7 +83,7 @@ class Payment extends Model
     * @return $paymentuncompleted
     */
     public static function getUncompletedPayment($patientId){
-        $paymentHistory = Payment::where(['patient_id' => $patientId, 'payment_emi_status' => 0, 'payment_status' =>0])->get();
+        $paymentHistory = Payment::where(['patient_id' => $patientId, 'emi_status' => 0, 'status' =>0])->get();
         $paymentUncompleted = array();
         $paymentUncompleted['total'] = 0;
         $paymentUncompleted['data'] = [];
@@ -93,7 +93,7 @@ class Payment extends Model
         }
         return  $paymentUncompleted;
     }
-    
+
     /**
     * This function is used to change the status og payment.
     *
@@ -102,11 +102,11 @@ class Payment extends Model
     * @return status
     */
     public static function changePaymentStatus($patientId, $uniqueId){
-        Payment::where([['patient_id', '=',  $patientId], ['payment_status', '=', 0], ['order_unique_id', '=', '']])
-            ->update(['payment_status' => 1, 'order_unique_id' => $uniqueId]);
+        Payment::where([['patient_id', '=',  $patientId], ['status', '=', 0], ['order_unique_id', '=', '']])
+            ->update(['status' => 1, 'order_unique_id' => $uniqueId]);
         return true;
     }
-    
+
      /**
     * This function is used to get amount of uncompleted payments.
     *
@@ -115,14 +115,14 @@ class Payment extends Model
     * @return $totalUncompleted
     */
     public static function totalUncompletedAmount($patientId){
-        $totalUncompleted = Payment::where(['patient_id' => $patientId, 'payment_emi_status' => 0, 'payment_status' => 0])->sum('paid_amount');
+        $totalUncompleted = Payment::where(['patient_id' => $patientId, 'emi_status' => 0, 'status' => 0])->sum('paid_amount');
         if($totalUncompleted == NULL){
             $totalUncompleted = 0;
         }
         return $totalUncompleted;
     }
 
-    
+
     /**
     * This function create linking between orders table and payments table.
     *
@@ -133,8 +133,8 @@ class Payment extends Model
     public function order()
     {
         return $this->hasMany('App\Order', 'payment_id');
-    }	
-    
+    }
+
     /**
     * This function create linking between users table and payments table.
     *
@@ -145,8 +145,8 @@ class Payment extends Model
     public function user()
     {
         return $this->belongsTo('App\User', 'patient_id');
-    }	
-    
+    }
+
     /**
     * This function create linking between users table and payments table.
     *
@@ -158,7 +158,7 @@ class Payment extends Model
     {
         return $this->belongsTo('App\User', 'agent_id');
     }
-    
+
     /**
     * This function create linking between users table and payments table.
     *
