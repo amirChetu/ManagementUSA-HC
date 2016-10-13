@@ -3,7 +3,7 @@
 <meta name="csrf-token" content="{{ csrf_token() }}" />
 <section role="main" class="content-body">
     <header class="page-header">
-        
+
           <h2>
             @if(isset($type) && $type == 'followup')
                 Followup Appointments
@@ -20,7 +20,7 @@
             @else
                 {!! Breadcrumbs::render('appointment.listappointment') !!}
             @endif
-         
+
         </div>
     </header>
 
@@ -54,8 +54,8 @@
                         <th>Appointment Time</th>
                         <th>Patient</th>
                         <th>Reason for Visit</th>
-                        <th>Source</th>      
-                        <th>Followup Status</th>      
+                        <th>Source</th>
+                        <th>Followup Status</th>
                         <th>Location</th>
                         <th>Actions</th>
                     </tr>
@@ -69,13 +69,13 @@
                         <td class="table-text"><div>{{ date('d F Y H:ia', strtotime($appointment->apptTime)) }}</div></td>
 
                         <td class="table-text"><div><a class="defaultColor" href="/patient/view/{{ base64_encode($appointment['patient']->id) }}">{{ $appointment['patient']->first_name }} {{ $appointment['patient']->last_name }}</a></div></td>
-                        <td class="table-text"><div><?php 
+                        <td class="table-text"><div><?php
                                 $reasonArr = $appointment->patient->reason->toArray();
                                 $reasonArray = array_column($reasonArr, 'reason_code');
                                 $reasonList = array_column($reasonArray, 'reason');
-                                $reason = implode(',', array_unique($reasonList)); 
+                                $reason = implode(',', array_unique($reasonList));
                                 echo $reason;
-                                ?>                                
+                                ?>
                             </div></td>
                         <td class="table-text"><div>
                                 <?php
@@ -90,7 +90,7 @@
                                         break;
                                 }
                                 ?>
-                            </div></td>                        
+                            </div></td>
                             <td class="table-text"><div>
                                 <?php
                                 switch ($appointment->status) {
@@ -112,7 +112,7 @@
                                 ?>
                             </div>
                           </td>
-                        <td> 
+                        <td>
                             @if(isset($appointment->appointmentRequest->locations))
                              {{ $appointment->appointmentRequest->locations->name }}
                             @endif
@@ -122,11 +122,11 @@
                             <a href="#" class="hidden on-editing cancel-row"><i class="fa fa-times"></i></a>
                             <?php $date = date('Y-m-d H:i');
                                   $appointmentTime = date('Y-m-d H:i', strtotime($appointment->apptTime));
-                                  ?>                            
+                                  ?>
                             @if($appointmentTime >= $date)
                                 <a href="javascript:void(0)" class="on-default edit-row" rel="{{ $appointment->id }}"><i class="fa fa-pencil"></i></a>
                             @endif
-                            <a href="javascript:void(0)" data-href="/appointment/delete/{{ base64_encode($appointment->request_id) }}" class="on-default remove-row confirmation-callback"><i class="fa fa-trash-o"></i></a> 
+                            <a href="javascript:void(0)" data-href="/appointment/delete/{{ base64_encode($appointment->request_id) }}" class="on-default remove-row confirmation-callback"><i class="fa fa-trash-o"></i></a>
                         </td>
                     </tr>
                     @endif
@@ -137,12 +137,12 @@
     </section>
 </section>
 <!-- Modal Form -->
-<div id="modalForm" class="modal-block modal-block-primary mfp-hide">  
-            @include('appointment.edit_appointment')   
-            @include('appointment.followup_popup') 
+<div id="modalForm" class="modal-block modal-block-primary mfp-hide">
+            @include('appointment.edit_appointment')
+            @include('appointment.followup_popup')
 </div>
 
-<div id="modal-add-view-appointment" class="modal-block modal-block-primary mfp-hide">  
-    @include('appointment.popup_appointment_form')              
+<div id="modal-add-view-appointment" class="modal-block modal-block-primary mfp-hide">
+    @include('appointment.popup_appointment_form')
 </div>
 @endsection

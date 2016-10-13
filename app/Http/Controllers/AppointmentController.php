@@ -98,8 +98,8 @@ class AppointmentController extends Controller {
 
         $appointment = new Appointment;
         $appointment->apptTime = date('Y-m-d H:i:s', strtotime($request->appDate . " " . $request->appTime));
-        $appointment->createdBy = $request->createdBy;
-        $appointment->lastUpdatedBy = $request->lastUpdatedBy;
+        $appointment->created_by = $request->createdBy;
+        $appointment->last_updated_by = $request->lastUpdatedBy;
         $appointment->patient_id = $request->patient_id;
         $appointment->marketer = $request->marketer;
         $appointment->doctor_id = $request->doctor_id;
@@ -306,7 +306,7 @@ class AppointmentController extends Controller {
         $appointment_request = AppointmentRequest::find($appointment->request_id);
         $appointment_requestInput['location_id'] = $request->location;
         $appointment->apptTime = date('Y-m-d H:i:s', strtotime($request->appDate . " " . $request->appTime));
-        $appointment->lastUpdatedBy = $request->lastUpdatedBy;
+        $appointment->last_updated_by = $request->lastUpdatedBy;
         $appointment->patient_id = $appointment->patient_id;
         //$appointment->doctor_id = $request->doctor_id;
         $appointment->comment = $request->comment;

@@ -212,7 +212,7 @@ class ApptSettingController extends Controller {
                 $appointment_requests->followup_status = 0;
                 $appointment_requests->save();
 
-                $reason = new App\AppointmentReasons;
+                $reason = new App\AppointmentReason;
                 $reason->patient_id = $id;
                 $reason->reason_id = $formData['reason_id'];
                 $reason->request_id = $appointment_requests->id;
@@ -220,7 +220,7 @@ class ApptSettingController extends Controller {
 
                 $appointment = new App\Appointment;
                 $appointment->apptTime = date('Y-m-d H:i:s', strtotime($formData['appDate'] . " " . $formData['appTime']));
-                $appointment->createdBy = Auth::user()->id;
+                $appointment->created_by = Auth::user()->id;
                 $appointment->patient_id = $user->id;
                 $appointment->appt_source = $exist_request['appt_source'];
                 $appointment->request_id = $appointment_requests->id;
@@ -274,7 +274,7 @@ class ApptSettingController extends Controller {
                 $appointment_requests->followup_status = 0;
                 $appointment_requests->noSetStatus = 1;
                 $appointment_requests->save();
-                $reason = new App\AppointmentReasons;
+                $reason = new App\AppointmentReason;
                 $reason->patient_id = $id;
                 $reason->reason_id = $formData['reason_id'];
                 $reason->request_id = $appointment_requests->id;
@@ -384,7 +384,7 @@ class ApptSettingController extends Controller {
             }
             // save the appointment reason
             $appointment_requests->save();
-            $reason = new App\AppointmentReasons;
+            $reason = new App\AppointmentReason;
             $reason->patient_id = $id;
             $reason->reason_id = $formData['reason_id'];
             $reason->request_id = $appointment_requests->id;
@@ -394,7 +394,7 @@ class ApptSettingController extends Controller {
                 $appointment = new App\Appointment;
                 $appointment->patient_id = $id;
                 $appointment->apptTime = date('Y-m-d H:i:s', strtotime($formData['appDate'] . " " . $formData['appTime']));
-                $appointment->createdBy = Auth::user()->id;
+                $appointment->created_by = Auth::user()->id;
                 $appointment->patient_id = $user->id;
                 $appointment->appt_source = $formData['appt_source'];
                 $appointment->request_id = $appointment_requests->id;
@@ -429,6 +429,7 @@ class ApptSettingController extends Controller {
                 return redirect()->back();
             }
         } catch (Exception $e) {
+            print_r($e->getMessage());die;
             \Log::error($e);
             App::abort(404, $e->getMessage());
         }
@@ -558,7 +559,7 @@ class ApptSettingController extends Controller {
             $appointment_requests->location_id = $exist_request['location_id'];
             $appointment_requests->save();
             if (isset($formData['reason_id'])) {
-                $reason = new App\AppointmentReasons;
+                $reason = new App\AppointmentReason;
                 $reason->patient_id = $id;
                 $reason->reason_id = $formData['reason_id'];
                 $reason->request_id = $appointment_requests->id;
@@ -570,7 +571,7 @@ class ApptSettingController extends Controller {
                 $appointment->patient_id = $id;
                 $appointment->relative_id = $relative_appointment['id'];
                 $appointment->apptTime = date('Y-m-d H:i:s', strtotime($formData['appDate'] . " " . $formData['appTime']));
-                $appointment->createdBy = Auth::user()->id;
+                $appointment->created_by = Auth::user()->id;
                 $appointment->patient_id = $user->id;
                 $appointment->appt_source = $exist_request['appt_source'];
                 $appointment->request_id = $appointment_requests->id;

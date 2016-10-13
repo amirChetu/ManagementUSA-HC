@@ -14,8 +14,8 @@ class CreateAppointmentsTable extends Migration {
             $table->integer('request_id');
             $table->tinyInteger('status')->default(1)->comment('1=>Active, 2=>Reschedule, 3=>Cancel, 4=>Confirm, 5=> Never Treat, 6=>Followup Later');
             $table->tinyInteger('email_invitation');
-            $table->integer('createdBy')->unsigned; //user_id
-            $table->integer('lastUpdatedBy')->unsigned;
+            $table->integer('created_by')->unsigned; //user_id
+            $table->integer('last_updated_by')->unsigned;
             $table->integer('patient_id')->unsigned;
             $table->integer('doctor_id')->unsigned;
             $table->text('comment');
