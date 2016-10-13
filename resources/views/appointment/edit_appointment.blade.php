@@ -119,14 +119,3 @@
     </footer>
 </section>
 </form> 
-<script>
-/*     $(function() {
-        $('.confirmation-callback').confirmation({
-//            onConfirm: function() {
-//                var link = $('.confirmation-callback').data('href');
-//                window.location = ajax_url + link;
-//                alert("jdfk"+ajax_url);
-//            }
-        });
-    });   */ 
-</script>
