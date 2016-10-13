@@ -715,6 +715,64 @@ var data = $(this).serializeArray();
         });
         e.preventDefault();
         });
+		
+		
+		
+	$('.harmoneActive').hide();
+	if ($("input[name='harmone_therapy']:checked").val() == 1) {
+		$('.harmoneActive').show();
+	}
+	/** 
+	 * If Patient has the received harmone therapy then show the corresponding fields
+	 *  */
+	$("input[name='harmone_therapy']").click(function() {
+		var exercise_status = $(this).val();
+		if (exercise_status == 1) {
+			$('.harmoneActive').show();
+		} else {
+			$('.harmoneActive').hide();
+		}
+	});
+
+	$('.needleAfraidActive').hide();
+	if($("input[name='needle_afraid']:checked").val() == 1){
+		$('.needleAfraidActive').show();
+	}
+	/** 
+	 * If Patient has the weight loss surgeries then show the corresponding fields
+	 *  */
+	$("input[name='needle_afraid']").click(function() {
+		var exercise_status = $(this).val();
+		if (exercise_status == 1) {
+			$('.needleAfraidActive').show();
+		} else {
+			$('.needleAfraidActive').hide();
+		}
+	});
+
+	$('.facialActive').hide();
+	if($("input[name='facial_surgeries']:checked").val() == 1){
+		$('.facialActive').show();
+	}
+	/** 
+	 * If Patient has the facial surgeries then show the corresponding fields
+	 *  */
+	$("input[name='facial_surgeries']").click(function() {
+		var exercise_status = $(this).val();
+		if (exercise_status == 1) {
+			$('.facialActive').show();
+		} else {
+			$('.facialActive').hide();
+		}
+	});
+
+	$('.confirmation-callback').confirmation({
+//        onConfirm: function() {
+//            var link = $('.confirmation-callback').data('href');
+//            window.location = ajax_url + link;
+//            alert("jdfk"+ajax_url);
+//       }
+	});	
 });
         /**
          * notifyUser(text, type) renders PNotify messages

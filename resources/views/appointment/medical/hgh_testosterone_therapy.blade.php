@@ -238,15 +238,15 @@
     </section>
 </div>
 <script>
-    $(document).ready(function() {
+/*     $(document).ready(function() {
         $('.harmoneActive').hide();
 	    if($("input[name='harmone_therapy']:checked").val() == 1){
 		   $('.harmoneActive').show();
-	    }
+	    } */
        /** 
          * If Patient has the received harmone therapy then show the corresponding fields
          *  */
-        $("input[name='harmone_therapy']").click(function() {
+/*         $("input[name='harmone_therapy']").click(function() {
             var exercise_status = $(this).val();
             if (exercise_status == 1) {
                 $('.harmoneActive').show();
@@ -255,5 +255,5 @@
             }
         });
         
-    });
+    }); */
 </script>

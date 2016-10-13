@@ -322,15 +322,15 @@
     </section>
 </div>
 <script>
-    $(document).ready(function() {
+/*     $(document).ready(function() {
         $('.facialActive').hide();
 		if($("input[name='facial_surgeries']:checked").val() == 1){
 			$('.facialActive').show();
-		}
+		} */
         /** 
          * If Patient has the facial surgeries then show the corresponding fields
          *  */
-        $("input[name='facial_surgeries']").click(function() {
+/*         $("input[name='facial_surgeries']").click(function() {
             var exercise_status = $(this).val();
             if (exercise_status == 1) {
                 $('.facialActive').show();
@@ -339,5 +339,5 @@
             }
         });
 
-    });
+    }); */
 </script>

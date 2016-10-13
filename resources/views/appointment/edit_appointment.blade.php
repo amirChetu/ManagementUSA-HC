@@ -120,7 +120,7 @@
 </section>
 </form> 
 <script>
-    $(function() {
+/*     $(function() {
         $('.confirmation-callback').confirmation({
 //            onConfirm: function() {
 //                var link = $('.confirmation-callback').data('href');
@@ -128,5 +128,5 @@
 //                alert("jdfk"+ajax_url);
 //            }
         });
-    });   
+    });   */ 
 </script>
