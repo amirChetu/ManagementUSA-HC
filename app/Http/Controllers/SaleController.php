@@ -167,7 +167,7 @@ class SaleController extends Controller {
             $total_pay = 0;
             $total_pay = $payment['paid_amount'] + $total_uncompleted;
             if (($total_pay == $payment['total_amount']) || isset($formData['emiType'])) {
-                $payments->payment_status = 1;
+                $payments->status = 1;
                 $order_unique_id = uniqid();
                 $payments->order_unique_id = $order_unique_id;
                 // Make the function for the updating status for all uncompleted payments
@@ -176,7 +176,6 @@ class SaleController extends Controller {
 
             $payments->save();
             $payment_id = $payments->id;
-
             if ($total_pay < $payment['total_amount'] && isset($formData['emiType'])) {
                 // save emi data
                 $formData['emiDate'] = explode(',', $formData['emiDate']);
