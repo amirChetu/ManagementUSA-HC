@@ -146,13 +146,13 @@ class SaleController extends Controller {
             }
 
             if (($payment['paid_amount'] < $payment['total_amount']) && !isset($formData['emiType']) && isset($payment['selectemi'])) {
-                \Session::flash('error_message', 'Please select prefered EMI option or make complete payment again.');
+                \Session::flash('error_message', config("constants.EMI_PLAN"));
                 $url = 'sale/checkout/' . base64_encode($formData['patient_id']);
                 return redirect()->to($url);
             }
 
             if (empty($payment) || empty($payment['paid_amount']) || empty($payment['total_amount'])) {
-                \Session::flash('error_message', 'Your session expired. Please try again');
+                \Session::flash('error_message', config("constants.EMI_PLAN"));
                 $url = 'sale/checkout/' . base64_encode($formData['patient_id']);
                 return redirect()->to($url);
             }
@@ -184,7 +184,7 @@ class SaleController extends Controller {
                 $today = new DateTime();
 
                 if ($emiStartDate < $today || $emiStartDate > $today->modify('next month')) {
-                    \Session::flash('error_message', 'Selected due date out of limit.');
+                    \Session::flash('error_message', config("constants.DUE_DATE"));
                     $url = 'sale/checkout/' . base64_encode($formData['patient_id']);
                     return redirect()->to($url);
                 }
@@ -211,12 +211,12 @@ class SaleController extends Controller {
 
                 if (Cart::where('patient_id', $formData['patient_id'])->delete()) {
                     //Session::set('checkout_payment', '');
-                    \Session::flash('flash_message', 'Your order placed successfully, Please print the listed forms.');
+                    \Session::flash('flash_message', config("constants.PRINT_FORM"));
                     $url = 'sale/generateInvoice/' . base64_encode($order_unique_id);
                     return redirect()->to($url);
                 }
             } else {
-                \Session::flash('flash_message', 'Your payment received successfully, Please do the complete payment for this order.');
+                \Session::flash('flash_message', config("constants.PARTIAL_PAYMENT"));
                 $url = 'sale/checkout/' . base64_encode($formData['patient_id']);
                 return redirect()->to($url);
             }
@@ -262,7 +262,7 @@ class SaleController extends Controller {
         if (isset($orderId)) {
             $allOrders = Order::getAllOrders($orderId);
             if (empty($allOrders['orderHistory'])) {
-                \Session::flash('flash_message', "Your orders didn't find in the application .");
+                \Session::flash('flash_message', config("constants.ORDER_ERROR"));
                 $url = 'sale/paymentDocuments/' . $id;
                 return redirect()->to($url);
             }
@@ -303,12 +303,12 @@ class SaleController extends Controller {
             if (isset($orderId)) {
                 $allOrders = Order::getAllOrders($orderId);
                 if (empty($allOrders['orderHistory'])) {
-                    App::abort(404, 'The url seeme to be expired or invalid.');
+                    App::abort(404, config("constants.URL_EXPIRED"));
                 }
             }
             return view('sale.generate_invoice', ['orders' => $allOrders, 'order_id' => $orderId, 'loginUser' => $loginUser]);
         } else {
-            App::abort(404, 'The url seeme to be expired or invalid.');
+            App::abort(404, config("constants.URL_EXPIRED"));
         }
     }
 

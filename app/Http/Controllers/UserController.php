@@ -112,7 +112,7 @@ class UserController extends Controller {
                 // save user details in user_details table
                 if ($userDetailData->save()) {
                     // set flash message when user created successfully.
-                    \Session::flash('flash_message', 'User created successfully.');
+                    \Session::flash('flash_message', config("constants.SAVED_DATA"));
                     return redirect('/user/listUsers');
                 } else {
                     return redirect('/user/addUser');
@@ -165,7 +165,7 @@ class UserController extends Controller {
             $status = $data['data']['status'];
             $userId = $data['data']['userId'];
             if (!($user = User::find($userId))) {
-                throw new Exception('Page not found.');
+                throw new Exception(config("constants.PAGE_NOT_FOUND"));
                 echo $this->error;
                 exit();
             } else {
@@ -225,7 +225,7 @@ class UserController extends Controller {
 
             // save user data in user table and user details data in user details table.
             if ($userData->fill($userInput)->save() && $userDetailData[0]->fill($userDetailInput)->save()) {
-                \Session::flash('flash_message', 'User details updated successfully.');
+                \Session::flash('flash_message', config("constants.UPDATED_DATA"));
 
                 return redirect('/user/listUsers');
             } else {
@@ -253,7 +253,7 @@ class UserController extends Controller {
             // delete the user by user id
             User::destroy(base64_decode($id));
             // set the flash message.
-            \Session::flash('flash_message', 'User deleted successfully.');
+            \Session::flash('flash_message', config("constants.DELETED_DATA"));
             // redirect back to the page.
             return Redirect::back();
         } catch (Exception $e) {
@@ -272,7 +272,7 @@ class UserController extends Controller {
     public function editUser($id = null) {
         try {
             if (!($user = User::with('userDetail')->find(base64_decode($id)))) {
-                throw new Exception('Page not found.');
+                throw new Exception(config("constants.PAGE_NOT_FOUND"));
             }
 
             // get the state list from state table

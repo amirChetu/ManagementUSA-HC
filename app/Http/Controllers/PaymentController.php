@@ -181,7 +181,7 @@ class PaymentController extends Controller {
             if ($ex->getData()) {
                 $data['error_data'] = $this->makeError(json_decode($ex->getData()));
             } else {
-                $data['error_data'] = "* Some network issue generated errors";
+                $data['error_data'] = config("constants.NETWORK_ERROR");
             }
             return $data;
         }

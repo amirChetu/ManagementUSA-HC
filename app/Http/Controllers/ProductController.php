@@ -65,9 +65,9 @@ class ProductController extends Controller {
             }
         });
         if ($this->success) {
-            Session::flash('success_message', 'Products added successfully.');
+            Session::flash('success_message', config("constants.SAVED_DATA"));
         } else {
-            Session::flash('error_message', 'Products not added successfully. Please try again.');
+            Session::flash('error_message', config("constants.ERROR_OCCURED"));
         }
         return redirect()->back();
     }
@@ -82,7 +82,7 @@ class ProductController extends Controller {
 
         $product = App\Product::where(['sku' => $data['sku']])->first();
         if (!isset($product) || empty($product)) {
-            return ['response' => false, 'msg' => 'Product with given sku value not found'];
+            return ['response' => false, 'msg' => config("constants.SKU_VALUE")];
         }
         $product->name = $data['pName'];
         $product->unit_of_measurement = $data['pMeasurement'];
@@ -90,7 +90,7 @@ class ProductController extends Controller {
         $product->count = $data['count'];
         $product->save();
 
-        return ['response' => true, 'msg' => 'Product updated successfully'];
+        return ['response' => true, 'msg' => config("constants.UPDATED_DATA")];
     }
 
     /**
@@ -186,9 +186,9 @@ class ProductController extends Controller {
             }
         });
         if ($this->success) {
-            \Session::flash('success_message', 'Inventory Imported successfully.');
+            \Session::flash('success_message', config("constants.IMPORTED_DATA"));
         } else {
-            \Session::flash('error_message', 'Inventory Imports Failed. Please try again witha valid excel file.');
+            \Session::flash('error_message', config("constants.INVENTORY_VALID"));
         }
         return redirect()->back();
     }

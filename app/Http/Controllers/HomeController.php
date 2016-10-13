@@ -134,7 +134,7 @@ class HomeController extends Controller {
                             'userDetail', 'userDetail.userStateName', 'roleName'
                     )
                     ->find($user_id))) {
-                throw new Exception('Page not found.');
+                throw new Exception(config("constants.PAGE_NOT_FOUND"));
             }
 
             return view('homes.user_profile', [
@@ -154,7 +154,7 @@ class HomeController extends Controller {
     public function editUserProfile($id = null) {
         try {
             if (!($user = User::with('userDetail')->find(base64_decode($id)))) {
-                throw new Exception('Page not found.');
+                throw new Exception(config("constants.PAGE_NOT_FOUND"));
             }
 
             // get the state list from state table
@@ -180,7 +180,7 @@ class HomeController extends Controller {
     public function updateUserProfile($id = null, Request $request) {
         try {
             if (!($userData = User::find($id))) {
-                throw new Exception('Page not found.');
+                throw new Exception(config("constants.PAGE_NOT_FOUND"));
             }
 
             // validation rule
@@ -208,7 +208,7 @@ class HomeController extends Controller {
             $userDetailInput['zipCode'] = $request->zipCode;
             // save user data in user table and user details data in user details table.
             if ($userData->fill($userInput)->save() && $userDetailData[0]->fill($userDetailInput)->save()) {
-                \Session::flash('flash_message', 'User Profile updated successfully.');
+                \Session::flash('flash_message', config("constants.UPDATED_DATA"));
                 return redirect('/home/userProfile');
             } else {
                 return redirect('/home/editUserProfile');

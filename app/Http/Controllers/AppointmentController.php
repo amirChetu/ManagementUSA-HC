@@ -141,12 +141,12 @@ class AppointmentController extends Controller {
         if (empty($request->patient_id)) {
             $controller = new PatientController();
             if (!($request->patient_id = $controller->saveAppointmentPatient($request))) {
-                \Session::flash('flash_message', 'some occur occcured in patient detail.');
+                \Session::flash('flash_message', config("constants.ERROR_OCCURED"));
                 return Redirect::action('AppointmentController@newAppointment');
             }
         }
         if ($this->addPatAppointment($request)) {
-            \Session::flash('flash_message', 'Appointment added successfully.');
+            \Session::flash('flash_message', config("constants.SAVED_DATA"));
             return Redirect::action('AppointmentController@viewappointment');
         }
     }
@@ -314,7 +314,7 @@ class AppointmentController extends Controller {
         if (!empty($request['email'])) {
             $userCheck = User::where('email', '=', $request['email'])->where('id', '!=', $request->patient_id)->first();
             if ($userCheck != null) {
-                \Session::flash('error_message', 'Email id you provided is already registered.');
+                \Session::flash('error_message', config("constants.EMAIL_ALREADY_EXIST"));
                 return Redirect::back();
             }
         }
@@ -332,7 +332,7 @@ class AppointmentController extends Controller {
         $patientDetailInput['location_id'] = $request->location;
         if ($patient->fill($patientInput)->save() && $patientDetailData->fill($patientDetailInput)->save() && $appointment_request->fill($appointment_requestInput)) {
             $appointment->save();
-            \Session::flash('flash_message', 'Appointment updated successfully.');
+            \Session::flash('flash_message', config("constants.UPDATED_DATA"));
             return redirect()->back();
         }
     }
@@ -349,7 +349,7 @@ class AppointmentController extends Controller {
             App::abort(404, 'Page not found.');
         }
         if (AppointmentRequest::destroy(base64_decode($id))) {
-            \Session::flash('flash_message', 'Appointment deleted successfully.');
+            \Session::flash('flash_message', config("constants.DELETED_DATA"));
             return redirect()->back();
         }
     }
@@ -367,7 +367,7 @@ class AppointmentController extends Controller {
         }
 
         if (FollowUp::destroy(base64_decode($id))) {
-            \Session::flash('flash_message', 'Followup deleted successfully.');
+            \Session::flash('flash_message', config("constants.DELETED_DATA"));
             return redirect()->back();
         }
     }
@@ -461,7 +461,7 @@ class AppointmentController extends Controller {
             $followupReschedule->followup_id = $followUp->id;
             $followupReschedule->save();
         }
-        \Session::flash('flash_message', 'Follow Up of this appointment has been updated');
+        \Session::flash('flash_message', config("constants.FOLLOWUP_UPDATED"));
         return redirect()->back();
     }
 
@@ -637,7 +637,7 @@ class AppointmentController extends Controller {
             $rules = array('image' => 'mimes:jpeg,png,pdf',); //mimes:jpeg,bmp,png and for max size max:10000
             $validator = Validator::make($file, $rules);
             if ($validator->fails()) {
-                \Session::flash('error_message', 'Please upload a valid driving license image (jpeg,png,pdf).');
+                \Session::flash('error_message', config("constants.IMAGE_VALIDATION"));
                 return redirect()->back();
             } else {
                 if (Input::file('driving_license')->isValid()) {
@@ -646,7 +646,7 @@ class AppointmentController extends Controller {
                     $patient->driving_license = md5(uniqid(time(), true)) . '.' . $extension;
                     Input::file('driving_license')->move($destinationPath, $patient->driving_license);
                 } else {
-                    \Session::flash('error_message', 'Please upload a valid driving license image (jpeg,png,pdf).');
+                    \Session::flash('error_message', config("constants.IMAGE_VALIDATION"));
                     return redirect()->back();
                 }
             }
@@ -940,7 +940,7 @@ class AppointmentController extends Controller {
         $cosmetics->save();
 
         $patientHash = DB::table('patient_details')->where('user_id', $id)->pluck('hash')[0];
-        \Session::flash('flash_message', 'Patient details saved successfully');
+        \Session::flash('flash_message', config("constants.SAVED_DATA"));
         if (Auth::check()) {
             return redirect('/patient');
         } elseif (!empty($formData['hash']) && $formData['hash'] == $patientHash) {
@@ -1010,7 +1010,7 @@ class AppointmentController extends Controller {
                 $rules = array('labReport' => 'mimes:jpeg,png,pdf',); //mimes:jpeg,bmp,png and for max size max:10000
                 $validator = Validator::make($fileArray, $rules);
                 if ($validator->fails()) {
-                    \Session::flash('error_message', 'Please upload a valid report images only (jpeg,png,pdf).');
+                    \Session::flash('error_message', config("constants.IMAGE_VALIDATION"));
                     return redirect()->back();
                 } else {
                     $destinationPath = 'uploads/lab_reports'; // upload path
@@ -1034,7 +1034,7 @@ class AppointmentController extends Controller {
             $values = [ 'progress_status' => $request->progress_status];
         }
         Appointment::where('id', $request->appointment_id)->update($values);
-        \Session::flash('flash_message', 'Patient Status updated successfully');
+        \Session::flash('flash_message',  config("constants.SAVED_DATA"));
         return redirect()->back();
     }
 
