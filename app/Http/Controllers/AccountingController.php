@@ -64,10 +64,10 @@ class AccountingController extends Controller {
             ]);
 
             // create new object for User
-            if (!class_exists('App\Cashlogs')) {
-                throw new Exception('Class App\Cashlogs not found');
+            if (!class_exists('App\Cashlog')) {
+                throw new Exception('Class App\Cashlog not found');
             }
-            $voucherData = new Cashlogs;
+            $voucherData = new Cashlog;
             $voucherData->user_id = Auth::user()->id;
             $voucherData->date = date('Y-m-d', strtotime($request->date));
             if ($request->operation == '1') {
@@ -101,7 +101,7 @@ class AccountingController extends Controller {
      */
     public function listCashLogs() {
         try {
-            $cashLogs = Cashlogs::with('agent')->get();
+            $cashLogs = Cashlog::with('agent')->get();
         } catch (Exception $e) {
             \Log::error($e);
             $cashLogs = [];
