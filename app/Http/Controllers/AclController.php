@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Validator;
@@ -17,7 +18,6 @@ use Exception;
  *
  * @return null
  */
-
 class AclController extends Controller {
 
     protected $success = true;
@@ -59,45 +59,45 @@ class AclController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function saveRole(Request $request) {
-		try{
-			$this->validate($request, [
-				'role_title' => 'required|unique:roles',
-			]);
+        try {
+            $this->validate($request, [
+                'role_title' => 'required|unique:roles',
+            ]);
 
-			$roleData = new Role();
-			$roleData = array(
-				'role_title' => $request['role_title'],
-				'role_slug' => strtolower($request['role_title']),
-				'status' => 1,
-			);
+            $roleData = new Role();
+            $roleData = array(
+                'role_title' => $request['role_title'],
+                'role_slug' => strtolower($request['role_title']),
+                'status' => 1,
+            );
 
-			$validator = Validator::make($roleData, $this->rules);
-			if ($validator->fails()) {
-				return redirect('/acl/listRole')
-								->withInput()
-								->withErrors($validator);
-			} else {
-				//save to DB user details
-				$role = new Role;
-				if ($role::create($roleData)) {
-					\Session::flash('flash_message', 'Role Created successfully.');
-					return redirect('/acl/listRole')
-						->withInput()
-						->withErrors($validator);
-				} else {
-					return redirect('/acl/listRole')
-						->withInput()
-						->withErrors($validator);
-				}
-			}
-		}catch(Exception $e){
-			$sales = [];
-			\Log::error($e);
-		}
+            $validator = Validator::make($roleData, $this->rules);
+            if ($validator->fails()) {
+                return redirect('/acl/listRole')
+                                ->withInput()
+                                ->withErrors($validator);
+            } else {
+                //save to DB user details
+                $role = new Role;
+                if ($role::create($roleData)) {
+                    \Session::flash('flash_message', config("constants.ROLE_CREATION"));
+                    return redirect('/acl/listRole')
+                                    ->withInput()
+                                    ->withErrors($validator);
+                } else {
+                    return redirect('/acl/listRole')
+                                    ->withInput()
+                                    ->withErrors($validator);
+                }
+            }
+        } catch (Exception $e) {
+            $sales = [];
+            \Log::error($e);
+        }
 
-		return view('account.sales_report', [
-			'sales' => $sales
-		]);
+        return view('account.sales_report', [
+            'sales' => $sales
+        ]);
     }
 
     /**
@@ -108,20 +108,20 @@ class AclController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function listRoles() {
-		try{
-			if(!class_exists('App\Role')){
-				throw new Exception('Class App\Role not found');
-			}
-			$role = new Role;
-			$roles = $role->get();
+        try {
+            if (!class_exists('App\Role')) {
+                throw new Exception('Class App\Role not found');
+            }
+            $role = new Role;
+            $roles = $role->get();
 
-			return view('acl.roles', [
-				'roles' => $roles
-			]);
-		} catch(Exception $e){
-			\Log::error($e);
-			App::abort(404, 'Page not found.');
-		}
+            return view('acl.roles', [
+                'roles' => $roles
+            ]);
+        } catch (Exception $e) {
+            \Log::error($e);
+            App::abort(404, 'Page not found.');
+        }
     }
 
     /**
@@ -152,7 +152,7 @@ class AclController extends Controller {
             App::abort(404, 'Page not found.');
         }
         Role::destroy(base64_decode($id));
-        \Session::flash('flash_message', 'Data deleted successfully.');
+        \Session::flash('flash_message', config("constants.DELETED_DATA"));
         return Redirect::back();
     }
 
@@ -174,7 +174,7 @@ class AclController extends Controller {
 
         $input = $request->all();
         if ($role->fill($input)->save()) {
-            \Session::flash('flash_message', 'Role updated successfully.');
+            \Session::flash('flash_message', config("constants.UPDATED_DATA"));
             return redirect('/acl/listRole');
         } else {
             return redirect('/acl/editRole');
@@ -189,26 +189,26 @@ class AclController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function listPermissions($roleId = null) {
-		try{
-			if(!class_exists('App\Permission')){
-				throw new Exception('Class App\Permission not found');
-			}
+        try {
+            if (!class_exists('App\Permission')) {
+                throw new Exception('Class App\Permission not found');
+            }
 
-			if(!class_exists('App\PermissionRole')){
-				throw new Exception('Class App\PermissionRole not found');
-			}
+            if (!class_exists('App\PermissionRole')) {
+                throw new Exception('Class App\PermissionRole not found');
+            }
 
-			$parents = Permission::with('children', 'parent')->get();
-			$permissionRoleData = PermissionRole::where('role_id', base64_decode($roleId))->get();
-			return view('acl.permission', [
-				'permissions' => $parents,
-				'roleId' => base64_decode($roleId),
-				'permissionRoleDatas' => $permissionRoleData
-			]);
-		} catch(Exception $e){
-			\Log::error($e);
-			App::abort(404, 'Page not found.');
-		}
+            $parents = Permission::with('children', 'parent')->get();
+            $permissionRoleData = PermissionRole::where('role_id', base64_decode($roleId))->get();
+            return view('acl.permission', [
+                'permissions' => $parents,
+                'roleId' => base64_decode($roleId),
+                'permissionRoleDatas' => $permissionRoleData
+            ]);
+        } catch (Exception $e) {
+            \Log::error($e);
+            App::abort(404, config("constants.PAGE_NOT_FOUND"));
+        }
     }
 
     /**

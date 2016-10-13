@@ -67,62 +67,62 @@ class DoseManagmentController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
-		try{
-			// define validation rule
-			$this->validate($request, [
-				'doctor' => 'required',
-				'amount1' => 'required',
-				'medicationA1' => 'required',
-				'amount2' => 'required',
-				'medicationA2' => 'required',
-				'amount3' => 'required',
-				'medicationB1' => 'required',
-				'amount4' => 'required',
-				'medicationB2' => 'required'
-			]);
-			// create TrimixDoses object
-			$trimixData = new TrimixDoses;
-			$trimixData->patient_id = $request->patient_id;
-			$trimixData->agent_id = Auth::user()->id;
-			$trimixData->dose_type = $request->dose_type;
-			$trimixData->quantity = (isset($request->quantity)) ? $request->quantity : 1;
-			$trimixData->doctor = $request->doctor;
-			$trimixData->amount1 = $request->amount1;
-			$trimixData->medicationA1 = $request->medicationA1;
-			$trimixData->amount2 = $request->amount2;
-			$trimixData->medicationA2 = $request->medicationA2;
-			$trimixData->amount3 = $request->amount3;
-			$trimixData->medicationB1 = $request->medicationB1;
-			$trimixData->amount4 = $request->amount4;
-			$trimixData->medicationB2 = $request->medicationB2;
-			$trimixData->antidote = (isset($request->antidote)) ? $request->antidote : '';
-			$trimixData->dose_start_date = date('Y-m-d h:i:s');
+        try {
+            // define validation rule
+            $this->validate($request, [
+                'doctor' => 'required',
+                'amount1' => 'required',
+                'medicationA1' => 'required',
+                'amount2' => 'required',
+                'medicationA2' => 'required',
+                'amount3' => 'required',
+                'medicationB1' => 'required',
+                'amount4' => 'required',
+                'medicationB2' => 'required'
+            ]);
+            // create TrimixDoses object
+            $trimixData = new TrimixDoses;
+            $trimixData->patient_id = $request->patient_id;
+            $trimixData->agent_id = Auth::user()->id;
+            $trimixData->dose_type = $request->dose_type;
+            $trimixData->quantity = (isset($request->quantity)) ? $request->quantity : 1;
+            $trimixData->doctor = $request->doctor;
+            $trimixData->amount1 = $request->amount1;
+            $trimixData->medicationA1 = $request->medicationA1;
+            $trimixData->amount2 = $request->amount2;
+            $trimixData->medicationA2 = $request->medicationA2;
+            $trimixData->amount3 = $request->amount3;
+            $trimixData->medicationB1 = $request->medicationB1;
+            $trimixData->amount4 = $request->amount4;
+            $trimixData->medicationB2 = $request->medicationB2;
+            $trimixData->antidote = (isset($request->antidote)) ? $request->antidote : '';
+            $trimixData->dose_start_date = date('Y-m-d h:i:s');
 
-			// save trimix doses data in table
-			if ($trimixData->save()) {
-				if ($request->dose_type != 1) {
-					if ($request->dose_type == 2) {
-						$dose = $request->dose_type - 1;
-					} else if ($request->dose_type == 'A') {
-						$dose = 2;
-					} else {
-						$dose = chr(ord($request->dose_type) - 1);
-					}
-					DB::table('trimix_doses')
-							->where('patient_id', '=', $request->patient_id)
-							->where('dose_type', '=', $dose)
-							->update(['dose_end_date' => date('Y-m-d h:i:s')]);
-				}
-				\Session::flash('flash_message', 'Doses saved successfully.');
-				return redirect('/doses/doseManagement');
-			} else {
-				\Session::flash('flash_message', 'There are something went wrong Plz Try again.');
-				return Redirect::back();
-			}
-		}catch(Exception $e){
-			\Log::error($e);
-			App::abort(404, $e->getMessage());
-		}
+            // save trimix doses data in table
+            if ($trimixData->save()) {
+                if ($request->dose_type != 1) {
+                    if ($request->dose_type == 2) {
+                        $dose = $request->dose_type - 1;
+                    } else if ($request->dose_type == 'A') {
+                        $dose = 2;
+                    } else {
+                        $dose = chr(ord($request->dose_type) - 1);
+                    }
+                    DB::table('trimix_doses')
+                            ->where('patient_id', '=', $request->patient_id)
+                            ->where('dose_type', '=', $dose)
+                            ->update(['dose_end_date' => date('Y-m-d h:i:s')]);
+                }
+                \Session::flash('flash_message', config("constants.SAVED_DATA"));
+                return redirect('/doses/doseManagement');
+            } else {
+                \Session::flash('flash_message', config("constants.ERROR_OCCURED"));
+                return Redirect::back();
+            }
+        } catch (Exception $e) {
+            \Log::error($e);
+            App::abort(404, $e->getMessage());
+        }
     }
 
     /**
@@ -152,10 +152,10 @@ class DoseManagmentController extends Controller {
         // save user data in user table
         if ($trimixFeedback->save()) {
             // set the flash message.
-            \Session::flash('flash_message', 'Feedback saved successfully.');
+            \Session::flash('flash_message', config("constants.SAVED_DATA"));
             return redirect('/doses/doseManagement');
         } else {
-            \Session::flash('flash_message', 'There are something went wrong Plz Try again.');
+            \Session::flash('flash_message', config("constants.ERROR_OCCURED"));
             return Redirect::back();
         }
     }
