@@ -21,8 +21,8 @@ class CreatePaymentsTable extends Migration
             $table->tinyInteger('payment_type')->comment('0=> Cash In Hand, 1=> Credit Card');
             $table->decimal('total_amount',10,2);
             $table->decimal('paid_amount',10,2);
-            $table->tinyInteger('payment_status')->comment('0 = Uncompleted, 1=> Completed with EMI or Total Amount');
-            $table->tinyInteger('payment_emi_status')->comment('0 = Main Payment, 1= EMI Installment');
+            $table->tinyInteger('status')->comment('0 = Uncompleted, 1=> Completed with EMI or Total Amount');
+            $table->tinyInteger('emi_status')->comment('0 = Main Payment, 1= EMI Installment');
             $table->timestamps();
             $table->softDeletes();
         });
