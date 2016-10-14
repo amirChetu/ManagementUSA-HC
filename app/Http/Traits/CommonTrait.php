@@ -98,7 +98,7 @@ trait CommonTrait {
                     $apiData->widget_name = $data['WidgetName'];
                     $apiData->source_type = 2;
                     $apiData->category = $data['Category'];
-                    $apiData->appoitment_status = 0;
+                    $apiData->appointment_status = 0;
                     $apiData->type = ($data['CallDuration'] == '0:00' || $data['CallDuration'] == '') ? 1 : 0;
 
                     // save data in user table
