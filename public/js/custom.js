@@ -1071,6 +1071,7 @@ var data = $(this).serializeArray();
 				$('.appointmentCount').text(combine.appointments);
 				$('.anotherAppointment').text(combine.anotherAppointments);
 				$('.requestCount').text(combine.requestFollowups);
+                                $('.missed_call').text(combine.apiData);
 			}
 		});
 	}

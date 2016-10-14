@@ -37,7 +37,7 @@
 
                             <li class="{{ Request::segment(2) === 'missedCall' ? 'nav-active' : null }}">
                                 <a href="{{ url('/api/store') }}">
-                                    Call List<span class="badge">4</span>
+                                    Call List<span class="badge missed_call"></span>
                                 </a>
                             </li>  
                             <li class="{{ Request::segment(3) === 'marketingCall' ? 'nav-active' : null }}">

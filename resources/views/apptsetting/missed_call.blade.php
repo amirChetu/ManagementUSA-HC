@@ -20,7 +20,7 @@
                 <a href="#" class="panel-action panel-action-dismiss" data-panel-dismiss></a>
                 <a href="{{ url('/api/store') }}"> 
                     <button type="button" class="btn btn-success">
-                        <span class="fa fa-check"></span> Refresh
+                        <span class="fa fa-refresh"></span> Refresh
                     </button>
                 </a>
             </div>
@@ -32,14 +32,17 @@
                 @if(Session::has('flash_message'))
                 <div class="col-sm-12"><div class="alert alert-success"><span class="glyphicon glyphicon-ok"></span><em> {!! session('flash_message') !!}</em></div></div>
                 @endif
+                @if(Session::has('error_message'))
+                <div class="col-sm-12"><div class="alert alert-danger"><span class="glyphicon glyphicon-ok"></span><em> {!! session('error_message') !!}</em></div></div>
+                @endif
             </div>
             <table class="table table-bordered table-striped mb-none" id="datatable-default">
                 <thead>
                     <tr>
                         <th>Sr.</th>
-                        <th>Phone No.</th>
-                        <th>Call Time</th>
                         <th>Caller Id</th>
+                        <th>Call Time</th>
+                        <th>Phone No.</th>
                         <th>Phone Name</th>
                         <th>Source</th>
                         <th>Actions</th>
@@ -50,10 +53,10 @@
                     @foreach($missedData as $missed)
                     <tr>
                         <td class="table-text table-text-id"><div>{{ ++$inc }}</div></td>
-                        <td class="table-text">{{ $missed->phone_number }}</td>
+                        <td class="table-text">{{ $missed->caller_id }}</td>
 
                         <td class="table-text"> {{ $missed->date_time }}</td>
-                        <td class="table-text">{{ $missed->caller_id }}</td>
+                        <td class="table-text">{{ $missed->phone_number }}</td>
                         <td class="table-text">{{ $missed->phone_number_name }}</td>
                         <td class="table-text">Tele-marketing Calls</td>
                         <td class="actions">
@@ -62,7 +65,7 @@
                             @else
                             <a href="{{ url('/apptsetting/index/marketingCall/'.$missed->id) }}" class="on-editing save-row" title="Create Appointment"><i class="fa fa-calendar"></i></a>
                             @endif
-                            <a href="#" class="on-editing cancel-row"><i class="fa fa-times"></i></a>                            
+                            <a data-href="/patient/delete/" href="javascrpt:void(0)" class="on-default remove-row confirmation-callback" ><i class="fa fa-trash-o"></i></a>                            
                         </td>
                     </tr>
                     @endforeach

@@ -100,23 +100,7 @@
                     </div>
                     <div class="form-group{{ $errors->has('patient_id') ? ' has-error' : '' }}">
                         {{ Form::label('patient_id', 'Patient', array('class' => 'col-sm-3 control-label mandatory')) }}
-<!--                        <div class="col-md-5 patient_id commentdiv" id="patientMainDiv">
-  
-                            <select  class="form-control chosen" name="patient_id" id="patient_id">
-                                <option value="">Choose Any</option>
-                                @foreach ($patients as $patient)
-                                <option {{ old('patient_id') == $patient->id ? 'selected="selected"' :'' }} value="{{ $patient->id }}">{{ $patient->first_name }} {{ $patient->last_name }} ({{ $patient->email }})</option>
-                                @endforeach
 
-                            </select>
-                            @if ($errors->has('patient_id'))
-                            <span class="help-block">
-                                <strong>{{ $errors->first('patient_id') }}</strong>
-                            </span>
-                            @endif
-                        </div>-->
-                        
-  
                             <div class="col-md-3 patient_id" id="patientMainDiv">
                                 <select  class="form-control" name="patient_id" id="patient_id">
                                     <option value="">Choose Any</option>
