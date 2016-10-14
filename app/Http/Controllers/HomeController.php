@@ -89,12 +89,8 @@ class HomeController extends Controller {
                 }
                 if ($appointment->patient && $appointment->patient->patientDetail) {
                     $events ['mobile'] = 'Phone: ' . $appointment->patient->patientDetail->phone;
-                    if ($appointment->patient->patientDetail->patient_status == 1) {
-                        $events ['color'] = '#47a447';
-                    } else {
-                        $events ['color'] = '#0088cc';
-                    }
                 }
+                $events ['color'] = '#0088cc';
                 $events ['start'] = $appointment->apptTime;
                 $events ['end'] = date('Y-m-d H:i:s', strtotime($appointment->apptTime . '+ 30 minute'));
                 $collevent[$i] = $events;
