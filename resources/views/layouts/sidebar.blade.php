@@ -399,7 +399,7 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="left-menu-devider {{ Request::segment(1) === 'doses' ? 'nav-active nav-expanded' : null }}">
+                    <li class="left-menu-devider {{ (Request::segment(1) === 'api') && (Request::segment(2) === 'setting') ? 'nav-active nav-expanded' : null }}">
                         <a href="{{ url('api/setting') }}">
                             <i class="fa fa-cogs" aria-hidden="true"></i>
                             <span>API Integration</span>
