@@ -480,8 +480,7 @@ class ApptSettingController extends Controller {
      */
 
     public function findAppointmentDetail(Request $request) {
-        $appointment = DB::table('users')
-                ->leftJoin('patient_details', 'users.id', '=', 'patient_details.user_id')
+        $appointment = User::leftJoin('patient_details', 'users.id', '=', 'patient_details.user_id')
                 ->where('users.id', $request['id'])
                 ->select('users.id', 'users.first_name', 'users.last_name', 'users.email', 'patient_details.phone', 'patient_details.dob')
                 ->first();

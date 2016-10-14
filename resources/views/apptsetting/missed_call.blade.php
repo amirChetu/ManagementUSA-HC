@@ -71,36 +71,4 @@
         </div>
     </section>
 </section>
-
-
-
-
-
-
-
-
-
-<style>
-    .call_label { padding-top:0px !important; }
-    .disable_tag { pointer-events: none; opacity: 0.6; }
-</style>
-<script>
-    $('document').ready(function() {
-        $('#reasonCode').hide();
-        $('#callStatus').validate();
-    })
-    $('#callStatus').on('submit', function() {
-        return false;
-    });
-    
-    $('.callStatus').on('click', function() {
-        var call_value = $(this).val();
-        if (call_value === 'Set') {
-            $('#reasonCode').hide();
-        } else {
-            $('#reasonCode').show();
-        }
-    });
-
-</script>
 @endsection
