@@ -5,6 +5,13 @@ namespace App\Providers;
 use Illuminate\Routing\Router;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
+/**
+* This class is used for route services
+*
+* @category App\Providers;
+*
+* @return null
+*/
 class RouteServiceProvider extends ServiceProvider
 {
     /**

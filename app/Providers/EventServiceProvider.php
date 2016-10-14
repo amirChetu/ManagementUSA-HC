@@ -5,6 +5,13 @@ namespace App\Providers;
 use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
+/**
+* This class is used for Event services
+*
+* @category App\Providers;
+*
+* @return null
+*/
 class EventServiceProvider extends ServiceProvider
 {
     /**
