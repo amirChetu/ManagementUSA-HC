@@ -964,5 +964,11 @@ Route::group(['middleware' => 'web'], function () {
       'uses' => 'SaleController@printForm',
        'as' => 'sales.printForm',
     ]);
+    
+    Route::get('/api/delete/{id}', [
+        'uses' => 'ClientApiController@delete',
+        'as' => 'api.delete',
+        //'middleware' => ['acl:pos_write']
+    ]);
 
 });

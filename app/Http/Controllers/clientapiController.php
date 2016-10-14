@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\ApiSetting;
 use App\Http\Traits\CommonTrait;
 use Illuminate\Http\Request;
+use App\ApiData;
 
 /**
  * Class is used to test the Client Api functionality
@@ -82,6 +83,28 @@ class ClientApiController extends Controller {
         } else {
             \Session::flash('error_message',  config("constants.AUTH_VALID"));
             return redirect('/api/setting');
+        }
+    }
+    
+    /**
+     * This function is used to delete the APi data from api_datas table.
+     *
+     * @param void
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function delete($id = null) {
+        try {
+            $api = \DB::connection('mysql2')->table('api_datas')->where('id', base64_decode($id))->first();
+           if (!$api) {
+                throw new Exception(config("constants.PAGE_NOT_FOUND"));
+            }
+            ApiData::destroy(base64_decode($id));
+            \Session::flash('flash_message', config("constants.DELETED_DATA"));
+           return redirect('/apptsetting/missedCall');
+        } catch (Exception $e) {
+            \Log::error($e);
+            \App::abort(404, $e->getMessage());
         }
     }
 
