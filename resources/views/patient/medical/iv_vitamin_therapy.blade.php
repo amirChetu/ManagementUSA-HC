@@ -160,23 +160,3 @@
         </div>
     </section>
 </div>
-<script>
-/*     $(document).ready(function() {
-        $('.needleAfraidActive').hide();
-		if($("input[name='needle_afraid']:checked").val() == 1){
-			$('.needleAfraidActive').show();
-		} */
-        /** 
-         * If Patient has the weight loss surgeries then show the corresponding fields
-         *  */
-/*         $("input[name='needle_afraid']").click(function() {
-            var exercise_status = $(this).val();
-            if (exercise_status == 1) {
-                $('.needleAfraidActive').show();
-            } else {
-                $('.needleAfraidActive').hide();
-            }
-        });
-
-    }); */
-</script>

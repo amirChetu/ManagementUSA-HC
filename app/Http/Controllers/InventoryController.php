@@ -59,53 +59,53 @@ class InventoryController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request) {
-		try{
-			$data = Input::all();
-			$messages = [
-				'mimes' => 'Please upload a valid excel file'
-			];
+        try {
+            $data = Input::all();
+            $messages = [
+                'mimes' => config("constants.EXCEL_VALID")
+            ];
 
-			$validator = Validator::make($data, [
-						'inventory_file' => 'required|mimes:xls,xlsx|between:0,1024' // file size must be from 0 kb to 1 mb
-							], $messages);
+            $validator = Validator::make($data, [
+                        'inventory_file' => 'required|mimes:xls,xlsx|between:0,1024' // file size must be from 0 kb to 1 mb
+                            ], $messages);
 
-			if ($validator->fails()) {
-				return Redirect::to('/inventory/create')->withInput()->withErrors($validator->errors());
-			}
-			\Excel::load($data['inventory_file']->getPathname(), function($reader) {
-				// Getting all results
-				$inventoryList = $reader->select(array('sku', 'unit_of_measurement', 'quantity'))->get()->toArray();
+            if ($validator->fails()) {
+                return Redirect::to('/inventory/create')->withInput()->withErrors($validator->errors());
+            }
+            \Excel::load($data['inventory_file']->getPathname(), function($reader) {
+                // Getting all results
+                $inventoryList = $reader->select(array('sku', 'unit_of_measurement', 'quantity'))->get()->toArray();
 
-				$list = [];
-				$inventory = [];
+                $list = [];
+                $inventory = [];
 
-				// check if any column is missing in any row if found then the row is rejected
-				foreach ($inventoryList as $i => $n) {
-					if (!isset($n['sku']) || !isset($n['unit_of_measurement']) || !isset($n['quantity']) || empty($n['sku']) || empty($n['unit_of_measurement']) || empty($n['quantity'])) {
-						unset($inventoryList[$i]);
-					} else {
-						$pro = ['sku' => $n['sku'], 'unit_of_measurement' => $n['unit_of_measurement'], 'quantity' => $n['quantity']];
+                // check if any column is missing in any row if found then the row is rejected
+                foreach ($inventoryList as $i => $n) {
+                    if (!isset($n['sku']) || !isset($n['unit_of_measurement']) || !isset($n['quantity']) || empty($n['sku']) || empty($n['unit_of_measurement']) || empty($n['quantity'])) {
+                        unset($inventoryList[$i]);
+                    } else {
+                        $pro = ['sku' => $n['sku'], 'unit_of_measurement' => $n['unit_of_measurement'], 'quantity' => $n['quantity']];
 
-						$inventory[] = $pro;
-						$proUpdated = App\Inventory::firstOrNew(array('sku' => $n['sku']));
-						$proUpdated->fill($pro)->save();
-					}
-				}
+                        $inventory[] = $pro;
+                        $proUpdated = App\Inventory::firstOrNew(array('sku' => $n['sku']));
+                        $proUpdated->fill($pro)->save();
+                    }
+                }
 
-				if (!empty($inventory)) {
-					$this->success = true;
-				}
-			});
-			if ($this->success) {
-				\Session::flash('success_message', 'Inventory Imported successfully.');
-			} else {
-				\Session::flash('error_message', 'Inventory Imports Failed. Please try again witha valid excel file.');
-			}
-			return redirect()->back();			
-		}catch(Exception $e){
-			\Log::error($e);
-			\App::abort(404, $e->getMessage());
-		}
+                if (!empty($inventory)) {
+                    $this->success = true;
+                }
+            });
+            if ($this->success) {
+                \Session::flash('success_message', config("constants.IMPORTED_DATA"));
+            } else {
+                \Session::flash('error_message', config("constants.INVENTORY_VALID"));
+            }
+            return redirect()->back();
+        } catch (Exception $e) {
+            \Log::error($e);
+            \App::abort(404, $e->getMessage());
+        }
     }
 
     /**
@@ -115,15 +115,15 @@ class InventoryController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function edit($id) {
-		try{
-			if (!($inventory = Inventory::find(base64_decode($id)))) {
-				throw new Exception('Page not found.');
-			}
-			return view('inventory.edit', ['inventory' => $inventory]);
-		}catch(Exception $e){
-			\Log::error($e);
-			\App::abort(404, $e->getMessage());
-		}
+        try {
+            if (!($inventory = Inventory::find(base64_decode($id)))) {
+                throw new Exception(config("constants.PAGE_NOT_FOUND"));
+            }
+            return view('inventory.edit', ['inventory' => $inventory]);
+        } catch (Exception $e) {
+            \Log::error($e);
+            \App::abort(404, $e->getMessage());
+        }
     }
 
     /**
@@ -134,32 +134,32 @@ class InventoryController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request) {
-		try{
-			if (!($user = Inventory::find($request->id))) {
-				throw new Exception('Page not found.');
-			}
+        try {
+            if (!($user = Inventory::find($request->id))) {
+                throw new Exception(config("constants.PAGE_NOT_FOUND"));
+            }
 
-			// validation rule
-			$this->validate($request, [
-				'quantity' => 'required|numeric'
-			]);
+            // validation rule
+            $this->validate($request, [
+                'quantity' => 'required|numeric'
+            ]);
 
-			// update the user status by user id
-			$update = DB::table('stocks')
-					->where('id', $request->id)
-					->update(['quantity' => $request->quantity]);
-			if ($update) {
-				\Session::flash('flash_message', 'Inventory Updated Successfully.');
+            // update the user status by user id
+            $update = DB::table('stocks')
+                    ->where('id', $request->id)
+                    ->update(['quantity' => $request->quantity]);
+            if ($update) {
+                \Session::flash('flash_message', config("constants.UPDATED_DATA"));
 
-				return redirect('/inventory/index');
-			} else {
-				\Session::flash('flash_message', 'Unable to update the Inventory Please try again!.');
-				return Redirect::back();
-			}			
-		}catch(Exception $e){
-			\Log::error($e);
-			\App::abort(404, $e->getMessage());
-		}
+                return redirect('/inventory/index');
+            } else {
+                \Session::flash('flash_message', config("constants.ERROR_OCCURED"));
+                return Redirect::back();
+            }
+        } catch (Exception $e) {
+            \Log::error($e);
+            \App::abort(404, $e->getMessage());
+        }
     }
 
     /**

@@ -83,7 +83,7 @@ class CategoryController extends Controller {
             $category->duration_months = $request->duration_months;
 
             if ($category->save()) {
-                \Session::flash('flash_message', 'New Category Added successfully.');
+                \Session::flash('flash_message', config("constants.SAVED_DATA"));
                 return redirect('/categories/listCategories');
             } else {
                 return redirect('/categories/newCategory');
@@ -109,12 +109,12 @@ class CategoryController extends Controller {
 
             $category = Category::where('id', $id)->get()->first();
             if (empty($category)) {
-                \Session::flash('error_message', 'Category Not found.');
+                \Session::flash('error_message', config("constants.CATEGORY_NOT_FOUND"));
                 return Redirect::back();
             }
             $category_details = App\Package::getCategoryDetailsById($id);
             if (empty($category_details['category_info'])) {
-                \Session::flash('error_message', 'This package is empty.');
+                \Session::flash('error_message',  config("constants.EMPTY_PACKAGE"));
                 return Redirect::back();
             }
 
@@ -152,7 +152,6 @@ class CategoryController extends Controller {
                 $categoryList = $reader->select(array('sku', 'name', 'unit_of_measurement', 'price', 'p_count', 'spl_price', 'package', 'category_id'))->get()->toArray();
 
                 $category_types = DB::table('category_types')->pluck('id', 'name');
-                $list = [];
                 $product = [];
                 $packageRows = [];
                 // check if any column is missing in any row if found then the row is rejected
@@ -181,9 +180,9 @@ class CategoryController extends Controller {
                 }
             });
             if ($this->success) {
-                \Session::flash('success_message', 'Category saved successfully.');
+                \Session::flash('success_message', config("constants.SAVED_DATA"));
             } else {
-                \Session::flash('error_message', 'Category SAVE FAILED. Please try again witha valid excel file.');
+                \Session::flash('error_message', config("constants.EXCEL_ERROR"));
             }
             return redirect()->back();
         } catch (Exception $e) {

@@ -191,7 +191,7 @@ class ApptSettingController extends Controller {
             if (!empty($formData['email'])) {
                 $userCheck = User::where('email', '=', $formData['email'])->first();
                 if ($userCheck != null && $userCheck->id != $id) {
-                    \Session::flash('error_message', 'Email id you provided is already registered.');
+                    \Session::flash('error_message', config("constants.EMAIL_ALREADY_EXIST"));
                     return Redirect::back();
                 }
             }
@@ -294,10 +294,10 @@ class ApptSettingController extends Controller {
             }
 
             if ($formData['status'] == config("constants.APPOINTMENT_SET_FLAG")) {
-                \Session::flash('flash_message', 'Appointment added successfully.');
+                \Session::flash('flash_message', config("constants.SAVED_DATA"));
                 return redirect()->action('ApptSettingController@requestFollowUp');
             } else {
-                \Session::flash('flash_message', 'Appointment ended successfully.');
+                \Session::flash('flash_message', config("constants.APPOINTMENT_END"));
                 return redirect()->action('ApptSettingController@requestFollowUp');
             }
         } catch (Exception $e) {
@@ -354,7 +354,7 @@ class ApptSettingController extends Controller {
             if (!empty($formData['email'])) {
                 $userCheck = User::where('email', '=', $formData['email'])->first();
                 if ($userCheck != null && $userCheck->id != $id) {
-                    \Session::flash('error_message', 'Email id you provided is already registered.');
+                    \Session::flash('error_message', config("constants.EMAIL_ALREADY_EXIST"));
                     return Redirect::back();
                 }
             }
@@ -442,14 +442,13 @@ class ApptSettingController extends Controller {
             }
             // Case of selecting patient from drop down
             if ($formData['status'] == config("constants.APPOINTMENT_SET_FLAG")) {
-                \Session::flash('flash_message', 'Appointment added successfully.');
+                \Session::flash('flash_message', config("constants.SAVED_DATA"));
                 return redirect()->action('AppointmentController@listappointment');
             } else {
-                \Session::flash('flash_message', 'Appointment put on the hold successfully.');
+                \Session::flash('flash_message', config("constants.APPOINTMENT_HOLD"));
                 return redirect()->back();
             }
         } catch (Exception $e) {
-            print_r($e->getMessage());die;
             \Log::error($e);
             App::abort(404, $e->getMessage());
         }
@@ -528,7 +527,7 @@ class ApptSettingController extends Controller {
 
             $patientRole = DB::table('roles')->select('id')->where('role_slug', config("constants.PATIENT_ROLE_SLUG"))->first();
             if (!$patientRole || !($patientRole = $patientRole->id)) {
-                throw new Exception('Cannot fetch role from database.');
+                throw new Exception(config("constants.ROLE_NOT_FETCH"));
             }
 
             $id = $formData['patient_id'];
@@ -537,7 +536,7 @@ class ApptSettingController extends Controller {
             if (!empty($formData['email'])) {
                 $userCheck = User::where('email', '=', $formData['email'])->first();
                 if ($userCheck != null && $userCheck->id != $id) {
-                    \Session::flash('error_message', 'Email id you provided is already registered.');
+                    \Session::flash('error_message', config("constants.EMAIL_ALREADY_EXIST"));
                     return Redirect::back();
                 }
             }
@@ -617,10 +616,10 @@ class ApptSettingController extends Controller {
             }
             // Case of selecting patient from drop down
             if ($formData['status'] == config("constants.APPOINTMENT_SET_FLAG")) {
-                \Session::flash('flash_message', 'Appointment added successfully.');
+                \Session::flash('flash_message', config("constants.SAVED_DATA"));
                 return redirect()->action('AppointmentController@listappointment');
             } else {
-                \Session::flash('flash_message', 'Appointment put on the hold successfully.');
+                \Session::flash('flash_message', config("constants.APPOINTMENT_HOLD"));
                 return redirect()->back();
             }
         } catch (Exception $e) {

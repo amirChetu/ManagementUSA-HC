@@ -52,11 +52,11 @@ class ClientApiController extends Controller {
 
         if ($saved) {
             // set the flash message for doctor creation success.
-            \Session::flash('flash_message', 'Setting Saved Successfully.');
+            \Session::flash('flash_message', config("constants.SAVED_DATA"));
             return redirect('/api/setting');
         } else {
             // set the flash message for doctor creation success.
-            \Session::flash('error_message', 'Some Thing Went Wrong Please Try Again.');
+            \Session::flash('error_message', config("constants.ERROR_OCCURED"));
             return redirect('/api/setting');
         }
     }
@@ -73,14 +73,14 @@ class ClientApiController extends Controller {
         if (count($data)) {
             $status = $this->saveApiData($data);
             if ($status) {
-                \Session::flash('flash_message', 'Api Data Updated Successfully.');
-                return redirect('/apptsetting/missedCall');
+                \Session::flash('flash_message', config("constants.SAVED_DATA"));
+                return redirect('/');
             } else {
-                \Session::flash('error_message', 'Some thing went wrong please try again');
-                return redirect('/apptsetting/missedCall');
+                \Session::flash('error_message', config("constants.ERROR_OCCURED"));
+                return redirect('/');
             }
         } else {
-            \Session::flash('error_message', 'Please set the valid authntication detail');
+            \Session::flash('error_message',  config("constants.AUTH_VALID"));
             return redirect('/api/setting');
         }
     }
