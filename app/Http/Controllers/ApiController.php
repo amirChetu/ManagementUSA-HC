@@ -14,7 +14,7 @@ use App\ApiData;
  *
  * @return void
  */
-class ClientApiController extends Controller {
+class ApiController extends Controller {
 
     use CommonTrait;
 
