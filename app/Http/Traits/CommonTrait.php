@@ -61,7 +61,7 @@ trait CommonTrait {
         $error_row = [];
         if (isset($datas['Data']) && !empty($datas['Data'])) {
             $arr = $datas['Data'];
-            $maxTimeStamp = \DB::connection('mysql2')->table('api_data')->max('timestamp');
+            $maxTimeStamp = \DB::connection('mysql2')->table('api_datas')->max('timestamp');
             foreach ($arr as $data) {
                 $timestamp = preg_replace("/[^0-9]/", "", $data['DateTime']);
 

@@ -18,6 +18,7 @@ use App;
 use Auth;
 use App\PdfForm;
 use Exception;
+use App\Category;
 
 /**
  * Class is used to handle all the action related to Sale Management

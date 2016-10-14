@@ -640,3 +640,22 @@ $('#durationExample').timepicker({
             this.value = "";   
         }
     });
+    
+  // JS for missed call functionality
+    $('document').ready(function() {
+        $('#reasonCode').hide();
+        $('#callStatus').validate();
+    })
+    $('#callStatus').on('submit', function() {
+        return false;
+    });
+    
+    $('.callStatus').on('click', function() {
+        var call_value = $(this).val();
+        if (call_value === 'Set') {
+            $('#reasonCode').hide();
+        } else {
+            $('#reasonCode').show();
+        }
+    });
+
