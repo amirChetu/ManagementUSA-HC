@@ -22,7 +22,7 @@ class CreateAppointmentRequestsTable extends Migration
             $table->tinyInteger('appt_source')->default(0)->comment('1=>Web_leads, 2=> Marketing calls, 3=> Walikins');
             $table->date('followup_date');
             $table->tinyInteger('followup_status')->default(0)->comment('0=> Not Show , 1=>Show in Listing');
-            $table->tinyInteger('status')->nullable()->comment('1=>Set, 2=>No Set');
+            $table->tinyInteger('status')->nullable()->comment('0=>Set, 1=>No Set');
             $table->tinyInteger('noSetStatus')->comment('0 => Next Appointment, 1 => End Appointment');
             $table->integer('location_id');
             $table->timestamps();
