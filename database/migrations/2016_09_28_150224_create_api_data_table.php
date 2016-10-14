@@ -44,6 +44,7 @@ class CreateApiDataTable extends Migration
             $table->integer('source_type');
             $table->string('category')->nullable();
             $table->boolean('type');
+            $table->boolean('appointment_status');
             $table->timestamps();
             $table->softDeletes();
         });

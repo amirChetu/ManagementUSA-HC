@@ -63,7 +63,7 @@ class ApptSettingController extends Controller {
      * @return \resource\view\apptsetting\index
      */
 
-    public function index($value = null) {
+    public function index($value = null, $apiDataId = null) {
         try {
             $patientRole = DB::table('roles')->select('id')->where('role_slug', config("constants.PATIENT_ROLE_SLUG"))->first();
             if (!$patientRole || !($patientRoleId = $patientRole->id)) {
@@ -76,9 +76,20 @@ class ApptSettingController extends Controller {
             $locations = DB::table('locations')->get();
             $noSetReasonCode = ReasonCode::where('type', '2')->lists('reason', 'id')->toArray();
             $setReasonCode = ReasonCode::where('type', '1')->lists('reason', 'id')->toArray();
+            
+            $apiData = [];
+            if(isset($apiDataId) && !empty($apiDataId))
+            {
+                $apiData = ApiData::where('id', $apiDataId)->first();
+            }
 
             return view('apptsetting.index', [
-                'value' => $value, 'patients' => $patients, 'locations' => $locations, 'noSetReasonCode' => $noSetReasonCode, 'setReasonCode' => $setReasonCode
+                'value' => $value, 
+                'patients' => $patients,
+                'locations' => $locations,
+                'noSetReasonCode' => $noSetReasonCode,
+                'setReasonCode' => $setReasonCode,
+                'apiData' => $apiData
             ]);
         } catch (Exception $e) {
             \Log::error($e);
@@ -96,7 +107,8 @@ class ApptSettingController extends Controller {
             if (!class_exists('App\ApiData')) {
                 throw new Exception('404');
             }
-            $missedData = ApiData::where('type', 1)->get();
+            
+            $missedData = ApiData::orderBy('id', 'desc')->groupBy('caller_id')->get();
             return view('apptsetting.missed_call', [
                 'missedData' => $missedData,
             ]);
@@ -384,6 +396,14 @@ class ApptSettingController extends Controller {
             }
             // save the appointment reason
             $appointment_requests->save();
+            
+            if(isset($formData['api_data_id']))
+            {
+                \DB::connection('mysql2')->table('api_datas')
+                ->where('id', $formData['api_data_id'])
+                ->update(array('appointment_status' => 1));
+            }
+            
             $reason = new App\AppointmentReason;
             $reason->patient_id = $id;
             $reason->reason_id = $formData['reason_id'];

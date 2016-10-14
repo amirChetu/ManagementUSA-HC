@@ -34,7 +34,7 @@ Route::group(['middleware' => 'web'], function () {
      * Route for AppointmentSettingController
      */
 
-    Route::get('/apptsetting/index/{val?}', [
+    Route::get('/apptsetting/index/{val?}/{id?}', [
         'uses' => 'ApptSettingController@index',
         'as' => 'apptsetting.index',
         'middleware' => ['acl:appointment_setting_write']

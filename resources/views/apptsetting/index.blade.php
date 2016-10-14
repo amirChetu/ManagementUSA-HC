@@ -44,7 +44,12 @@
                     <div class="form-group">
                         {{ Form::label('phone', 'Marketing Phone', array('class' => 'col-sm-3 control-label mandatory')) }}
                         <div class="col-sm-6">
+                            @if(isset($apiData->id))
+                            {{ Form::hidden('api_data_id', $apiData->id)}}
+                            {{ Form::text('marketing_phone', $apiData->caller_id, ['class' => 'form-control phone required', 'placeholder' => 'Tele-marketing Phone', 'maxlength' => '14', 'readonly']) }}
+                            @else
                             {{ Form::text('marketing_phone', old('phone'), ['class' => 'form-control phone required', 'placeholder' => 'Tele-marketing Phone', 'maxlength' => '14']) }}
+                            @endif
                         </div>
                     </div>
                     @endif

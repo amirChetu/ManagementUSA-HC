@@ -10,9 +10,9 @@ Breadcrumbs::register('homes.edit_user_profile', function ($breadcrumbs, $id) {
     $breadcrumbs->push('Edit Profile', route('homes.edit_user_profile', $id));
 });
 
-// Home / Appointment / Missed Call List
+// Home / Appointment / Call List
 Breadcrumbs::register('apptsetting.missedCall', function ($breadcrumbs) {
-    $breadcrumbs->push('Appointment / Missed Call List', route('apptsetting.missedCall'));
+    $breadcrumbs->push('Appointment / Call List', route('apptsetting.missedCall'));
 });
 
 // Home / Appointment / Create Appointment
