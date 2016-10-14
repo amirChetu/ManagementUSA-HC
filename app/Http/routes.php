@@ -886,7 +886,7 @@ Route::group(['middleware' => 'web'], function () {
     ]);
 
     Route::get('/api/store',[
-        'uses' => 'ClientApiController@store',
+        'uses' => 'ApiController@store',
         //'middleware' => ['acl.doseManagement_read']
     ]);
 
@@ -909,7 +909,7 @@ Route::group(['middleware' => 'web'], function () {
      * Show the API setting form
      */
     Route::get('/api/setting', [
-       'uses' => 'ClientApiController@setting',
+       'uses' => 'ApiController@setting',
         'as' => 'api.setting',
         //'middleware' => ['acl.doseManagement_read']
     ]);
@@ -918,7 +918,7 @@ Route::group(['middleware' => 'web'], function () {
      * Save the API setting form
      */
     Route::post('/api/saveSetting', [
-       'uses' => 'ClientApiController@saveSetting',
+       'uses' => 'ApiController@saveSetting',
         'as' => 'api.setting',
         //'middleware' => ['acl.doseManagement_read']
     ]);
@@ -966,7 +966,7 @@ Route::group(['middleware' => 'web'], function () {
     ]);
     
     Route::get('/api/delete/{id}', [
-        'uses' => 'ClientApiController@delete',
+        'uses' => 'ApiController@delete',
         'as' => 'api.delete',
         //'middleware' => ['acl:pos_write']
     ]);
