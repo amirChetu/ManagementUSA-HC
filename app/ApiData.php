@@ -46,6 +46,7 @@ class ApiData extends Model
         'current_url',
         'widget_name',
         'source_type',
-        'category'
+        'category',
+        'appointment_status'
     ];
 }

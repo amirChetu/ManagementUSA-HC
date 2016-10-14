@@ -65,7 +65,7 @@
                             @else
                             <a href="{{ url('/apptsetting/index/marketingCall/'.$missed->id) }}" class="on-editing save-row" title="Create Appointment"><i class="fa fa-calendar"></i></a>
                             @endif
-                            <a data-href="/patient/delete/" href="javascrpt:void(0)" class="on-default remove-row confirmation-callback" ><i class="fa fa-trash-o"></i></a>                            
+                            <a data-href="/api/delete/{{ base64_encode($missed->id) }}" href="javascrpt:void(0)" class="on-default remove-row confirmation-callback" ><i class="fa fa-trash-o"></i></a>                            
                         </td>
                     </tr>
                     @endforeach
