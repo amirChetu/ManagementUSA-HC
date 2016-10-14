@@ -74,10 +74,10 @@ class ClientApiController extends Controller {
             $status = $this->saveApiData($data);
             if ($status) {
                 \Session::flash('flash_message', config("constants.SAVED_DATA"));
-                return redirect('/');
+                return redirect('/apptsetting/missedCall');
             } else {
                 \Session::flash('error_message', config("constants.ERROR_OCCURED"));
-                return redirect('/');
+                return redirect('/apptsetting/missedCall');
             }
         } else {
             \Session::flash('error_message',  config("constants.AUTH_VALID"));

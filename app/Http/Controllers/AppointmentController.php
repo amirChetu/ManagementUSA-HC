@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
 use App;
 use Auth;
+use App\ApiData;
 
 /*
  * This class is used for all the request handle regarding the Appointment moodule
@@ -1103,7 +1104,7 @@ class AppointmentController extends Controller {
                     ->count();
         }
 
-
+        $apiData = ApiData::where('appointment_status', 0)->count();
         $labAppointment = Appointment::whereIn('progress_status', [1, 2])->count();
         $upcomingAppointment = Appointment::whereDate('apptTime', '<=', date('Y-m-d', strtotime("+3 day")))->whereNotIn('status', [ 2, 6])->count();
         $readyappointments = Appointment::where('progress_status', '3')->count();
@@ -1119,8 +1120,9 @@ class AppointmentController extends Controller {
         $appointment['followup_appointment'] = $followup;
         $appointment['anotherAppointments'] = $anotherAppointments;
         $appointment['requestFollowups'] = $noSetRequest;
+        $appointment['apiData'] = $apiData;
         echo json_encode($appointment);
-        die;
+        exit();
     }
 
     /**

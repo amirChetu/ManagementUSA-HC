@@ -10,13 +10,14 @@ use App\WebLead;
 use App\AppointmentRequest;
 use App\AppointmentSource;
 use App\ReasonCode;
+use App\ApiData;
 use App\AppointmentFollowup;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\DB;
 use App;
 use Auth;
 use Exception;
-use App\ApiData;
+
 
 /**
  * This class is used for appointment setting with followup details
