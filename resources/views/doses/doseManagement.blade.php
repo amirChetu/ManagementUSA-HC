@@ -69,7 +69,7 @@
                       <label id = "pdob"></label>  
                 </div>
             </div>
-             <div class="toggle" data-plugin-toggle>
+             <div class="toggle" id="doses_details"  data-plugin-toggle>
                        <section class="toggle">
                            <label>Given Doses Details</label>
                            <div class="toggle-content">

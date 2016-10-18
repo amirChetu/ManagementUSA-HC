@@ -9,6 +9,7 @@ use Auth;
 use App\User;
 use App\TrimixDosesFeedback;
 use Exception;
+use App\TrimixDose;
 
 /**
  * Class is used to handle all the action related to doses management
@@ -54,7 +55,7 @@ class DoseManagmentController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function getPatientDetails(Request $request) {
-        $patientData = User::with('patientDetail', 'paymentByPatientId', 'trimixDoses')->where('id', $request->patient_id)->first();
+        $patientData = User::with('patientDetail', 'paymentByPatientId', 'paymentByPatientId.order','trimixDoses')->where('id', $request->patient_id)->first();
         return $patientData;
         exit();
     }
@@ -68,7 +69,6 @@ class DoseManagmentController extends Controller {
      */
     public function store(Request $request) {
         try {
-            // define validation rule
             $this->validate($request, [
                 'doctor' => 'required',
                 'amount1' => 'required',
@@ -80,8 +80,9 @@ class DoseManagmentController extends Controller {
                 'amount4' => 'required',
                 'medicationB2' => 'required'
             ]);
+            
             // create TrimixDoses object
-            $trimixData = new TrimixDoses;
+            $trimixData = new TrimixDose;
             $trimixData->patient_id = $request->patient_id;
             $trimixData->agent_id = Auth::user()->id;
             $trimixData->dose_type = $request->dose_type;
@@ -159,5 +160,24 @@ class DoseManagmentController extends Controller {
             return Redirect::back();
         }
     }
+    
+    /**
+     * This function is used to make selected trimix dose permanent  
+     *
+     * @param Request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    
+    public function makeItParmanent(Request $request) {
+        if(isset($request->id))
+        {
+            \DB::table('trimix_doses')
+            ->where('id', $request->id)
+            ->update(array('permanent_dose_status' => 1));
+        }
+        exit();
+    }
+
 
 }
