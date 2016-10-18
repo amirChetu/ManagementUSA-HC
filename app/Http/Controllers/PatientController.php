@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Redirect;
 use App\Patient;
+use App\Payment;
+use App\Order;
 use App\User;
 use App\State;
 use DB;
@@ -387,7 +389,7 @@ class PatientController extends Controller {
                 throw new Exception(config("constants.PAGE_NOT_FOUND"));
             }
             $id = base64_decode($id);
-            $packageData = showCart($id);
+            $packageData = $this->showCart($id);
             $catList = $packageData['category_list'];
             $cartDetailList = $packageData['category_detail_list'];
             $originalPrice = $packageData['original_package_price'];
@@ -428,6 +430,72 @@ class PatientController extends Controller {
             \Log::error($e);
             \App::abort(404, $e->getMessage());
         }
+    }
+
+
+        /**
+    * Show the items in cart.
+    *
+    * @return \resource\view\patient\view
+    */
+    function showCart($id){
+        $patientId = base64_decode($id);
+        $category_list = [];
+        $category_detail_list = [];
+
+        $original_package_price = [];
+        $discouonted_package_price = [];
+        $package_discount = [];
+
+        //$cart = App\Cart::with('patient', 'user', 'categoryTypes', 'categories', 'categories.packages', 'categories.packages.Product')->where('patient_id', $id)->get();
+        $paymentList = Payment::select( 'id')->where('patient_id',  $id)->get()->toArray();
+        $paymentId = array_column($paymentList, 'id');
+        $payment = Order::with([ 'payment', 'payment.agent', 'payment.user','orderDetail'])->whereIn('payment_id', $paymentId)->get();
+        foreach($payment as $i => $order){
+            $original_package_price[$order->id] = 0;
+            $discouonted_package_price[$order->id] = 0;
+            $duration = 0;
+            $categoryType = 1;
+            if($order->package_type == 'Bronze'){
+                $duration = 3;
+                $categoryType = 1;
+            }else if($order->package_type == 'Silver'){
+                $duration = 6;
+                $categoryType = 2;
+            }else if($order->package_type == 'Gold'){
+                $duration = 12;
+                $categoryType = 3;
+            }
+
+            $category_list[$order->id] = [
+                'category_id' => $order->category_id,
+                'category' => $order->category,
+                'duration' => $duration,
+                'user_id' => $order->payment->patient_id,
+                'user' => $order->payment->agent->first_name.' '.$order->payment->agent->last_name,
+                'patient_id' => $order->payment->patient_id,
+                'patient' => $order->payment->user->first_name.' '.$order->payment->user->last_name,
+                'category_type_id' => $categoryType,
+                'category_type' => $order->package_type
+            ];
+
+            $category_detail_list[$order->id] = [];
+            $data = array();
+            foreach($order->orderDetail as $ind=>$val){
+                $category_detail_list[$order->id][$ind]['sku'] = $val['product_sku'];
+                $category_detail_list[$order->id][$ind]['product'] = $val['product'];
+                $category_detail_list[$order->id][$ind]['count'] = $val['quantity'];
+                $category_detail_list[$order->id][$ind]['discount_price'] = $val['discount_price'];
+                $category_detail_list[$order->id][$ind]['original_price'] = $val['unit_price'];
+                $category_detail_list[$order->id][$ind]['total_price'] = $val['unit_price'] * $val['quantity'];
+                $category_detail_list[$order->id][$ind]['unit_of_measurement'] = '';
+                $original_package_price[$order->id] +=  $val['quantity'] * $val['unit_price'];
+                $discouonted_package_price[$order->id] +=  $val['discount_price'];
+            }
+            $package_discount[$order->id] =  $original_package_price[$order->id] - $discouonted_package_price[$order->id];
+        }
+        $data = ['category_list' => $category_list, 'category_detail_list' => $category_detail_list, 'original_package_price' => $original_package_price, 'discouonted_package_price' => $discouonted_package_price, 'package_discount' => $package_discount];
+        return $data;
     }
 
 }
