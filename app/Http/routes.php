@@ -970,5 +970,13 @@ Route::group(['middleware' => 'web'], function () {
         'as' => 'api.delete',
         //'middleware' => ['acl:pos_write']
     ]);
-
+    
+    /*
+    * To set the dose status permanent
+    */
+    Route::post('/dosemanagement/makeItParmanent/{id}', [
+      'uses' => 'DoseManagmentController@makeItParmanent',
+       'as' => 'dosemanagement.makeItParmanent',
+    ]);
+    
 });
